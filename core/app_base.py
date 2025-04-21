@@ -58,10 +58,12 @@ class Base:
     def quit(self):
         if self.window:
             glfw.destroy_window(self.window)
-        glfw.terminate()
+            self.window = None
+        
+        if glfw:
+            glfw.terminate()
+       
 
     def __del__(self):
-        # Clean up GLFW resources
-        if self.window:
-            glfw.destroy_window(self.window)
-        glfw.terminate()
+        self.quit()
+     
