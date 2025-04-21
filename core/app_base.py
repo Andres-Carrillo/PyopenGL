@@ -5,6 +5,11 @@ class Base:
     def __init__(self, title:str = "My App", major_version:int = 3, minor_version:int =3) -> None:
         self._init_glfw(major_version, minor_version)
         self._init_window(title)
+        self._cur_time = 0.0
+        self._last_time = 0.0
+        self._delta_time = 0.0
+        self._fps = 0.0
+        self.show_fps = True
 
     def _init_window(self, title):
         self.window = glfw.create_window(SCREEN_WIDTH, SCREEN_HEIGHT, title, None, None)
@@ -23,6 +28,8 @@ class Base:
         # Initialize GLFW
         if not glfw.init():
             raise Exception("GLFW could not be initialized!")
+        else:
+            print("GLFW initialized successfully")
 
         # Set GLFW window hints for OpenGL version
         glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, major_version)
@@ -32,6 +39,20 @@ class Base:
 
     # to be overridden in derived classes
     def run(self):
+        self.update()
+
+    def _display_fps(self):
+        if self.show_fps:
+                self._cur_time = glfw.get_time()
+
+                if self._last_time != 0.0:
+                        self._delta_time = self._cur_time - self._last_time
+                        self._fps = 1.0 / self._delta_time
+                        glfw.set_window_title(self.window, self.title + f"- FPS: {self._fps:.2f}")
+
+                self._last_time = self._cur_time
+
+    def update(self):
         pass
 
     def quit(self):
