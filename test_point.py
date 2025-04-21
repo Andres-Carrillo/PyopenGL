@@ -7,30 +7,32 @@ import glfw
 class DrawPoint(Base):
     def __init__(self, title: str = "Draw Point", major_version: int = 3, minor_version: int = 3):
         super().__init__(title, major_version, minor_version)
-        self._cur_time = 0.0
-        self._last_time = 0.0
-        self._delta_time = 0.0
-        self._fps = 0.0
-        self.show_fps = True
+
         self.point_size = 10.0
         self.input_handler = Input()
         self._init_shaders()
         
 
-    def run(self):
+    def update(self):
         while not glfw.window_should_close(self.window):
-            gl.glClearColor(0.0, 0.0, 0.0, 1.0)
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+            # Draw the point
             gl.glUseProgram(self.program)
-            gl.glBindVertexArray(self.vao)
+          
             gl.glDrawArrays(gl.GL_POINTS, 0, 1)
+
+            # Swap buffers
             glfw.swap_buffers(self.window)
 
-            self._display_fps()
+            # Poll for and process events
             self.input_handler.update(self.window) 
 
             if self.input_handler.quit:
                 break           
+
+            # update fps
+            self._display_fps()
+
 
     def _init_shaders(self):
         vertex_shader_source = """
@@ -59,18 +61,6 @@ class DrawPoint(Base):
         if self.window:
             glfw.destroy_window(self.window)
         glfw.terminate()
-
-    def _display_fps(self):
-        if self.show_fps:
-                self._cur_time = glfw.get_time()
-
-                if self._last_time != 0.0:
-                        self._delta_time = self._cur_time - self._last_time
-                        self._fps = 1.0 / self._delta_time
-                        glfw.set_window_title(self.window, self.title + f"- FPS: {self._fps:.2f}")
-
-                self._last_time = self._cur_time
-
 
 
 if __name__ == "__main__":
