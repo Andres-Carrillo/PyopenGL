@@ -1,60 +1,46 @@
 import glfw
-import glfw.GLFW as GLFW_CONSTANTS
-import OpenGL.GL as gl
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
-from core.input import Input
 
 class Base:
-    def __init__(self,title:str = "App",width:int = SCREEN_WIDTH,height:int = SCREEN_HEIGHT,major_version:int = 3,minor_version:int = 3):
-        self.cur_time = 0.0
-        self.last_time = 0.0
+    def __init__(self, title:str = "My App", major_version:int = 3, minor_version:int =3) -> None:
+        self._init_glfw(major_version, minor_version)
+        self._init_window(title)
+
+    def _init_window(self, title):
+        self.window = glfw.create_window(SCREEN_WIDTH, SCREEN_HEIGHT, title, None, None)
         self.title = title
-        self.show_fps = True
-        self.window_width = width
-        self.window_height = height
-        self.input_handler = Input()
-    
-        self.__init_glfw(major_version,minor_version)
-        self.__init__opengl()
+        if not self.window:
+            glfw.terminate()
+            raise Exception("GLFW window could not be created!")
 
-    def __init_glfw(self,major_version:int,minor_version:int) -> None:
-        glfw.init()
-        glfw.window_hint(GLFW_CONSTANTS.GLFW_OPENGL_PROFILE,GLFW_CONSTANTS.GLFW_OPENGL_CORE_PROFILE)
-        glfw.window_hint(GLFW_CONSTANTS.GLFW_CONTEXT_VERSION_MAJOR, major_version)
-        glfw.window_hint(GLFW_CONSTANTS.GLFW_CONTEXT_VERSION_MINOR, minor_version)
-        glfw.window_hint(GLFW_CONSTANTS.GLFW_OPENGL_FORWARD_COMPAT, GLFW_CONSTANTS.GLFW_TRUE)
-
-        self.window = glfw.create_window(self.window_width, self.window_height, self.title, None, None)
-
+        # Make the OpenGL context current
         glfw.make_context_current(self.window)
 
+        # Enable V-Sync
+        glfw.swap_interval(1)
 
-    def __init__opengl(self) -> None:
-        gl.glClearColor(0.1,0.2,0.4,1.0)
+    def _init_glfw(self,minor_version:int,major_version:int) -> None:
+        # Initialize GLFW
+        if not glfw.init():
+            raise Exception("GLFW could not be initialized!")
 
+        # Set GLFW window hints for OpenGL version
+        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, major_version)
+        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, minor_version)
+        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+
+
+    # to be overridden in derived classes
     def run(self):
-        while not glfw.window_should_close(self.window):
-            if self.show_fps:
-                self._display_fps()
+        pass
 
-            self.input_handler.update(self.window) 
-            if self.input_handler.quit:
-                break
-            
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-            glfw.swap_buffers(self.window)
-        
     def quit(self):
-        glfw.destroy_window(self.window)
+        if self.window:
+            glfw.destroy_window(self.window)
         glfw.terminate()
 
-    def _display_fps(self):
-        self.cur_time = glfw.get_time()
-        
-        if self.last_time == 0.0:
-            self.last_time = self.cur_time
-        else:
-            self.delta_time = self.cur_time - self.last_time
-            self.last_time = self.cur_time
-            self.fps = 1.0 / self.delta_time
-            glfw.set_window_title(self.window, self.title + f" - FPS: {self.fps:.1f}")
+    def __del__(self):
+        # Clean up GLFW resources
+        if self.window:
+            glfw.destroy_window(self.window)
+        glfw.terminate()
