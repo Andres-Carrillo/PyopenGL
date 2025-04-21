@@ -44,21 +44,10 @@ class DrawHex(Base):
 
     def update(self) -> None:
         while not glfw.window_should_close(self.window):
-            print("updating")
-            gl.glClearColor(0.0, 0.0, 0.0, 1.0)
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-
             # Use the shader program
             gl.glUseProgram(self.program_ref)
 
-            # Bind the VAO
-            # gl.glBindVertexArray(self.vao_ref)
-
-            # Enable the vertex attribute array (if necessary)
-            # gl.glEnableVertexAttribArray(gl.glGetAttribLocation(self.program_ref, "position"))
-
             # Draw the hexagon
-            print("vertex count", self.vertex_count)
             gl.glDrawArrays(gl.GL_LINE_LOOP, 0, self.vertex_count)
 
             # Swap buffers and poll for events
