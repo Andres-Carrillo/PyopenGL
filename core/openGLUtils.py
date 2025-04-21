@@ -24,6 +24,33 @@ class GlUtils(object):
         
         return shader
     
+
+    @staticmethod
+    def InitializeProgram(vertex_shader_code:str, fragment_shader_code:str) -> int:
+        vertex_shader_ref = GlUtils.InitializeShader(vertex_shader_code, gl.GL_VERTEX_SHADER)
+        fragment_shader_ref = GlUtils.InitializeShader(fragment_shader_code, gl.GL_FRAGMENT_SHADER)
+        
+        # create program
+        program = gl.glCreateProgram()
+
+        #attach shaders to program
+        gl.glAttachShader(program,vertex_shader_ref)
+        gl.glAttachShader(program,fragment_shader_ref)
+
+        # link program
+        gl.glLinkProgram(program)
+
+        # check for link errors
+        link_status = gl.glGetProgramiv(program, gl.GL_LINK_STATUS)
+
+        if not link_status:
+            info_log = gl.glGetProgramInfoLog(program)
+            gl.glDeleteProgram(program)
+            raise RuntimeError(f"Program linking failed: {info_log.decode()}")
+        
+
+        return program
+
      
     @staticmethod
     def create_shader_module(filepath:str,module_type: int) -> int:
@@ -46,3 +73,10 @@ class GlUtils(object):
 
         return shader_program
    
+    @staticmethod
+    def printSystemInfo():
+        print("OpenGL Version:", gl.glGetString(gl.GL_VERSION).decode())
+        print("GLSL Version:", gl.glGetString(gl.GL_SHADING_LANGUAGE_VERSION).decode())
+        print("Vendor:", gl.glGetString(gl.GL_VENDOR).decode())
+        print("Renderer:", gl.glGetString(gl.GL_RENDERER).decode())
+        print("Extensions:", gl.glGetString(gl.GL_EXTENSIONS).decode())
