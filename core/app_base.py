@@ -1,5 +1,6 @@
 import glfw
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
+from core.input import Input
 
 class Base:
     def __init__(self, title:str = "My App", major_version:int = 3, minor_version:int =3) -> None:
@@ -10,6 +11,7 @@ class Base:
         self._delta_time = 0.0
         self._fps = 0.0
         self.show_fps = True
+        self.input_handler = Input()
 
     def _init_window(self, title):
         self.window = glfw.create_window(SCREEN_WIDTH, SCREEN_HEIGHT, title, None, None)
@@ -39,7 +41,17 @@ class Base:
 
     # to be overridden in derived classes
     def run(self):
-        self.update()
+        while not glfw.window_should_close(self.window):
+            self.update()
+            print("Running main loop")
+           #  Swap buffers
+            glfw.swap_buffers(self.window)
+
+            self.input_handler.update(self.window)
+            if self.input_handler.quit:
+                break
+ 
+            self._display_fps()
 
     def _display_fps(self):
         if self.show_fps:
