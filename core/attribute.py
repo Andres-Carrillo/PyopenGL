@@ -28,7 +28,6 @@ class Attribute:
 
     #associate the buffer with the shader program
     def associateVariable(self,program_ref:int,variable_name:str) -> None:
-        print("variable name",variable_name)
         # create a reference to a variable with the given name
         variable_ref = glGetAttribLocation(program_ref,variable_name)
 
