@@ -11,10 +11,6 @@ class Base:
         self._init_window(title)
         self.timer = Timer()
         self.fps_counter = FPS() 
-        self._cur_time = 0.0
-        self._last_time = 0.0
-        self._delta_time = 0.0
-        self._fps = 0.0
         self.show_fps = True
         self.input_handler = Input()
 
