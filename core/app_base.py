@@ -1,11 +1,16 @@
 import glfw
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
 from core.input import Input
+from core.timer import Timer
+from core.fps import FPS
+import OpenGL.GL as gl
 
 class Base:
     def __init__(self, title:str = "My App", major_version:int = 3, minor_version:int =3) -> None:
         self._init_glfw(major_version, minor_version)
         self._init_window(title)
+        self.timer = Timer()
+        self.fps_counter = FPS() 
         self._cur_time = 0.0
         self._last_time = 0.0
         self._delta_time = 0.0
@@ -39,12 +44,17 @@ class Base:
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 
 
-    # to be overridden in derived classes
     def run(self):
+        # main loop for all applications
         while not glfw.window_should_close(self.window):
+
+            # Clear the screen
+            gl.glClearColor(0.0, 0.0, 0.0, 1.0)
+            gl.glClear(gl.GL_COLOR_BUFFER_BIT )
+
+            # update to be implemented in derived classes
             self.update()
-            print("Running main loop")
-           #  Swap buffers
+           
             glfw.swap_buffers(self.window)
 
             self.input_handler.update(self.window)
@@ -55,14 +65,7 @@ class Base:
 
     def _display_fps(self):
         if self.show_fps:
-                self._cur_time = glfw.get_time()
-
-                if self._last_time != 0.0:
-                        self._delta_time = self._cur_time - self._last_time
-                        self._fps = 1.0 / self._delta_time
-                        glfw.set_window_title(self.window, self.title + f"- FPS: {self._fps:.2f}")
-
-                self._last_time = self._cur_time
+            glfw.set_window_title(self.window, self.title + f"- FPS: {self.fps_counter.update():.2f}")
 
     def update(self):
         pass
