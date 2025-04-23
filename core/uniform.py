@@ -35,6 +35,8 @@ class Uniform(object):
             gl.glUniform3f(self.var_ref,self.data[0],self.data[1],self.data[2])
         elif self.data_type == "vec4":
             gl.glUniform4f(self.var_ref,self.data[0],self.data[1],self.data[2],self.data[3])
+        elif self.data_type == "mat4":
+            gl.glUniformMatrix4fv(self.var_ref,1,gl.GL_FALSE,self.data)
         else:
                 raise RuntimeError(f"Unsupported data type {self.data_type}")
             
