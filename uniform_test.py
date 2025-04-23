@@ -4,6 +4,7 @@ from core.attribute import Attribute
 from core.uniform import Uniform
 import OpenGL.GL as gl
 from core.timer import Timer
+import math
 
 class TestUniform(Base):
     def __init__(self, title = "My App", major_version = 3, minor_version = 3):
@@ -70,10 +71,13 @@ class TestUniform(Base):
     def update(self):
         Timer.sleep(0.016)
         gl.glUseProgram(self.program_ref)
-        self.translation_1.data[0] += 0.01
+        
+        self.translation_1.data[0] = 0.75*math.cos(self.timer.elapsed_time())
+        self.translation_1.data[1] = 0.75*math.sin(self.timer.elapsed_time())
 
-        if self.translation_1.data[0] > 1.2:
-            self.translation_1.data[0] = -1.2
+        self.base_color_1.data[0] = 0.5*math.cos(self.timer.elapsed_time())
+        
+        self.base_color_1.data[2] = 0.5*math.sin(self.timer.elapsed_time())
 
         self.translation_1.uploadData()
         self.base_color_1.uploadData()
