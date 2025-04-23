@@ -13,6 +13,7 @@ class Base:
         self.fps_counter = FPS() 
         self.show_fps = True
         self.input_handler = Input()
+        self.input_handler.set_callbacks(self.window)
 
     def _init_window(self, title):
         self.window = glfw.create_window(SCREEN_WIDTH, SCREEN_HEIGHT, title, None, None)
@@ -53,7 +54,7 @@ class Base:
            
             glfw.swap_buffers(self.window)
 
-            self.input_handler.update(self.window)
+            self.input_handler.update()
             if self.input_handler.quit:
                 break
  
