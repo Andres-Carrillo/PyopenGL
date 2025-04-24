@@ -29,6 +29,10 @@ class GlUtils(object):
     def InitializeProgram(vertex_shader_code:str, fragment_shader_code:str) -> int:
         vertex_shader_ref = GlUtils.InitializeShader(vertex_shader_code, gl.GL_VERTEX_SHADER)
         fragment_shader_ref = GlUtils.InitializeShader(fragment_shader_code, gl.GL_FRAGMENT_SHADER)
+
+        # check for shader compilation errors
+        GlUtils.check_shader_compilation(vertex_shader_ref)
+        GlUtils.check_shader_compilation(fragment_shader_ref)
         
         # create program
         program = gl.glCreateProgram()
@@ -40,13 +44,11 @@ class GlUtils(object):
         # link program
         gl.glLinkProgram(program)
 
-        # check for link errors
-        link_status = gl.glGetProgramiv(program, gl.GL_LINK_STATUS)
 
-        if not link_status:
-            info_log = gl.glGetProgramInfoLog(program)
-            gl.glDeleteProgram(program)
-            raise RuntimeError(f"Program linking failed: {info_log.decode()}")
+
+        # check for link errors
+        GlUtils.check_program_linking(program)
+
         
 
         return program
@@ -80,3 +82,18 @@ class GlUtils(object):
         print("Vendor:", gl.glGetString(gl.GL_VENDOR).decode())
         print("Renderer:", gl.glGetString(gl.GL_RENDERER).decode())
         print("Extensions:", gl.glGetString(gl.GL_EXTENSIONS).decode())
+
+    @staticmethod
+    def check_shader_compilation(shader_ref):
+        status = gl.glGetShaderiv(shader_ref, gl.GL_COMPILE_STATUS)
+        if status != gl.GL_TRUE:
+            info_log = gl.glGetShaderInfoLog(shader_ref)
+            raise RuntimeError(f"Shader compilation failed: {info_log.decode()}")
+        
+
+    @staticmethod
+    def check_program_linking(program_ref):
+        status = gl.glGetProgramiv(program_ref, gl.GL_LINK_STATUS)
+        if status != gl.GL_TRUE:
+            info_log = gl.glGetProgramInfoLog(program_ref)
+            raise RuntimeError(f"Program linking failed: {info_log.decode()}")
