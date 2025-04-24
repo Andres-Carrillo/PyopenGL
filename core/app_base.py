@@ -14,6 +14,11 @@ class Base:
         self.show_fps = True
         self.input_handler = Input()
         self.input_handler.set_callbacks(self.window)
+        glfw.set_framebuffer_size_callback(self.window, self._on_resize)
+
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        # gl.glClearColor(0.0, 0.0, 0.0, 1.0)  # Set clear color to black
+        gl.glClearColor(0.2, 0.2, 0.2, 1.0)  
 
     def _init_window(self, title):
         self.window = glfw.create_window(SCREEN_WIDTH, SCREEN_HEIGHT, title, None, None)
@@ -45,10 +50,8 @@ class Base:
         # main loop for all applications
         while not glfw.window_should_close(self.window):
 
-            # Clear the screen
-            gl.glClearColor(0.0, 0.0, 0.0, 1.0)
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT )
-
+            
+            gl.glClear(gl.GL_COLOR_BUFFER_BIT|gl.GL_DEPTH_BUFFER_BIT)
             # update to be implemented in derived classes
             self.update()
            
@@ -78,4 +81,8 @@ class Base:
 
     def __del__(self):
         self.quit()
+
+    def _on_resize(self, window, width, height):
+        # Adjust the OpenGL viewport to match the new window size
+        gl.glViewport(0, 0, width, height)
      
