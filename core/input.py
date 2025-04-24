@@ -1,6 +1,5 @@
 import glfw
 import glfw.GLFW as GLFW_CONSTANTS
-import OpenGL.GL as gl
 
 class Input(object):
     def __init__(self) -> None:
