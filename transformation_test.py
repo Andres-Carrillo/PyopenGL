@@ -3,6 +3,7 @@ from core.app_base import Base
 from core.openGLUtils import GlUtils
 from core.attribute import Attribute
 from core.uniform import Uniform
+from core.timer import Timer
 import glfw.GLFW as GLFW_CONSTANTS
 import OpenGL.GL as gl
 from math import pi
@@ -66,9 +67,11 @@ class TransformationTest(Base):
         return fragment_shader_code
     
     def update(self):
+        Timer.sleep(0.016)
+        print("delta time: ", self.timer.delta_time())
 
-        move_amount = self.move_speed * 1/60
-        turn_amount = self.rotation_speed * 1/60
+        move_amount = self.move_speed * self.timer.delta_time()
+        turn_amount = self.rotation_speed * self.timer.delta_time()
 
         # Apply transformations based on input
         # global positional transformations
