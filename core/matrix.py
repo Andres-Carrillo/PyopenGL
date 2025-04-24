@@ -70,7 +70,16 @@ class Matrix(object):
     
     # construct 4x4 scaling matrix for 3D scaling
     @staticmethod
-    def mat4_scale_xyz(x:float,y:float,z:float)->np.ndarray:
+    def mat4_scale_uniform(scale_val:float)->np.ndarray:
+        mat = Matrix.mat4_identity()
+        
+        mat[0][0] = scale_val
+        mat[1][1] = scale_val
+        mat[2][2] = scale_val
+
+        return mat
+    
+    def mat4_scale(x:float,y:float,z:float)->np.ndarray:
         mat = Matrix.mat4_identity()
         
         mat[0][0] = x
