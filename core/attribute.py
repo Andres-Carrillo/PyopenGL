@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Attribute:
-    def __init__(self,datatype,data):
+    def __init__(self,datatype:str,data:object):
         self.data_type = datatype
         self.data = data
 
