@@ -8,11 +8,11 @@ class Object3D(object):
         self.parent = parent
         self.children = []
 
-    def add_child(self,child:'Object3D') -> None:
+    def add(self,child:'Object3D') -> None:
         self.children.append(child)
         child.parent = self
 
-    def remove_child(self,child:'Object3D') -> None:
+    def remove(self,child:'Object3D') -> None:
         self.children.remove(child)
         child.parent = None
 
