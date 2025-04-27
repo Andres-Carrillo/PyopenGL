@@ -4,8 +4,8 @@ from core.input import Input
 from core.timer import Timer
 from core.fps import FPS
 import OpenGL.GL as gl
-import pygame
-import sys
+# import pygame
+# import sys
 
 class Base:
     def __init__(self, title:str = "My App", major_version:int = 3, minor_version:int =3) -> None:
@@ -90,41 +90,41 @@ class Base:
         gl.glViewport(0, 0, width, height)
      
 
-class PyGameBase(object):
-    def __init__(self,screen_size=[512,512]):
-        pygame.init()
-        displayFlags = pygame.DOUBLEBUF | pygame.OPENGL
+# class PyGameBase(object):
+#     def __init__(self,screen_size=[512,512]):
+#         pygame.init()
+#         displayFlags = pygame.DOUBLEBUF | pygame.OPENGL
 
-        pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLEBUFFERS, 1)
-        pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLESAMPLES, 4)
-        pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
+#         pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLEBUFFERS, 1)
+#         pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLESAMPLES, 4)
+#         pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
 
-        self.screen = pygame.display.set_mode(screen_size, displayFlags )
+#         self.screen = pygame.display.set_mode(screen_size, displayFlags )
 
-        pygame.display.set_caption("Graphic Engine")
+#         pygame.display.set_caption("Graphic Engine")
 
-        self.running = True
+#         self.running = True
 
-        self.close = pygame.time.Clock()
-
-
-    def initialize(self):
-        pass
+#         self.close = pygame.time.Clock()
 
 
-    def update(self):
-        pass
+#     def initialize(self):
+#         pass
 
 
-    def run(self):
-        self.initialize()
-        while self.running:
-            self.update()
+#     def update(self):
+#         pass
 
-            pygame.display.flip()
 
-            self.close.tick(60)
+#     def run(self):
+#         self.initialize()
+#         while self.running:
+#             self.update()
 
-        pygame.quit()
-        sys.exit()
+#             pygame.display.flip()
+
+#             self.close.tick(60)
+
+#         pygame.quit()
+#         sys.exit()
         
