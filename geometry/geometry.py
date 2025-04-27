@@ -15,6 +15,12 @@ class Geometry(object):
         attribute = list(self.attributes.values())[0]
         self.vertex_count = len(attribute.data)
 
+    def get_vertex_count(self):
+        if self.vertex_count is None:
+            self.countVertices()
+            
+        return self.vertex_count
+
 
     def applyTransform(self,matrix,var_name:str = "vertex_position"):
         old_position = self.attributes[var_name].data
