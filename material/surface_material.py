@@ -23,3 +23,5 @@ class SurfaceMaterial(BasicMaterial):
             gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         else:
             gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+
+        gl.glLineWidth(self.settings["line_width"])
