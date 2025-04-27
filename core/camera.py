@@ -4,13 +4,13 @@ from numpy.linalg import inv
 
 
 class Camera(Object3D):
-    def __init__(self,angle_of_view:float = 60.0, aspect:float=1.0, near:float = 0.1, far:float =1000):
+    def __init__(self,angle_of_view:float = 60.0, aspect_ratio:float=1.0, near:float = 0.1, far:float =1000):
         super().__init__()
         self.angle_of_view = angle_of_view
-        self.aspect = aspect
+        self.aspect_ratio = aspect_ratio
         self.near = near
         self.far = far
-        self.projection_matrix = Matrix.mat4_perspective(angle_of_view,aspect,near,far)
+        self.projection_matrix = Matrix.mat4_perspective(angle_of_view,aspect_ratio,near,far)
         self.view_matrix = Matrix.mat4_identity()
 
     def update_view_matrix(self):
