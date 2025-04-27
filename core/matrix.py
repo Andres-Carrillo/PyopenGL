@@ -92,20 +92,14 @@ class Matrix(object):
     
     # construct 4x4 perspective projection matrix
     @staticmethod
-    def mat4_perspective(angle_of_view:float = 60.0, aspect:float=1.0, near:float = 0.1, far:float =1000)->np.ndarray:
-        mat = Matrix.mat4_identity()
+    def mat4_perspective(angle_of_view:float = 60.0, aspect_ratio:float=1.0, near:float = 0.1, far:float =1000)->np.ndarray:
         a = angle_of_view * pi / 180.0
-        d = 1.0 / tan(a/2.0)
-        r = aspect
+        d = 1.0 / tan(a / 2)
         b = (far + near) / (near - far)
-        c = (2*far*near) / (near - far)
-
-        mat[0][0] = d/r
-        mat[1][1] = d
-        mat[2][2] = b
-        mat[3][2] = c
-        mat[2][3] = -1.0
-        mat[3][3] = 0.0
-
-        return mat
-    
+        c = 2 * far * near / (near - far)
+        return np.array(
+            [[d / aspect_ratio, 0, 0, 0],
+             [0, d, 0, 0],
+             [0, 0, b, c],
+             [0, 0, -1, 0]]
+        ).astype(float)
