@@ -4,6 +4,8 @@ from core.input import Input
 from core.timer import Timer
 from core.fps import FPS
 import OpenGL.GL as gl
+import pygame
+import sys
 
 class Base:
     def __init__(self, title:str = "My App", major_version:int = 3, minor_version:int =3) -> None:
@@ -13,15 +15,16 @@ class Base:
         self.fps_counter = FPS() 
         self.show_fps = True
         self.input_handler = Input()
+        # setup callbacks
         self.input_handler.set_callbacks(self.window)
         glfw.set_framebuffer_size_callback(self.window, self._on_resize)
 
         gl.glEnable(gl.GL_DEPTH_TEST)
-        # gl.glClearColor(0.0, 0.0, 0.0, 1.0)  # Set clear color to black
         gl.glClearColor(0.2, 0.2, 0.2, 1.0)  
 
     def _init_window(self, title):
         self.window = glfw.create_window(SCREEN_WIDTH, SCREEN_HEIGHT, title, None, None)
+        gl.glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
         self.title = title
         if not self.window:
             glfw.terminate()
@@ -50,8 +53,8 @@ class Base:
         # main loop for all applications
         while not glfw.window_should_close(self.window):
 
+            gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT|gl.GL_DEPTH_BUFFER_BIT)
             # update to be implemented in derived classes
             self.update()
            
@@ -86,3 +89,42 @@ class Base:
         # Adjust the OpenGL viewport to match the new window size
         gl.glViewport(0, 0, width, height)
      
+
+class PyGameBase(object):
+    def __init__(self,screen_size=[512,512]):
+        pygame.init()
+        displayFlags = pygame.DOUBLEBUF | pygame.OPENGL
+
+        pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLEBUFFERS, 1)
+        pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLESAMPLES, 4)
+        pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
+
+        self.screen = pygame.display.set_mode(screen_size, displayFlags )
+
+        pygame.display.set_caption("Graphic Engine")
+
+        self.running = True
+
+        self.close = pygame.time.Clock()
+
+
+    def initialize(self):
+        pass
+
+
+    def update(self):
+        pass
+
+
+    def run(self):
+        self.initialize()
+        while self.running:
+            self.update()
+
+            pygame.display.flip()
+
+            self.close.tick(60)
+
+        pygame.quit()
+        sys.exit()
+        
