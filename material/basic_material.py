@@ -1,12 +1,10 @@
 from material.material import Material
 from core.uniform import Uniform
-
-
+import OpenGL.GL as gl
 class BasicMaterial(Material):
 
     def __init__(self):
         vertex_shader_code = """
-
                             uniform mat4 projection_matrix;
                             uniform mat4 view_matrix;
                             uniform mat4 model_matrix;
@@ -38,6 +36,6 @@ class BasicMaterial(Material):
             """
         
         super().__init__(vertex_shader_code, fragment_shader_code)
-        self.add_uniform("base_color", (1.0, 1.0, 1.0), "vec3")
+        self.add_uniform("base_color", (1.0, 0.0, 0.0), "vec3")
         self.add_uniform("use_vertex_colors", False, "bool")
         self.locate_uniforms()
