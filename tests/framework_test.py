@@ -4,31 +4,19 @@ import sys
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 
-print("dir: " ,package_dir)
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-
-from core.app_base import Base
-from core.renderer import Renderer
-from core.scene import Scene
-from core.camera import Camera
 from core.mesh import Mesh
 from geometry.box import BoxGeometry
 from material.surface_material import SurfaceMaterial
+from tests.template import Test
 
-import OpenGL.GL as gl
-
-
-class Test(Base):
+class FrameworkTest(Test):
 
     def __init__(self):
-        super().__init__()
-        self.renderer = Renderer(clear_color=[1, 1, 1])
-        self.scene = Scene()
-        self.camera = Camera(aspect_ratio=800/600)
-        self.camera.set_pos([0, 0, 4])
+        super().__init__(title="Framework Test")
         
         geometry = BoxGeometry()
         material = SurfaceMaterial(
@@ -50,11 +38,11 @@ class Test(Base):
 
 
 if __name__ == "__main__":
-    test = Test()
+    test = FrameworkTest()
     test.run()
     test.quit()
 
-    # Test_2(screen_size=[800,600]).run()
+
 
 
 

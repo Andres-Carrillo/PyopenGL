@@ -4,7 +4,6 @@ import sys
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 
-print("dir: " ,package_dir)
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
@@ -76,7 +75,6 @@ class TransformationTest(Base):
     
     def update(self):
         Timer.sleep(0.016)
-        print("delta time: ", self.timer.delta_time())
 
         move_amount = self.move_speed * self.timer.delta_time()
         turn_amount = self.rotation_speed * self.timer.delta_time()

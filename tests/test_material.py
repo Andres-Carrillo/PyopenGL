@@ -4,7 +4,6 @@ import sys
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 
-print("dir: " ,package_dir)
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
@@ -45,10 +44,6 @@ class Test(Base):
         self.mesh.material.uniforms["view_matrix"].data = self.camera.view_matrix
         self.mesh.material.uniforms["projection_matrix"].data = self.camera.projection_matrix
 
-        print("Model Matrix:", self.mesh.material.uniforms["model_matrix"].data)
-        print("View Matrix:", self.camera.view_matrix)
-        print("Projection Matrix:", self.camera.projection_matrix)
-
         # Upload all uniforms
         for var_name, uniform_obj in self.mesh.material.uniforms.items():
             uniform_obj.uploadData()
@@ -56,10 +51,6 @@ class Test(Base):
         # Update the render settings for the material
         self.mesh.material.update_render_settings()
 
-
-        print("Draw Mode:", self.mesh.material.settings["draw_mode"])
-        print("Vertex Count:", self.mesh.geometry.get_vertex_count())
-        
         # Draw the mesh
         gl.glDrawArrays(self.mesh.material.settings["draw_mode"], 0, self.mesh.geometry.get_vertex_count())
 
