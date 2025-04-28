@@ -39,7 +39,6 @@ class Object3D(object):
 
 
     def apply_transformation(self,transfor_mat:Matrix,local=True) -> None:
-        self.transform = transfor_mat @ self.transform
 
         if local:
             self.transform = self.transform @ transfor_mat
