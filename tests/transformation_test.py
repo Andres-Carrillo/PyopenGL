@@ -1,3 +1,15 @@
+import pathlib
+import sys
+
+# Get the package directory
+package_dir = str(pathlib.Path(__file__).resolve().parents[1])
+
+print("dir: " ,package_dir)
+# Add the package directory into sys.path if necessary
+if package_dir not in sys.path:
+    sys.path.insert(0, package_dir)
+
+
 from core.matrix import Matrix
 from core.app_base import Base
 from core.openGLUtils import GlUtils
@@ -20,11 +32,7 @@ class TransformationTest(Base):
         self.program_ref = GlUtils.InitializeProgram(self._init_vertex_shader(), self._init_fragment_shader())
         self.vao_ref = gl.glGenVertexArrays(1)
         gl.glBindVertexArray(self.vao_ref)
-        position_data = [
-            [0.0,0.2,0.0],
-            [0.2,-0.2,0.0],
-            [-0.2,-0.2,0.0]
-        ]
+        position_data = [[0.0,   0.2,  0.0], [0.1,  -0.2,  0.0], [-0.1, -0.2,  0.0]]
         
         self.vertex_count = len(position_data)
 

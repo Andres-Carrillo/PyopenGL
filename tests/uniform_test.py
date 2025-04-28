@@ -1,9 +1,22 @@
+import pathlib
+import sys
+
+# Get the package directory
+package_dir = str(pathlib.Path(__file__).resolve().parents[1])
+
+print("dir: " ,package_dir)
+# Add the package directory into sys.path if necessary
+if package_dir not in sys.path:
+    sys.path.insert(0, package_dir)
+
+
 from core.app_base import Base
 from core.openGLUtils import GlUtils
 from core.attribute import Attribute
 from core.uniform import Uniform
 import OpenGL.GL as gl
 from core.timer import Timer
+import glfw.GLFW as GLFW_CONSTANTS
 import math
 
 class TestUniform(Base):
@@ -70,6 +83,7 @@ class TestUniform(Base):
 
     def update(self):
         Timer.sleep(0.016)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT|gl.GL_DEPTH_BUFFER_BIT)
         gl.glUseProgram(self.program_ref)
         
         self.translation_1.data[0] = 0.75*math.cos(self.timer.elapsed_time())
@@ -87,6 +101,9 @@ class TestUniform(Base):
         self._base_color_2.uploadData()
         gl.glDrawArrays(gl.GL_TRIANGLES,0,self.vertex_count)
 
+     
+
+        
 
 if __name__ == "__main__":
     my_app = TestUniform()
