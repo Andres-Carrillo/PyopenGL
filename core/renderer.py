@@ -3,7 +3,7 @@ from core.mesh import Mesh
 
 
 class Renderer(object):
-    def __init__(self,clear_color:list = [0,0,0]):
+    def __init__(self,clear_color:list = [0.2, 0.2, 0.2]):
         gl.glEnable(gl.GL_DEPTH_TEST)
         # enables anti-aliasing
         gl.glEnable(gl.GL_MULTISAMPLE)
@@ -23,23 +23,12 @@ class Renderer(object):
 
         viewable_meshes = list(filter(viewable_filter,kid_list))
 
-        i = 0
         for mesh in viewable_meshes:
-            i += 1
-            
-            gl.glViewport(0, 0, 800, 600)
-            # Set default color to white, used when no objects present to cast shadows
-            gl.glClearColor(1, 1, 1, 1)
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-            gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
-            # Everything in the scene gets rendered with dept
-            
-            
+        
             # install the program for the mesh
             gl.glUseProgram(mesh.material.program)
             # bind vertex array object for the mesh
             gl.glBindVertexArray(mesh.vao_ref)
-            # gl.glDisable(gl.GL_CULL_FACE)
 
             # ================== update the uniforms for the mesh not stored in the material ==================
             #update the model matrix based on the mesh's world matrix
