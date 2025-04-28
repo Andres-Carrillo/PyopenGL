@@ -40,5 +40,3 @@ class Uniform(object):
             gl.glUniformMatrix4fv(self.var_ref, 1, gl.GL_TRUE, np.array(self.data, dtype=np.float32))
         else:
                 raise RuntimeError(f"Unsupported data type {self.data_type}")
-            
-    

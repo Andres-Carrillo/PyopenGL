@@ -40,8 +40,7 @@ class Base:
         # Initialize GLFW
         if not glfw.init():
             raise Exception("GLFW could not be initialized!")
-        else:
-            print("GLFW initialized successfully")
+
 
         # Set GLFW window hints for OpenGL version
         glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, major_version)
