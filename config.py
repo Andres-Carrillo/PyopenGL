@@ -3,8 +3,8 @@ from OpenGL.GL.shaders import compileProgram, compileShader
 import numpy as np
 
 
-SCREEN_WIDTH = 512
-SCREEN_HEIGHT = 512
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 
 vertex_3d = np.dtype([
     ('x', np.float32),    # 4 bytes for x
