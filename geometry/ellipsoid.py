@@ -1,17 +1,31 @@
 from geometry.parametric import Parametric
 from math import pi, sin, cos
+from core.matrix import Matrix
 
 class Ellipsoid(Parametric):
-    def __init__(self,width:float = 1.0,height:float = 1.0,depth:float = 1.0,seg_radius:float= 32.0,seg_height:float= 16) -> None:
-        
-        def parametric_equation(u:float,v:float) -> tuple[float,float,float]:
-            x = (width/2) * sin(u) * cos(v)
-            y = (height/2) * sin(v)
-            z = (depth/2) * cos(u) * cos(v)
+    def __init__(self, width=1, height=1, depth=1, theta_segments=16, phi_segments=32):
+        def surface_function(u, v):
+            # [x, y, z] = surface_function(u, v)
+            # Here,
+            # x = width / 2 * sin(theta) * cos(phi),
+            # y = height / 2 * sin(theta) * sin(phi),
+            # z = depth / 2 * cos(theta),
+            # where 0 <= theta < pi, 0 <= phi < 2*pi.
+            # Then, u = phi / (2*pi), v = (1 - theta/pi).
+            # Then, phi = 2 * pi * u, theta = (1 - v)*pi.
+            phi = 2 * pi * u
+            theta = (1 - v) * pi
+            return [width / 2 * sin(theta) * cos(phi),
+                    height / 2 * sin(theta) * sin(phi),
+                    depth / 2 * cos(theta)]
 
-            return (x,y,z)
-
-        super().__init__(0,2*pi,seg_radius,-pi/2,pi/2,seg_height,parametric_equation)
-
-
-        
+        super().__init__(0,
+                         1,
+                         phi_segments,
+                         0,
+                         1,
+                         theta_segments,
+                         surface_function)
+        # Rotate the ellipsoid around the x-axis on -90 degrees.
+        # The vertices and normals will be recalculated.
+        self.applyTransform(Matrix.mat4_rotate_x(-pi/2))
