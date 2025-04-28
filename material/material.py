@@ -19,6 +19,7 @@ class Material(object):
         # inherited classes should override this method
         # and add their own uniforms
         self._init_uniforms()
+        self._init_settings()
         
         
 
@@ -56,3 +57,9 @@ class Material(object):
                 self.settings[name] = data
             else:
                 raise RuntimeError(f"Property {name} not found in material")
+            
+
+
+    def update_render_settings(self):
+        """ Configure OpenGL with render settings """
+        pass
