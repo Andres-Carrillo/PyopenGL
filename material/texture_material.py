@@ -1,9 +1,9 @@
 from material.material import Material
 import OpenGL.GL as gl
-
+from core.texture import Texture
 class TextureMaterial(Material):
 
-    def __init__(self,texture,properties:dict={}) -> None:
+    def __init__(self,texture:"Texture",properties:dict={}) -> None:
         vertex_shader_code = """
                                 uniform mat4 projection_matrix;
                                 uniform mat4 view_matrix;
