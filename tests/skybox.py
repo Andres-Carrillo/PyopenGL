@@ -1,0 +1,41 @@
+import pathlib
+import sys
+
+# Get the package directory
+package_dir = str(pathlib.Path(__file__).resolve().parents[1])
+
+# Add the package directory into sys.path if necessary
+if package_dir not in sys.path:
+    sys.path.insert(0, package_dir)
+
+from tests.template import Test
+from core.texture import Texture
+from material.texture_material import TextureMaterial
+from geometry.rectangle_geometry import  RectangleGeo
+from geometry.box import BoxGeometry
+from geometry.sphere import Sphere
+from core.mesh import Mesh  
+from tools.movement_rig import MovementRig
+from math import pi
+
+class SkyboxTest(Test):
+    def __init__(self):
+        super().__init__(title="Skybox Test")
+        sky_geo = Sphere(radius=50)
+        sky_mat = TextureMaterial(Texture("images/sky.jpg"))
+        sky = Mesh(sky_geo, sky_mat)
+        self.scene.add(sky)
+
+        grass_geo = RectangleGeo(width=self.camera.far, height=self.camera.far)
+        grass_mat = TextureMaterial(Texture("images/grass.jpg"))
+        grass = Mesh(grass_geo, grass_mat)
+        grass.rotate_x(-3.14/2)
+
+        self.scene.add(grass)
+
+
+
+if __name__ == "__main__":
+    test = SkyboxTest()
+    test.run()
+    test.quit()
