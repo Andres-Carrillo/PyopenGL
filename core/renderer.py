@@ -8,7 +8,12 @@ class Renderer(object):
         # enables anti-aliasing
         gl.glEnable(gl.GL_MULTISAMPLE)
 
+        # enables blending
+        gl.glEnable(gl.GL_BLEND)
+        # set the blending function
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
+        # set the clear color
         gl.glClearColor(clear_color[0], clear_color[1], clear_color[2], 1.0)
 
     def render(self,scene:object,camera:object):
