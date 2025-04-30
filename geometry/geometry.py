@@ -8,8 +8,11 @@ class Geometry(object):
 
     
     def addAttribute(self, name:str, data:object,datatype:str):
-        self.attributes[name] = Attribute(datatype,data)
-
+        attribute = Attribute(datatype,data)
+        self.attributes[name] = attribute
+        
+        if name == "vertex_position":
+            self.vertex_count = len(data)
 
     def countVertices(self):
         attribute = list(self.attributes.values())[0]
