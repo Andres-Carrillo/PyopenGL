@@ -38,5 +38,18 @@ class Uniform(object):
             gl.glUniform4f(self.var_ref,self.data[0],self.data[1],self.data[2],self.data[3])
         elif self.data_type == "mat4":
             gl.glUniformMatrix4fv(self.var_ref, 1, gl.GL_TRUE, np.array(self.data, dtype=np.float32))
+        elif self.data_type == "sampler2D":
+            # split the data into 2 parts the texture object and the texture unit reference
+            texture_obj_ref,texture_unit_ref = self.data
+
+            # activate the texture unit
+            gl.glActiveTexture(gl.GL_TEXTURE0 + texture_unit_ref)   
+
+            #associate the texture object with the texture unit
+            gl.glBindTexture(gl.GL_TEXTURE_2D,texture_obj_ref)
+
+            # upload texture  unit number 0-15 to the uniform variable in the shader
+            gl.glUniform1i(self.var_ref,texture_unit_ref)
+
         else:
                 raise RuntimeError(f"Unsupported data type {self.data_type}")
