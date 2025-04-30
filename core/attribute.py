@@ -32,9 +32,9 @@ class Attribute:
         # create a reference to a variable with the given name
         self.variable_ref = glGetAttribLocation(program_ref,variable_name)
 
-        # check that the variable is valid
+        # check that the variable is valid is not skip associating
         if self.variable_ref == -1:
-            raise RuntimeError("Variable ", variable_name, "not found in shader program")
+            return
         
         glBindBuffer(GL_ARRAY_BUFFER,self.bufferRef)
 
