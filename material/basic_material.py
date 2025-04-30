@@ -36,8 +36,7 @@ class BasicMaterial(Material):
                                 }
                 """
         
-        print("vertex shader code in basic material class: ", vertex_shader_code)
-        print("fragment shader code in basic material class: ", fragment_shader_code)
+
         super().__init__(vertex_shader_code, fragment_shader_code)
         self.add_uniform("base_color", (1.0, 0.0, 0.0), "vec3")
         if use_vertex_colors:
