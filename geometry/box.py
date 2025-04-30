@@ -19,6 +19,8 @@ class BoxGeometry(Geometry):
         c5, c6 = [0.5, 0.5, 1], [0, 0, 0.5]
         # texture coordinates
         t0, t1, t2, t3 = [0, 0], [1, 0], [0, 1], [1, 1]
+
+        uv_data = [t0,t1,t3  , t0,t3,t2] * 6
         # Each side consists of two triangles
         position_data = [p5, p1, p3, p5, p3, p7,
                          p0, p4, p6, p0, p6, p2,
@@ -31,3 +33,4 @@ class BoxGeometry(Geometry):
         
         self.addAttribute( "vertex_position", position_data,"vec3")
         self.addAttribute( "vertex_color", color_data,"vec3")
+        self.addAttribute( "vertex_uv", uv_data,"vec2")

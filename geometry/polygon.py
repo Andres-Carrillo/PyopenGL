@@ -12,6 +12,8 @@ class Polygon(Geometry):
         area = 2*pi/self.sides
         positions = []
         colors = []
+        uv_data = []
+        uv_center = [0.5,0.5]
 
         for i in range(self.sides):
             # generate 3 points for each triangle of the polygon
@@ -25,7 +27,15 @@ class Polygon(Geometry):
             colors.append([1,0,0])
             colors.append([0,0,1])
 
+            # generate uv coordinates for each vertex
+            uv_data.append(uv_center)
+            uv_data.append([cos(i*area)*0.5 + 0.5, sin(i*area)*0.5 + 0.5])
+            uv_data.append([cos((i+1)*area)*0.5 + 0.5, sin((i+1)*area)*0.5 + 0.5])
+
         # add the attributes to the geometry
         self.addAttribute("vertex_position", positions, "vec3")
         self.addAttribute("vertex_color", colors, "vec3")
+        self.addAttribute("vertex_uv", uv_data, "vec2")
+        
+        # count the vertices
         self.countVertices()
