@@ -12,6 +12,9 @@ from core.app_base import Base
 from core.renderer import Renderer
 from core.scene import Scene
 from core.camera import Camera
+from tools.grid import GridTool
+from math import pi
+from tools.movement_rig import MovementRig
 
 class Test(Base):
 
@@ -21,8 +24,21 @@ class Test(Base):
         self.scene = Scene()
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_pos([0, 0, 4])
+
+        self.rig = MovementRig()
+        self.rig.add(self.camera)
+        self.rig.set_pos([0.5, 1, 5])
+
+        self.scene.add(self.rig)
+
+
+        grid = GridTool(size = self.camera.far,division=self.camera.far,grid_color=[1,1,1],center_color=[1,1,0])
+
+        grid.rotate_x(-pi/2)
+        self.scene.add(grid)
         
 
 
     def update(self):
+        self.rig.update(self.input_handler, self.timer.delta_time())
         self.renderer.render(self.scene, self.camera)
