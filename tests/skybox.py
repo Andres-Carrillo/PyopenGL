@@ -1,6 +1,7 @@
 import pathlib
 import sys
-
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygame")
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 
@@ -12,11 +13,8 @@ from tests.template import Test
 from core.texture import Texture
 from material.texture_material import TextureMaterial
 from geometry.rectangle_geometry import  RectangleGeo
-from geometry.box import BoxGeometry
 from geometry.sphere import Sphere
 from core.mesh import Mesh  
-from tools.movement_rig import MovementRig
-from math import pi
 
 class SkyboxTest(Test):
     def __init__(self):
