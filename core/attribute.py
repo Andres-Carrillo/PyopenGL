@@ -2,6 +2,10 @@ from OpenGL.GL import *
 import glfw
 import numpy as np
 
+"""
+This class is used to create and manage OpenGL vertex buffer objects (VBOs) for
+storing vertex attributes. It handles the creation of the buffer, uploading data
+to the GPU, and associating the buffer with a shader program."""
 
 class Attribute:
     def __init__(self,datatype:str,data:object):
@@ -12,9 +16,15 @@ class Attribute:
 
         self.uploadData()
 
-    # upload data to GPU
-    # this method should be called after the buffer is bound
-    # in the OpenGL context
+    """
+        This method is used to upload the data to the GPU. It creates a buffer object
+        and uploads the data to the GPU. The data is converted to a numpy array of
+        the appropriate data type before being uploaded. The buffer is created with
+        the GL_STATIC_DRAW usage hint, which indicates that the data will not be changed
+        frequently. 
+            Raises:
+                RuntimeError: If there is an error uploading the data to the GPU.
+    """
     def uploadData(self):
         data = np.array(self.data,dtype=np.float32)
         glBindBuffer(GL_ARRAY_BUFFER,self.bufferRef)
@@ -26,8 +36,19 @@ class Attribute:
         if error != GL_NO_ERROR:
             raise RuntimeError(f"Error uploading data to GPU: {error}")
         
-
-    #associate the buffer with the shader program
+    """
+        This method is used to associate the buffer with a shader program. It creates
+        a reference to a variable with the given name in the shader program and binds
+        the buffer to the program. The method checks that the variable is valid and
+        not -1 before associating it with the buffer. It also sets the appropriate
+        pointer for the variable based on its data type. The method raises an exception
+        if the data type is unknown.
+            Args:
+                program_ref (int): The reference to the shader program.
+                variable_name (str): The name of the variable in the shader program.
+            Raises:
+             RuntimeError: If the variable is not valid or if the data type is unknown.
+    """
     def associateVariable(self,program_ref:int,variable_name:str) -> None:
         # create a reference to a variable with the given name
         self.variable_ref = glGetAttribLocation(program_ref,variable_name)
