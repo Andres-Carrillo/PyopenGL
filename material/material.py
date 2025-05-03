@@ -1,4 +1,4 @@
-from core.openGLUtils import GlUtils
+from core.utils.openGLUtils import GlUtils
 from core.uniform import Uniform
 import OpenGL.GL as gl
 

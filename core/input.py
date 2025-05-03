@@ -17,6 +17,7 @@ class Input(object):
 
 
     def key_callback(self, window, key, scancode, action, mods):
+
         if action == GLFW_CONSTANTS.GLFW_PRESS: 
             self.key_pressed_list.append(key)
             self.key_queue.append(key)

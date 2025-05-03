@@ -24,11 +24,11 @@ class ToolTest(Test):
 
         self.scene.add(self.rig)
 
-        axes = AxesAid(axis_len=2)
+        axes = AxesAid(axis_len=1)
 
         self.scene.add(axes)
 
-        grid = GridTool(size = 10,division=20,grid_color=[1,1,1],center_color=[1,1,0])
+        grid = GridTool(size = self.camera.far,division=self.camera.far,grid_color=[1,1,1],center_color=[1,1,0])
 
         grid.rotate_x(-pi/2)
         self.scene.add(grid)

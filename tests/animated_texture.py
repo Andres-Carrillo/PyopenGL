@@ -10,9 +10,9 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from tests.template import Test
-from core.texture import Texture
-from geometry.rectangle_geometry import  RectangleGeo
-from core.mesh import Mesh
+from core.textures.texture import Texture
+from geometry.two_dimensional.rectangle import  Rectangle
+from meshes.mesh import Mesh
 from material.material import Material
 
 
@@ -53,7 +53,7 @@ class AnimatedTextureTest(Test):
         self.wave_mat.add_uniform("time", 0.0, "float")
         self.wave_mat.locate_uniforms()
 
-        geometry = RectangleGeo(width=2, height=2)
+        geometry = Rectangle(width=2, height=2)
 
         self.mesh = Mesh(geometry, self.wave_mat)
         self.scene.add(self.mesh)

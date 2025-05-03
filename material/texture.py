@@ -1,6 +1,6 @@
 from material.material import Material
 import OpenGL.GL as gl
-from core.texture import Texture
+from core.textures.texture import Texture
 class TextureMaterial(Material):
 
     def __init__(self,texture:"Texture",properties:dict={}) -> None:

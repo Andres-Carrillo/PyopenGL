@@ -6,14 +6,14 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from core.mesh import Mesh
+from meshes.mesh import Mesh
 from core.camera import Camera
 from core.renderer import Renderer
 from core.scene import Scene
 from geometry.sphere import Sphere
 from material.material import Material
 from tests.template import Test
-from core.timer import Timer
+from core.utils.timer import Timer
 
 
 class SphereTest(Test):
@@ -55,7 +55,8 @@ class SphereTest(Test):
         
         self.mesh.rotate_x(0.00337)
         self.mesh.rotate_y(0.00514)
-        self.renderer.render(self.scene, self.camera)
+        super().update()
+        # self.renderer.render(self.scene, self.camera)
 
 
 if __name__ == "__main__":

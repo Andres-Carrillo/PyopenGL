@@ -10,9 +10,9 @@ if package_dir not in sys.path:
 
 
 from core.app_base import Base
-from material.surface_material import SurfaceMaterial
+from material.surface import SurfaceMaterial
 from geometry.box import BoxGeometry
-from core.mesh import Mesh
+from meshes.mesh import Mesh
 import OpenGL.GL as gl
 from core.camera import Camera
 

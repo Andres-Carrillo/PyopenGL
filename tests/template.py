@@ -28,7 +28,8 @@ class Test(Base):
         self.rig = None
 
 
-        if not static_camera:
+        if  not static_camera:
+            print("Movement rig enabled")
             self.rig = MovementRig()
             self.rig.add(self.camera)
             self.rig.set_pos([0.5, 1, 5])

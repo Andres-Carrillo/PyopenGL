@@ -1,4 +1,4 @@
-from geometry.polygon import Polygon
+from geometry.two_dimensional import Polygon
 
 class Circle(Polygon):
     def __init__(self, radius: float = 1) -> None:

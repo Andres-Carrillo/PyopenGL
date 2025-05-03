@@ -10,12 +10,9 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from tests.template import Test
-from core.texture import Texture
-from geometry.rectangle_geometry import  RectangleGeo
 from geometry.sphere import Sphere
-from core.mesh import Mesh
+from meshes.mesh import Mesh
 from material.material import Material
-from core.timer import Timer
 
 
 class ProceduralTextureTest(Test):
@@ -122,10 +119,10 @@ class ProceduralTextureTest(Test):
                                 out vec4 frag_color;
                                 void main(){
                                     //frag_color = cloud_gen(uv, 4.0);
-                                    //frag_color = lava_gen(uv, 40.0);
+                                    frag_color = lava_gen(uv, 40.0);
                                     //frag_color = marble_gen(uv, 4.0);
 
-                                    frag_color = grain_gen(uv, 2.0);
+                                    //frag_color = grain_gen(uv, 2.0);
                                 }"""
     
         
@@ -134,7 +131,7 @@ class ProceduralTextureTest(Test):
         self.mat.locate_uniforms()
 
 
-        geometry = Sphere(radius=0.5,seg_height=64)#RectangleGeo(width=1, height=1)
+        geometry = Sphere(radius=0.5,seg_height=64)
 
         self.mesh = Mesh(geometry, self.mat)
         self.scene.add(self.mesh)

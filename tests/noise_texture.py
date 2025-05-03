@@ -1,7 +1,6 @@
 import pathlib
 import sys
-import warnings
-warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygame")
+
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 
@@ -10,12 +9,10 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from tests.template import Test
-from core.texture import Texture
-from geometry.rectangle_geometry import  RectangleGeo
+from core.textures.texture import Texture
 from geometry.sphere import Sphere
-from core.mesh import Mesh
+from meshes.mesh import Mesh
 from material.material import Material
-from core.timer import Timer
 
 
 class AnimatedTextureTest(Test):
@@ -70,8 +67,8 @@ class AnimatedTextureTest(Test):
         # Timer.sleep(0.016)
         
         self.distort_mat.uniforms["time"].data += self.timer.delta_time()
-        self.mesh.rotate_x(0.005)
-        self.mesh.rotate_y(0.005)
+        self.mesh.rotate_x(0.003)
+        self.mesh.rotate_y(0.007)
         super().update()
 
 

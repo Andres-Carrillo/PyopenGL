@@ -1,4 +1,4 @@
-from geometry.polygon import Polygon
+from geometry.two_dimensional import Polygon
 
 class Hexagon(Polygon):
     def __init__(self,raduis:float = 1) -> None:

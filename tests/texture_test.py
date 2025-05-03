@@ -9,20 +9,17 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from tests.template import Test
-from core.texture import Texture
-from material.texture_material import TextureMaterial
-from geometry.rectangle_geometry import  RectangleGeo
+from core.textures.texture import Texture
+from material.texture import TextureMaterial
+from geometry.two_dimensional.rectangle import  Rectangle
 from geometry.box import BoxGeometry
 from geometry.sphere import Sphere
-from core.mesh import Mesh  
+from meshes.mesh import Mesh  
 
 class TextureTest(Test):
     def __init__(self):
-        super().__init__(title="Texture Test")
+        super().__init__(title="Texture Test", display_grid=False)
         self.camera.set_pos([0, 0, 2])
-
-        # geometry = RectangleGeo()
-        # geometry = BoxGeometry()
         geometry = Sphere(radius=0.5, seg_radius=128, seg_height=64)
         grid = Texture("images/lunar.jpeg")
         material = TextureMaterial(texture=grid)
@@ -33,6 +30,7 @@ class TextureTest(Test):
 
       
     def update(self):
+        self.input_handler.update()
         self.mesh.rotate_y(0.00514)
         self.mesh.rotate_x(0.00337)
         # Update the scene with the texture applied

@@ -11,10 +11,10 @@ if package_dir not in sys.path:
 
 from core.matrix import Matrix
 from core.app_base import Base
-from core.openGLUtils import GlUtils
+from core.utils.openGLUtils import GlUtils
 from core.attribute import Attribute
 from core.uniform import Uniform
-from core.timer import Timer
+from core.utils.timer import Timer
 import glfw.GLFW as GLFW_CONSTANTS
 import OpenGL.GL as gl
 from math import pi

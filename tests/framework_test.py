@@ -8,20 +8,20 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from core.mesh import Mesh
+from meshes.mesh import Mesh
 from geometry.box import BoxGeometry
-from material.surface_material import SurfaceMaterial
+from material.surface import SurfaceMaterial
 from tests.template import Test
 
 class FrameworkTest(Test):
 
     def __init__(self):
-        super().__init__(title="Framework Test")
+        super().__init__(title="Framework Test",display_grid=False)
         
         geometry = BoxGeometry()
         material = SurfaceMaterial(
             {'use_vertex_colors':True,
-             "wire_frame":True,}
+             "wire_frame":False,}
         )
 
 
@@ -30,11 +30,11 @@ class FrameworkTest(Test):
 
 
 
-    def update(self):
+    def update(self):  
         self.mesh.rotate_y(0.00514)
         self.mesh.rotate_x(0.00337)
+        super().update()
 
-        self.renderer.render(self.scene, self.camera)
 
 
 if __name__ == "__main__":

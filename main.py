@@ -4,7 +4,7 @@ import OpenGL.GL as gl
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
 from mesh_factory import build_triangle_mesh2,build_quad_mesh
 import ctypes
-from core.openGLUtils import GlUtils
+from core.utils.openGLUtils import GlUtils
 from core.app_base import Base
 
 

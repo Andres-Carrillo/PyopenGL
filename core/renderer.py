@@ -1,5 +1,5 @@
 import OpenGL.GL as gl
-from core.mesh import Mesh
+from meshes.mesh import Mesh
 
 
 class Renderer(object):
@@ -16,7 +16,15 @@ class Renderer(object):
         # set the clear color
         gl.glClearColor(clear_color[0], clear_color[1], clear_color[2], 1.0)
 
-    def render(self,scene:object,camera:object):
+    def render(self,scene:object,camera:object,clear_color:bool = True,clear_depth:bool = True):
+
+        if clear_color:
+            # clear the color buffer
+            gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        if clear_depth:
+            # clear the depth buffer
+            gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
         # gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
     
         #update camera

@@ -10,11 +10,11 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from tests.template import Test
-from core.texture import Texture
-from material.texture_material import TextureMaterial
-from geometry.rectangle_geometry import  RectangleGeo
+from core.textures.texture import Texture
+from material.texture import TextureMaterial
+from geometry.two_dimensional.rectangle import  Rectangle
 from geometry.sphere import Sphere
-from core.mesh import Mesh  
+from meshes.mesh import Mesh  
 
 class SkyboxTest(Test):
     def __init__(self):
@@ -24,7 +24,7 @@ class SkyboxTest(Test):
         sky = Mesh(sky_geo, sky_mat)
         self.scene.add(sky)
 
-        grass_geo = RectangleGeo(width=self.camera.far, height=self.camera.far)
+        grass_geo = Rectangle(width=self.camera.far, height=self.camera.far)
         grass_mat = TextureMaterial(Texture("images/grass.jpg"))
         grass = Mesh(grass_geo, grass_mat)
         grass.rotate_x(-3.14/2)

@@ -9,10 +9,10 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 
-from core.mesh import Mesh
+from meshes.mesh import Mesh
 from geometry.box import Geometry
-from material.point_material import PointMaterial
-from material.line_material import LineMaterial
+from material.point import PointMaterial
+from material.line import LineMaterial
 from math import sin
 from numpy import arange
 from tests.template import Test
@@ -20,7 +20,7 @@ from tests.template import Test
 
 class WaveTest(Test):
     def __init__(self):
-        super().__init__(title="Wave Test")
+        super().__init__(title="Wave Test",display_grid=False)
         self.camera.set_pos([0, 0, 5])
         geometry = Geometry()
         point_material = PointMaterial(

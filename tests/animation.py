@@ -13,8 +13,8 @@ from tests.template import Test
 
 from geometry.sphere import Sphere
 from material.material import Material
-from core.mesh import Mesh
-from core.timer import Timer
+from meshes.mesh import Mesh
+from core.utils.timer import Timer
 
 
 
@@ -70,10 +70,11 @@ class AnimationTest(Test):
 
 
     def update(self):
+        # print("the delta time is: ", self.timer.delta_time())
         # Timer.sleep(0.016)
-        self.time += 0.016
+        self.time += self.timer.delta_time()
         self.mesh.material.uniforms["time"].data = self.time
-        self.mesh.rotate_x(0.00337)
+        # self.mesh.rotate_x(0.00337)
         # self.mesh.rotate_y(0.00514)
         self.renderer.render(self.scene, self.camera)
 

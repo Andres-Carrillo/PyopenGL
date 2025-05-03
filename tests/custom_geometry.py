@@ -9,17 +9,17 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 
-from core.mesh import Mesh
+from meshes.mesh import Mesh
 from geometry.box import Geometry
-from material.surface_material import SurfaceMaterial
+from material.surface import SurfaceMaterial
 from tests.template import Test
 
 
 class CustomGeoTest(Test):
 
     def __init__(self):
-        super().__init__(title="Custom Geometry Test")  
-        self.camera.set_pos([0, 0, 1])
+        super().__init__(title="Custom Geometry Test",display_grid=False)  
+        self.camera.set_pos([0, 0, 0.1])
         geometry = Geometry()   
         
         material = SurfaceMaterial(
