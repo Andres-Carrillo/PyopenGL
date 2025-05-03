@@ -4,7 +4,7 @@ import numpy as np
 class Object3D(object):
     """"Base for 3d Objects"""
     def __init__(self,parent=None):
-        self.transform = Matrix.mat4_identity()
+        self.matrix = Matrix.mat4_identity()
         self.parent = parent
         self.children = []
 
@@ -16,11 +16,30 @@ class Object3D(object):
         self.children.remove(child)
         child.parent = None
 
+    @property
+    def global_matrix(self):
+        """
+        Calculate the transformation of this Object3D
+        relative to the root Object3D of the scene graph
+        """
+        if self.parent is None:
+            return self.matrix
+        else:
+            return self.parent.global_matrix @ self.matrix
+
+    @property
+    def global_position(self):
+        """ Return the global or world position of the object """
+        return [self.global_matrix.item((0, 3)),
+                self.global_matrix.item((1, 3)),
+                self.global_matrix.item((2, 3))]
+
+
     def get_world_matrix(self):
         if self.parent is not None:
-            return self.parent.get_world_matrix() @ self.transform
+            return self.parent.get_world_matrix() @ self.matrix
         else:
-            return self.transform
+            return self.matrix
         
     def get_children(self):
         kids = []
@@ -41,9 +60,9 @@ class Object3D(object):
     def apply_transformation(self,transfor_mat:Matrix,local=True) -> None:
 
         if local:
-            self.transform = self.transform @ transfor_mat
+            self.matrix = self.matrix @ transfor_mat
         else:
-            self.transform = transfor_mat @ self.transform
+            self.matrix = transfor_mat @ self.matrix
 
 
     def translate(self,x:float,y:float,z:float,local=True) -> None:
@@ -71,17 +90,21 @@ class Object3D(object):
         self.apply_transformation(scaling_matrix,local)
 
     def get_pos(self):
-        return [self.transform[0][3],self.transform[1][3],self.transform[2][3]]
+        return [self.matrix[0][3],self.matrix[1][3],self.matrix[2][3]]
     
     def get_global_pos(self):
-        global_transform = self.get_world_matrix()
+        global_matrix = self.get_world_matrix()
 
-        return [global_transform[0][3],global_transform[1][3],global_transform[2][3]]
+        return [global_matrix[0][3],global_matrix[1][3],global_matrix[2][3]]
 
     def set_pos(self,pos:np.ndarray)->None:
-        self.transform[0][3] = pos[0]
-        self.transform[1][3] = pos[1]
-        self.transform[2][3] = pos[2]
+        self.matrix[0][3] = pos[0]
+        self.matrix[1][3] = pos[1]
+        self.matrix[2][3] = pos[2]
+
+
+    def look_at(self,target:np.ndarray) -> None:
+        self.matrix = Matrix.make_look_at(self.global_position,target)
     
 
 
