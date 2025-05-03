@@ -1,31 +1,70 @@
 import glfw
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
 from core.input import Input
-from core.timer import Timer
-from core.fps import FPS
+from core.utils.timer import Timer
+from core.utils.fps import FPS
 import OpenGL.GL as gl
-# import pygame
-# import sys
+import pygame as pg
 
+""" 
+        Base class for all applications.
+        This class handles the initialization of GLFW,
+        the creation of a window, and the main loop.
+        It also provides a method for updating the application
+        state and rendering the scene.
+        Derived classes should implement the update method
+        to provide their own application logic.
+"""
 class Base:
+    """     
+        Args:
+            title (str): The title of the window.
+            major_version (int): The major version of OpenGL to use.
+            minor_version (int): The minor version of OpenGL to use.
+    """
     def __init__(self, title:str = "My App", major_version:int = 3, minor_version:int =3) -> None:
+        # Initialize pygame used for image loading and other utilities
+        pg.init()
+
+        # Initialize GLFW
         self._init_glfw(major_version, minor_version)
+        
+        # Create a windowed mode window and its OpenGL context
         self._init_window(title)
+   
+        #  core app variables
         self.timer = Timer()
         self.fps_counter = FPS() 
         self.show_fps = True
         self.input_handler = Input()
-        # setup callbacks
+        
+        # setup callbacks for window events
         self.input_handler.set_callbacks(self.window)
-        glfw.set_framebuffer_size_callback(self.window, self._on_resize)
 
-        gl.glEnable(gl.GL_DEPTH_TEST)
+        # set resize callbacl for window
+        glfw.set_framebuffer_size_callback(self.window, self._on_resize)
+        
+        # set the background color
         gl.glClearColor(0.2, 0.2, 0.2, 1.0)  
 
-    def _init_window(self, title):
+    """
+        Initializes the GLFW window with the given title.
+        Args:
+            title (str): The title of the window.
+        Raises:
+            Exception: If the GLFW window could not be created.
+    """
+    def _init_window(self, title:str) -> None:
+        # Create a windowed mode window and its OpenGL context
         self.window = glfw.create_window(SCREEN_WIDTH, SCREEN_HEIGHT, title, None, None)
+
+        # set initial veiwport
         gl.glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        
+        # store title incase of FPS counter
         self.title = title
+        
+        # Check if the window was created successfully 
         if not self.window:
             glfw.terminate()
             raise Exception("GLFW window could not be created!")
@@ -36,94 +75,93 @@ class Base:
         # Enable V-Sync
         glfw.swap_interval(1)
 
+    """
+        Initializes GLFW with the given OpenGL version.
+        Args:
+            major_version (int): The major version of OpenGL to use.
+            minor_version (int): The minor version of OpenGL to use.
+            Raises:
+                Exception: If GLFW could not be initialized.
+    """
+
     def _init_glfw(self,minor_version:int,major_version:int) -> None:
-        # Initialize GLFW
+        # initialize GLFW and raise exception if it fails
         if not glfw.init():
             raise Exception("GLFW could not be initialized!")
 
-
-        # Set GLFW window hints for OpenGL version
+        # Set the window hints for OpenGL version
         glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, major_version)
         glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, minor_version)
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 
-
-    def run(self):
-        # main loop for all applications
-        while not glfw.window_should_close(self.window):
-
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-            
-            # update to be implemented in derived classes
-            self.update()
-           
-            glfw.swap_buffers(self.window)
-
-            self.input_handler.update()
-            if self.input_handler.quit:
-                break
- 
-            self._display_fps()
-
-    def _display_fps(self):
-        if self.show_fps:
-            glfw.set_window_title(self.window, self.title + f"- FPS: {self.fps_counter.update():.2f}")
-
+    """
+        Derived classes should implement this function to update
+        the application state, render the scene, and handle input.
+    """
     def update(self):
         pass
 
-    def quit(self):
+    """
+            Run function of an application.
+            derived classes need not to implement this function.
+            Unless they wish to extend this function and add their own logic.
+    """
+    def run(self) -> None:
+        # main loop for all applications
+        while not glfw.window_should_close(self.window):
+            # update to be implemented in derived classes
+            self.update()
+           
+            #swap buffers
+            glfw.swap_buffers(self.window)
+
+            # poll events
+            self.input_handler.update()
+
+            # check for quit
+            if self.input_handler.quit:
+                break
+            
+            # add FPS counter to the window title
+            if self.show_fps:
+                self._display_fps()
+
+    """   
+        Calculates the frames per second (FPS) and displays it in the window title. 
+    """
+    def _display_fps(self) -> None:
+            glfw.set_window_title(self.window, self.title + f"- FPS: {self.fps_counter.update():.2f}")
+
+    """
+        Quits the application by destroying the window and terminating GLFW.
+        It cleans up the resources used by the application.
+        It is called automatically when the object is deleted.
+        It is also called in the run method when the user quits the application.
+        It is not necessary to call this method manually.
+    """
+    def quit(self) -> None:
         if self.window:
             glfw.destroy_window(self.window)
             self.window = None
         
         if glfw:
             glfw.terminate()
-       
-
-    def __del__(self):
+    
+    """
+        Destructor for the Base class.
+        Cleans up the resources used by the application.
+        It is called automatically when the object is deleted.
+    """
+    def __del__(self) -> None:
         self.quit()
 
-    def _on_resize(self, window, width, height):
-        # Adjust the OpenGL viewport to match the new window size
+    """
+        Callback function for window resize events.
+        This function is called when the window is resized.
+        It adjusts the OpenGL viewport to match the new window size.
+        Args:
+            window: The GLFW window that was resized.
+            width (int): The new width of the window.
+            height (int): The new height of the window."""
+    def _on_resize(self, window, width, height) -> None:
         gl.glViewport(0, 0, width, height)
-     
-
-# class PyGameBase(object):
-#     def __init__(self,screen_size=[512,512]):
-#         pygame.init()
-#         displayFlags = pygame.DOUBLEBUF | pygame.OPENGL
-
-#         pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLEBUFFERS, 1)
-#         pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLESAMPLES, 4)
-#         pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
-
-#         self.screen = pygame.display.set_mode(screen_size, displayFlags )
-
-#         pygame.display.set_caption("Graphic Engine")
-
-#         self.running = True
-
-#         self.close = pygame.time.Clock()
-
-
-#     def initialize(self):
-#         pass
-
-
-#     def update(self):
-#         pass
-
-
-#     def run(self):
-#         self.initialize()
-#         while self.running:
-#             self.update()
-
-#             pygame.display.flip()
-
-#             self.close.tick(60)
-
-#         pygame.quit()
-#         sys.exit()
-        
