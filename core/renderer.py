@@ -73,11 +73,12 @@ class Renderer(object):
             if "light_0" in mesh.material.uniforms.keys():
                 number_of_lights = len(light_list) # number of lights in the scene
                 for light_n in range(number_of_lights):
-                    light_nmae = "light_" + str(light_n) # figure out the name of the light
+                    # check if the light exists in the material
+                    light_name = "light_" + str(light_n) # figure out the name of the light
                     light_inst = light_list[light_n] # get the light instance from the list
-
+            
                     #update the light uniforms in the material incase the light has changed
-                    mesh.material.uniforms[light_nmae].data = light_inst.get_light_data()
+                    mesh.material.uniforms[light_name].data = light_inst
 
 
             # check if the mesh uses specular lighting
