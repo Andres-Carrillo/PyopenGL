@@ -1,5 +1,5 @@
-from light.light import Light
-from light.light import LIGHT_TYPE
+from core.light.light import Light
+from core.light.light import LIGHT_TYPE
 
 class DirectionalLight(Light):
     def __init__(self,color:list=[1.0, 1.0, 1.0], direction:list=[0.0, -1.0, 0.0]) -> None:

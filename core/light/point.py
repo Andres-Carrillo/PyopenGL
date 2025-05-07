@@ -1,5 +1,5 @@
-from light.light import Light
-from light.light import LIGHT_TYPE
+from core.light.light import Light
+from core.light.light import LIGHT_TYPE
 
 class PointLight(Light):
     def __init__(self,color:list=[1.0, 1.0, 1.0], position:list=[0.0, 0.0, 0.0], attenuation:list=[1.0, 0.0, 0.1]) -> None:
