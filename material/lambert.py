@@ -10,15 +10,16 @@ class LambertMaterial(LightMaterial):
                                     uniform mat4 model_matrix;
                                     in vec3 vertex_position;
                                     in vec3 vertex_normal;
-                                    in vec3 vertex_uv;
+                                    in vec2 vertex_uv;
                                     out vec2 uv;
                                     out vec3 normal;
+                                    out vec3 position;
 
                                     void main(){
                                         gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position,1.0);
                                         uv  = vertex_uv;
-                                        vec3 position = vec3(model_matrix * vec4(vertex_position,1.0)); 
-                                        normal = normalize(model_matrix * vertex_normal);
+                                           position = vec3(model_matrix * vec4(vertex_position, 1));
+                                        normal = normalize(mat3(model_matrix) * vertex_normal);
                                     }
 
                                  """
@@ -27,12 +28,14 @@ class LambertMaterial(LightMaterial):
         # the lamber model calculates the lighting effect inside the fragment shader
         fragment_shader_code = """
                                 // ========= Base Light Struct =========:
-                                struc Light{
+                                struct Light{
                                     int light_type;
                                     vec3 color;
                                     vec3 direction;
                                     vec3 position;
+                                    vec3 attenuation;
                                 };
+
 
                                 vec3 calculate_light(Light light, vec3 point_pos,vec3 point_normal){
                                     float ambient = 0.0;
@@ -42,14 +45,17 @@ class LambertMaterial(LightMaterial):
                                     vec3 light_dir = vec3(0.0,0.0,0.0);
 
                                     // ========= setup variables based on type of light =========:
-                                        // ambient light:
-                                    if (light.light_type == 0){ 
+                                        
+                                    if (light.light_type == 0)      // ambient light:
+                                    { 
                                         ambient = 1.0;
-                                    }   // directional light:
-                                    else if (light.light_type == 1){ 
+                                    }   
+                                    else if (light.light_type == 1) // directional light:
+                                    { 
                                         light_dir = normalize(light.direction);
-                                    }   // point light:
-                                    else if (light.light_type == 2){ 
+                                    }   
+                                    else if (light.light_type == 2) // point light:
+                                    { 
                                         light_dir = normalize(point_pos - light.position);
                                         float distance = length(light.position - point_pos);
                                         attenuation = 1.0 / (light.attenuation[0] + 
@@ -67,11 +73,13 @@ class LambertMaterial(LightMaterial):
                                     return light.color * (ambient + diffuse + specular);
                                 }
                              """ + LightMaterial.generate_light_uniform_list(number_of_lights) + """ \n """ + """
+
                                 uniform vec3 base_color;
                                 uniform bool use_texture;
                                 uniform sampler2D texture_sampler;
                                 in vec2 uv;
                                 in vec3 normal;
+                                in vec3 position;
                                 out vec4 frag_color;
 
                                 void main(){

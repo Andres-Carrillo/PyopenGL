@@ -6,11 +6,12 @@ class FlatMaterial(LightMaterial):
     def __init__(self,texture:Texture=None, properties:dict={},number_of_lights:int = 1) -> None:
         vertex_shader_code = """
                                 // ========= Base Light Struct =========:
-                                struc Light{
+                                struct Light{
                                     int light_type;
                                     vec3 color;
                                     vec3 direction;
                                     vec3 position;
+                                    vec3 attenuation;
                                 };
 
                                 vec3 calculate_light(Light light, vec3 point_pos,vec3 point_normal){
@@ -51,7 +52,7 @@ class FlatMaterial(LightMaterial):
                                     uniform mat4 model_matrix;
                                     in vec3 vertex_position;
                                     in vec3 face_normal;
-                                    in vec3 vertex_uv;
+                                    in vec2 vertex_uv;
                                     out vec2 uv;
                                     out vec3 light;
 
@@ -66,7 +67,7 @@ class FlatMaterial(LightMaterial):
                                     }
 
                                  """
-        
+            
         fragment_shader_code = """
                                 uniform vec3 base_color;
                                 uniform bool use_texture;

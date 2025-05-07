@@ -10,15 +10,16 @@ class PhongMaterial(LightMaterial):
                                     uniform mat4 model_matrix;
                                     in vec3 vertex_position;
                                     in vec3 vertex_normal;
-                                    in vec3 vertex_uv;
+                                    in vec2 vertex_uv;
                                     out vec2 uv;
                                     out vec3 normal;
+                                    out vec3 position;
 
                                     void main(){
                                         gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position,1.0);
                                         uv  = vertex_uv;
-                                        vec3 position = vec3(model_matrix * vec4(vertex_position,1.0)); 
-                                        normal = normalize(model_matrix * vertex_normal);
+                                        position = vec3(model_matrix * vec4(vertex_position,1.0)); 
+                                        normal = normalize(mat3(model_matrix) * vertex_normal);
                                     }
 
                                  """
@@ -32,11 +33,12 @@ class PhongMaterial(LightMaterial):
                                 uniform float shininess;
 
                                 // ========= Base Light Struct =========:
-                                struc Light{
+                                struct Light{
                                     int light_type;
                                     vec3 color;
                                     vec3 direction;
                                     vec3 position;
+                                    vec3 attenuation;
                                 };
 
                                 vec3 calculate_light(Light light, vec3 point_pos,vec3 point_normal){
@@ -85,6 +87,7 @@ class PhongMaterial(LightMaterial):
                                 uniform sampler2D texture_sampler;
                                 in vec2 uv;
                                 in vec3 normal;
+                                in vec3 position;
                                 out vec4 frag_color;
                                 
                                 void main(){
@@ -112,6 +115,7 @@ class PhongMaterial(LightMaterial):
         super().__init__(number_of_lights,vertex_shader_code,fragment_shader_code)
 
         self.add_uniform("base_color", [1.0, 1.0, 1.0], "vec3")
+
         if texture is None:
             self.add_uniform("use_texture", False, "bool")
         else:

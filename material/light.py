@@ -1,8 +1,7 @@
 from material.material import Material
 
 class LightMaterial(Material):
-    def __init__(self,number_of_lights:int = 1,vertex_shader_code:str = "",fragment_shader_code:str = "") -> None:
-        number_of_lights = number_of_lights    
+    def __init__(self,number_of_lights:int = 1,vertex_shader_code:str = "",fragment_shader_code:str = "") -> None:   
 
         super().__init__(vertex_shader_code,fragment_shader_code)
 
@@ -19,15 +18,14 @@ class LightMaterial(Material):
         Generates the light uniforms for the shader
         :return: str
         """
-        code = "\n\t\t//list of lights\n"
+        code = "\n\t\t\t\t\t//list of lights\n"
 
         for i in range(number_of_lights):
-            code += f"\t\tuniform Light light_{i};\n"
+            code += f"\t\t\t\t\tuniform Light light_{i};\n"
 
 
-        code += "\n"
+        # code += "\n"
 
-        print("generate light uniforms for shader")
         return code
     
     # Static method to generate the glsl code for summing the effect of all the lights
@@ -41,14 +39,12 @@ class LightMaterial(Material):
             :return: str
         """
 
-        code = "\n\t\t//calculate the effect of all the lights in the scene\n"
+        code = "\n\t\t\t\t\t//calculate the effect of all the lights in the scene\n"
         for i in range(number_of_lights):
-            code += f"\t\tlight += calculate_light(light_{i}, position, normal);\n"
+            code += f"\t\t\t\t\tlight += calculate_light(light_{i}, position, normal);\n"
 
 
         code += "\n"
-
-        print("generate light list sum")
         return code
     
 
