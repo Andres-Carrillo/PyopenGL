@@ -19,19 +19,13 @@ class Math:
             Calculate the normal vector of a triangle defined by three points.
             The normal vector is calculated using the cross product of two edges of the triangle.
             """
-            # Convert points to numpy arrays for easier calculations
-            p0 = np.array(p0)
-            p1 = np.array(p1)
-            p2 = np.array(p2)
+            v1 = np.array(p1) - np.array(p0)
+            v2 = np.array(p2) - np.array(p0)
+            orthogonal_vector = np.cross(v1, v2)
+            norm = np.linalg.norm(orthogonal_vector)
 
-            # Calculate two edges of the triangle
-            edge1 = p1 - p0
-            edge2 = p2 - p0
+            # protect against division by zero
+            # if the normal vector is too small, return a default value
+            normal_vector = orthogonal_vector / norm if norm > 1e-6 else np.array(p0) / np.linalg.norm(p0)
 
-            # Calculate the normal vector using the cross product
-            normal_vector = np.cross(edge1, edge2)
-
-            # Normalize the normal vector
-            normal_vector /= np.linalg.norm(normal_vector)
-
-            return normal_vector.tolist()
+            return normal_vector
