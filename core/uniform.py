@@ -66,10 +66,10 @@ class Uniform(object):
                 gl.glUniform1i(self.var_ref,texture_unit_ref)
 
             elif self.data_type == "Light":
-                pos = self.data.position
-                direction = self.data.direction
+                pos = self.data.get_pos()
+                direction = self.data.get_direction()
                 # upload the light type
-                gl.glUniform1i(self.var_ref['light_type'],self.data.light_type)
+                gl.glUniform1i(self.var_ref['light_type'],self.data.light_type.value)
                 # upload the light color
                 gl.glUniform3f(self.var_ref['color'],self.data.color[0],self.data.color[1],self.data.color[2])
                 # upload the light position
