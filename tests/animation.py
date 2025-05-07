@@ -70,6 +70,7 @@ class AnimationTest(Test):
 
 
     def update(self):
+        self.renderer.update_window_size(self.window_width, self.window_height)
         # print("the delta time is: ", self.timer.delta_time())
         # Timer.sleep(0.016)
         self.time += self.timer.delta_time()

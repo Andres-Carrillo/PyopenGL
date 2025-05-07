@@ -5,7 +5,7 @@ import OpenGL.GL as gl
 class Material(object):
 
     def __init__(self,vertex_shader:str,fragment_shader:str) -> None:
-        # initialize the material with vertex and fragment shaders and get program refrence
+        # initialize the material with vertex and fragment shaders and get program reference
         self.program = GlUtils.InitializeProgram(vertex_shader, fragment_shader)
         
         # uniform object dictionary

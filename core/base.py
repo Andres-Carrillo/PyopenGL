@@ -31,12 +31,9 @@ class Base:
         
         # Create a windowed mode window and its OpenGL context
         self._init_window(title)
-   
-        #  core app variables
-        self.timer = Timer()
-        self.fps_counter = FPS() 
-        self.show_fps = True
-        self.input_handler = Input()
+
+        # initialize class variables
+        self._init_vars()
         
         # setup callbacks for window events
         self.input_handler.set_callbacks(self.window)
@@ -46,34 +43,6 @@ class Base:
         
         # set the background color
         gl.glClearColor(0.2, 0.2, 0.2, 1.0)  
-
-    """
-        Initializes the GLFW window with the given title.
-        Args:
-            title (str): The title of the window.
-        Raises:
-            Exception: If the GLFW window could not be created.
-    """
-    def _init_window(self, title:str) -> None:
-        # Create a windowed mode window and its OpenGL context
-        self.window = glfw.create_window(SCREEN_WIDTH, SCREEN_HEIGHT, title, None, None)
-
-        # set initial veiwport
-        gl.glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        
-        # store title incase of FPS counter
-        self.title = title
-        
-        # Check if the window was created successfully 
-        if not self.window:
-            glfw.terminate()
-            raise Exception("GLFW window could not be created!")
-
-        # Make the OpenGL context current
-        glfw.make_context_current(self.window)
-
-        # Enable V-Sync
-        glfw.swap_interval(1)
 
     """
         Initializes GLFW with the given OpenGL version.
@@ -93,6 +62,52 @@ class Base:
         glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, major_version)
         glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, minor_version)
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+
+
+    """
+        Initializes the GLFW window with the given title.
+        Args:
+            title (str): The title of the window.
+        Raises:
+            Exception: If the GLFW window could not be created.
+    """
+    def _init_window(self, title:str) -> None:
+        self.window_width = SCREEN_WIDTH
+        self.window_height = SCREEN_HEIGHT
+
+        # Create a windowed mode window and its OpenGL context
+        self.window = glfw.create_window(self.window_width,self.window_height, title, None, None)
+
+        # set initial veiwport
+        gl.glViewport(0, 0, self.window_width, self.window_height)
+        
+        # store title incase of FPS counter
+        self.title = title
+        
+        # Check if the window was created successfully 
+        if not self.window:
+            glfw.terminate()
+            raise Exception("GLFW window could not be created!")
+
+        # Make the OpenGL context current
+        glfw.make_context_current(self.window)
+
+        # Enable V-Sync
+        glfw.swap_interval(1)
+
+
+    """
+            Initializes the variables used in the application.
+            This function is called in the constructor.
+            It is not necessary to call this function manually.
+    """
+    def _init_vars(self) -> None:
+        #  core app variables
+        self.timer = Timer()
+        self.fps_counter = FPS() 
+        self.show_fps = True
+        self.input_handler = Input()
+
 
     """
         Derived classes should implement this function to update
@@ -165,3 +180,5 @@ class Base:
             height (int): The new height of the window."""
     def _on_resize(self, window, width, height) -> None:
         gl.glViewport(0, 0, width, height)
+        self.window_width = width
+        self.window_height = height

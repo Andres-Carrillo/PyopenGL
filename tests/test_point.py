@@ -10,7 +10,7 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from core.utils.openGLUtils import GlUtils
-from core.app_base import Base
+from core.base import Base
 from core.input import Input
 import OpenGL.GL as gl
 import glfw

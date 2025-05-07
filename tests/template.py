@@ -8,7 +8,7 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from core.app_base import Base
+from core.base import Base
 from core.renderer import Renderer
 from core.scene import Scene
 from core.camera import Camera
@@ -18,7 +18,7 @@ from tools.movement_rig import MovementRig
 
 class Test(Base):
 
-    def __init__(self,clear_color=[0.2, 0.2, 0.2], title="Test",display_grid=True,static_camera=False):
+    def __init__(self,clear_color:list=[0.2, 0.2, 0.2], title:str="Test",display_grid:bool=True,static_camera:bool=False)-> None:
 
         super().__init__(title=title)
         self.renderer = Renderer(clear_color=clear_color)
@@ -29,7 +29,6 @@ class Test(Base):
 
 
         if  not static_camera:
-            print("Movement rig enabled")
             self.rig = MovementRig()
             self.rig.add(self.camera)
             self.rig.set_pos([0.5, 1, 5])
@@ -43,9 +42,18 @@ class Test(Base):
             self.scene.add(grid)
         
 
+    def _base_update(self):
+        # set the window size in case the window was resized
+        self.renderer.update_window_size(self.window_width, self.window_height)
+        
+        # update the camera aspect ratio to avoid distortion
+        self.camera.update_aspect_ratio(self.window_width / self.window_height)
 
-    def update(self):
+        # update the input handler
         if self.rig is not None:
             self.rig.update(self.input_handler, self.timer.delta_time())
-        
+
+    def update(self) -> None:
+        self._base_update()
+        # render the scene        
         self.renderer.render(self.scene, self.camera)

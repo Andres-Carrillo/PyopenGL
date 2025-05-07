@@ -5,7 +5,7 @@ from config import SCREEN_WIDTH, SCREEN_HEIGHT
 from mesh_factory import build_triangle_mesh2,build_quad_mesh
 import ctypes
 from core.utils.openGLUtils import GlUtils
-from core.app_base import Base
+from core.base import Base
 
 
 if __name__ == "__main__":

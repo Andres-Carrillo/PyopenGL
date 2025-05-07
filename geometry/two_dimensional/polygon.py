@@ -13,6 +13,8 @@ class Polygon(Geometry):
         positions = []
         colors = []
         uv_data = []
+        normal_data = []
+        normal_vector = [0,0,1]
         uv_center = [0.5,0.5]
 
         for i in range(self.sides):
@@ -32,10 +34,19 @@ class Polygon(Geometry):
             uv_data.append([cos(i*area)*0.5 + 0.5, sin(i*area)*0.5 + 0.5])
             uv_data.append([cos((i+1)*area)*0.5 + 0.5, sin((i+1)*area)*0.5 + 0.5])
 
+            # add the normal vector for each vertex all facing the camera
+            # since the polygon is flat, we can use the same normal vector for all vertices
+            # but we need to repeat it for each vertex
+            normal_data.append(normal_vector)
+            normal_data.append(normal_vector)
+            normal_data.append(normal_vector)
+
         # add the attributes to the geometry
         self.addAttribute("vertex_position", positions, "vec3")
         self.addAttribute("vertex_color", colors, "vec3")
         self.addAttribute("vertex_uv", uv_data, "vec2")
+        self.addAttribute("vertex_normal", normal_data, "vec3")
+        self.addAttribute("face_normal", normal_data, "vec3")
         
         # count the vertices
         self.countVertices()

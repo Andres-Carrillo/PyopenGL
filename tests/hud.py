@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-import math
 import pathlib
 import sys
 
@@ -12,14 +10,11 @@ if package_dir not in sys.path:
 # from core.app_base import Base
 from core.camera import Camera
 from meshes.mesh import Mesh
-from core.renderer import Renderer
 from core.scene import Scene
 from core.textures.texture import Texture
 from geometry.box import BoxGeometry
 from geometry.two_dimensional.rectangle import Rectangle
 from material.texture import TextureMaterial
-from tools.movement_rig import MovementRig
-from tools.grid import GridTool
 from core.textures.text import TextTexture
 from tests.template import Test
 
@@ -30,15 +25,8 @@ class Example(Test):
     Move the camera: WASDRF(move), QE(turn), TG(look).
     """
     def __init__(self):
-        # print("Initializing program...")
-        # self.renderer = Renderer()
-        # self.scene = Scene()
-        # self.camera = Camera(aspect_ratio=800/600)
-        # self.rig = MovementRig()
-        # self.rig.add(self.camera)
-        # self.rig.set_position([0, 1.5, 5])
-        # self.scene.add(self.rig)
-        super().__init__(title="HUD Example", display_grid=False, static_camera=False)
+
+        super().__init__(title="HUD Example", display_grid=True, static_camera=False)
 
         crate_geometry = BoxGeometry()
         crate_material = TextureMaterial(Texture("images/crate.jpg"))
@@ -46,9 +34,6 @@ class Example(Test):
         crate.translate(0, 0.5, 0)
         self.scene.add(crate)
 
-        grid = GridTool(grid_color=[1, 1, 1], center_color=[1, 1, 0])
-        grid.rotate_x(-math.pi / 2)
-        self.scene.add(grid)
 
         self.hud_scene = Scene()
         self.hud_camera = Camera()
@@ -82,8 +67,18 @@ class Example(Test):
         self.hud_scene.add(label2)
 
     def update(self):
+
+         # set the window size in case the window was resized
+        self.renderer.update_window_size(self.window_width, self.window_height)
+        # update the camera aspect ratio to avoid distortion
+        self.camera.update_aspect_ratio(self.window_width / self.window_height)
+
+        # update the input handler
         self.rig.update(self.input_handler, self.timer.delta_time())
+        
+        # render the main scene
         self.renderer.render(self.scene, self.camera)
+        # Render the HUD scene
         self.renderer.render(
             scene=self.hud_scene,
             camera=self.hud_camera,

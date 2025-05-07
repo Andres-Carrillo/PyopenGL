@@ -27,8 +27,10 @@ class Camera(Object3D):
         self.far = far
 
 
-
-
-
     def set_orthographic(self, left=-1, right=1, bottom=-1, top=1, near=-1, far=1):
         self.projection_matrix = Matrix.make_orthographic(left, right, bottom, top, near, far)
+
+    def update_aspect_ratio(self, aspect_ratio:float):
+        """Update the aspect ratio of the camera"""
+        self.aspect_ratio = aspect_ratio
+        self.projection_matrix = Matrix.mat4_perspective(self.angle_of_view,aspect_ratio,self.near,self.far)

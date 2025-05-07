@@ -3,7 +3,7 @@ import OpenGL.GL as gl
 from core.textures.texture import Texture
 class TextureMaterial(Material):
 
-    def __init__(self,texture:"Texture",properties:dict={}) -> None:
+    def __init__(self,texture:Texture,properties:dict={}) -> None:
         vertex_shader_code = """
                                 uniform mat4 projection_matrix;
                                 uniform mat4 view_matrix;
@@ -13,6 +13,7 @@ class TextureMaterial(Material):
                                 uniform vec2 repeat_uv;
                                 uniform vec2 offset_uv;
                                 out vec2 uv;
+                                
                                 void main(){
                                     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position,1.0);
                                     uv = vertex_uv * repeat_uv + offset_uv;
@@ -24,6 +25,7 @@ class TextureMaterial(Material):
                                 uniform sampler2D texture;
                                 in vec2 uv;
                                 out vec4 frag_color;
+
                                 void main(){
                                     vec4 color = vec4(base_color,1.0) * texture2D(texture, uv);
 

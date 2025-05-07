@@ -96,4 +96,5 @@ class GlUtils(object):
         status = gl.glGetProgramiv(program_ref, gl.GL_LINK_STATUS)
         if status != gl.GL_TRUE:
             info_log = gl.glGetProgramInfoLog(program_ref)
-            raise RuntimeError(f"Program linking failed: {info_log.decode()}")
+            print("log: ",info_log)
+            raise RuntimeError(f"Program linking failed: {info_log}")

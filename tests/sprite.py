@@ -10,13 +10,9 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from tests.template import Test
-from geometry.box import BoxGeometry
 from geometry.two_dimensional.rectangle import Rectangle
 from meshes.mesh import Mesh
-from core.textures.text import TextTexture
 from core.textures.texture import Texture
-from material.texture import TextureMaterial
-from core.matrix import Matrix
 from material.sprite import Sprite
 from math import floor
 
@@ -25,7 +21,6 @@ class SpriteTest(Test):
 
     def __init__(self):
         super().__init__(title="Sprite Test", display_grid=True)
-        # self.camera.set_pos([0, 0.5, 3])
         self.rig.set_pos([0, 0.5, 3])
 
         geometry = Rectangle(width=1, height=1)
@@ -37,18 +32,17 @@ class SpriteTest(Test):
             "tile_number": 0.0,
         })
 
-        self.tilesPerSecond= 8
+        self.tilesPerSecond= 4
 
         self.sprite = Mesh(geometry, sprite_material)
         self.sprite.set_pos([0, 0.5, 0])
         self.scene.add(self.sprite)
 
-
-
     def update(self):
+        self._base_update()
+    
         tile_number = floor(self.timer.elapsed_time() * self.tilesPerSecond)
         self.sprite.material.uniforms["tile_number"].data = tile_number
-        self.rig.update(self.input_handler, self.timer.delta_time())
         self.sprite.look_at(self.camera.get_global_pos())
         # Update the scene with the texture applied
         self.renderer.render(self.scene, self.camera)

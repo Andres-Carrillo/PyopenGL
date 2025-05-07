@@ -1,61 +1,6 @@
 from core.textures.texture import Texture
 import pygame
 
-# class TextTexture(Texture):
-#     def __init__(self, text="Python graphics",
-#                  sys_font_name="Arial",
-#                  font_path=None,
-#                  font_size=24,
-#                  font_color=(0, 0, 0),
-#                  background_color=(255, 255, 255),
-#                  transparent=False,
-#                  image_width=None,
-#                  image_height=None,
-#                  align_horizontal=0.0,
-#                  align_vertical=0.0,
-#                  image_border_width=0,
-#                  image_border_color=(0, 0, 0)):
-        
-#         super().__init__()
-
-#         # set the text font using either a system font or a custom font
-#         font = pg.font.SysFont(sys_font_name, font_size) #if font_path is None else pg.font.Font(font_path, font_size)
-
-#         # Render text to a surface
-#         font_surface = font.render(text, True, font_color)
-
-#         (text_width, text_height) = font_surface.get_size()
-
-#         # set the width and height of the image if not provided
-#         if image_width is None:
-#             image_width = text_width
-#         if image_height is None:
-#             image_height = text_height
-
-#         # create a new surface to store image of text
-#         self.surface = pg.Surface((image_width, image_height), pg.SRCALPHA)
-
-#         # set the fill color is the surface is not transparent
-#         if not transparent:
-#             self.surface.fill(background_color)
-
-
-#         corner_point = (align_horizontal * (image_width - text_width),
-#                         align_vertical * (image_height - text_height))
-
-#         # create a rectangle for the text surface
-#         destination_rect = font_surface.get_rect(topleft=corner_point)
-
-#         # add a border to the text
-#         if image_border_width > 0:
-#             pg.draw.rect(self.surface, image_border_color, [0, 0, image_width, image_height], image_border_width)
-
-#         # blit the text surface onto the new surface
-#         self.surface.blit(font_surface, destination_rect)
-
-#         #send the texture to the GPU
-#         self.upload_texture() 
-
 class TextTexture(Texture):
     """
     Define a text texture by using pygame

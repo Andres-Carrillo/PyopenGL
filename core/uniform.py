@@ -11,45 +11,73 @@ class Uniform(object):
 
     
     def locateVariable(self,program_ref,var_name):
-        self.var_ref = gl.glGetUniformLocation(program_ref,var_name)
+        if self.data_type =="Light":
+            # create a dictionary to hold the light type based on struct within the shader
+            self.var_ref = {}
+            # get the light type
+            self.var_ref['light_type'] = gl.glGetUniformLocation(program_ref,var_name + ".light_type")
+            # get the light color
+            self.var_ref['color'] = gl.glGetUniformLocation(program_ref,var_name + ".color")
+            # get the light position
+            self.var_ref['position'] = gl.glGetUniformLocation(program_ref,var_name + ".position")
+            # get the light attenuation
+            self.var_ref['attenuation'] = gl.glGetUniformLocation(program_ref,var_name + ".attenuation")
+            # get the light direction
+            self.var_ref['direction'] = gl.glGetUniformLocation(program_ref,var_name + ".direction")
+        else:
+            self.var_ref = gl.glGetUniformLocation(program_ref,var_name)
 
+        # check if the variable was found if not return -1 for debugging and error handling
         if self.var_ref == -1:
-            raise RuntimeError(f"Could not locate uniform variable {var_name}")
+            return -1
         
     def uploadData(self):
             
-        if self.var_ref == -1:
-            raise RuntimeError(f"Variablw was not correctly located.")
         
         if self.var_ref is None:
             raise RuntimeError(f"Need to link variable to program.")
-            
-        if self.data_type == "int":
+        
+        if self.var_ref !=-1:
+            if self.data_type == "int":
+                    gl.glUniform1i(self.var_ref,self.data)
+            elif self.data_type == "bool":
                 gl.glUniform1i(self.var_ref,self.data)
-        elif self.data_type == "bool":
-            gl.glUniform1i(self.var_ref,self.data)
-        elif self.data_type == "float":
-            gl.glUniform1f(self.var_ref,self.data)
-        elif self.data_type == "vec2":
-            gl.glUniform2f(self.var_ref,self.data[0],self.data[1])
-        elif self.data_type == "vec3":
-            gl.glUniform3f(self.var_ref,self.data[0],self.data[1],self.data[2])
-        elif self.data_type == "vec4":
-            gl.glUniform4f(self.var_ref,self.data[0],self.data[1],self.data[2],self.data[3])
-        elif self.data_type == "mat4":
-            gl.glUniformMatrix4fv(self.var_ref, 1, gl.GL_TRUE, np.array(self.data, dtype=np.float32))
-        elif self.data_type == "sampler2D":
-            # split the data into 2 parts the texture object and the texture unit reference
-            texture_obj_ref,texture_unit_ref = self.data
+            elif self.data_type == "float":
+                gl.glUniform1f(self.var_ref,self.data)
+            elif self.data_type == "vec2":
+                gl.glUniform2f(self.var_ref,self.data[0],self.data[1])
+            elif self.data_type == "vec3":
+                gl.glUniform3f(self.var_ref,self.data[0],self.data[1],self.data[2])
+            elif self.data_type == "vec4":
+                gl.glUniform4f(self.var_ref,self.data[0],self.data[1],self.data[2],self.data[3])
+            elif self.data_type == "mat4":
+                gl.glUniformMatrix4fv(self.var_ref, 1, gl.GL_TRUE, np.array(self.data, dtype=np.float32))
+            elif self.data_type == "sampler2D":
+                # split the data into 2 parts the texture object and the texture unit reference
+                texture_obj_ref,texture_unit_ref = self.data
 
-            # activate the texture unit
-            gl.glActiveTexture(gl.GL_TEXTURE0 + texture_unit_ref)   
+                # activate the texture unit
+                gl.glActiveTexture(gl.GL_TEXTURE0 + texture_unit_ref)   
 
-            #associate the texture object with the texture unit
-            gl.glBindTexture(gl.GL_TEXTURE_2D,texture_obj_ref)
+                #associate the texture object with the texture unit
+                gl.glBindTexture(gl.GL_TEXTURE_2D,texture_obj_ref)
 
-            # upload texture  unit number 0-15 to the uniform variable in the shader
-            gl.glUniform1i(self.var_ref,texture_unit_ref)
+                # upload texture  unit number 0-15 to the uniform variable in the shader
+                gl.glUniform1i(self.var_ref,texture_unit_ref)
 
-        else:
-                raise RuntimeError(f"Unsupported data type {self.data_type}")
+            elif self.data_type == "Light":
+                pos = self.data.position
+                direction = self.data.direction
+                # upload the light type
+                gl.glUniform1i(self.var_ref['light_type'],self.data.light_type)
+                # upload the light color
+                gl.glUniform3f(self.var_ref['color'],self.data.color[0],self.data.color[1],self.data.color[2])
+                # upload the light position
+                gl.glUniform3f(self.var_ref['position'],pos[0],pos[1],pos[2])
+                # upload the light attenuation
+                gl.glUniform3f(self.var_ref['attenuation'],self.data.attenuation[0],self.data.attenuation[1],self.data.attenuation[2])
+                # upload the light direction
+                gl.glUniform3f(self.var_ref['direction'],direction[0],direction[1],direction[2])
+
+            else:
+                    raise RuntimeError(f"Unsupported data type {self.data_type}")

@@ -106,5 +106,27 @@ class Object3D(object):
     def look_at(self,target:np.ndarray) -> None:
         self.matrix = Matrix.make_look_at(self.global_position,target)
     
+    def get_rotation(self) -> np.ndarray:
+        return np.array([self.matrix[0][0:3],
+                         self.matrix[1][0:3],
+                         self.matrix[2][0:3]])
+    
+    def get_direction(self) -> list:
+        forward = np.array([0,0,-1])
+        return list(self.get_rotation() @ forward)
+    
+
+    def set_direction(self,direction:np.ndarray)-> None:
+        position = self.get_pos()
+        
+        target = [position[0] + direction[0],
+                 position[1] + direction[1],
+                 position[2] + direction[2]]
+        
+        self.look_at(target)
+
+        
+
+
 
 
