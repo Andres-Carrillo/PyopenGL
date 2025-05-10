@@ -34,16 +34,24 @@ class AnimatedTextureTest(Test):
                                 }"""
 
         fragment_shader_code = """
+
+                                vec4 time_distort(vec2 uv, float time,sampler2D noise, sampler2D image){
+                                    vec2 uv_shift = uv + vec2(0.3,0.07) * time;
+                                    vec4 noise_vals = texture2D(noise, uv_shift);
+                                    vec2 uv_noise = uv + 0.02 * noise_vals.rg;
+                                    return texture2D(image, uv_noise);
+                                };
+
                                 uniform sampler2D noise;
                                 uniform sampler2D image;
                                 in vec2 uv;
                                 uniform float time;
                                 out vec4 frag_color;
                                 void main(){
-                                    vec2 uv_shift = uv + vec2(0.3,0.07) * time;
-                                    vec4 noise_vals = texture2D(noise, uv_shift);
-                                    vec2 uv_noise = uv + 0.02 * noise_vals.rg;
-                                    frag_color = texture2D(image, uv_noise);
+                                    //vec2 uv_shift = uv + vec2(0.3,0.07) * time;
+                                    //vec4 noise_vals = texture2D(noise, uv_shift);
+                                    //vec2 uv_noise = uv + 0.02 * noise_vals.rg;
+                                    frag_color = time_distort(uv,time,noise,image);//texture2D(image, uv_noise);
                                 }"""
         
         noise_texture = Texture("images/rgb-noise.jpg")

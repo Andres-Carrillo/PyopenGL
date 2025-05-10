@@ -9,7 +9,6 @@ class SurfaceMaterial(BasicMaterial):
         self.settings["double_sided"] = False
         self.settings["wire_frame"] = False
         self.settings['line_width'] = 1.0
-
         self.set_properties(properties)
 
 

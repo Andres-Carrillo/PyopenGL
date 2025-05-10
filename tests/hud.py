@@ -13,7 +13,7 @@ from meshes.mesh import Mesh
 from core.scene import Scene
 from core.textures.texture import Texture
 from geometry.box import BoxGeometry
-from geometry.two_dimensional.rectangle import Rectangle
+from geometry.simple2D.rectangle import Rectangle
 from material.texture import TextureMaterial
 from core.textures.text import TextTexture
 from tests.template import Test

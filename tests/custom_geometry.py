@@ -37,7 +37,7 @@ class CustomGeoTest(Test):
 
 
 
-        geometry.addAttribute("vertex_position", pos_data, "vec3")
+        geometry.add_attribute("vertex_position", pos_data, "vec3")
         
         R = [1,0,0]
         G = [0,0.25,0]
@@ -45,8 +45,8 @@ class CustomGeoTest(Test):
         B = [0,0,1]
 
         color_data = [R,G,Y, Y,G,G, Y,G,R]
-        geometry.addAttribute("vertex_color", color_data, "vec3")
-        geometry.countVertices()
+        geometry.add_attribute("vertex_color", color_data, "vec3")
+        geometry.count_vertices()
         self.mesh = Mesh(geometry, material)
         self.scene.add(self.mesh)
 

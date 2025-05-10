@@ -21,4 +21,4 @@ class Ellipsoid(Parametric):
                          surface_function)
         # Rotate the ellipsoid around the x-axis on -90 degrees.
         # The vertices and normals will be recalculated.
-        self.applyTransform(Matrix.mat4_rotate_x(-pi/2))
+        self.apply_transform(Matrix.mat4_rotate_x(-pi/2))

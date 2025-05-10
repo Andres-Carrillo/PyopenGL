@@ -18,20 +18,20 @@ from tools.movement_rig import MovementRig
 
 class Test(Base):
 
-    def __init__(self,clear_color:list=[0.2, 0.2, 0.2], title:str="Test",display_grid:bool=True,static_camera:bool=False)-> None:
+    def __init__(self,clear_color:list=[0.0, 0.0, 0.0], title:str="Test",display_grid:bool=True,static_camera:bool=False)-> None:
 
         super().__init__(title=title)
         self.renderer = Renderer(clear_color=clear_color)
         self.scene = Scene()
         self.camera = Camera(aspect_ratio=800/600)
-        self.camera.set_pos([0, 0, 4])
+        self.camera.set_position([0, 0, 4])
         self.rig = None
 
 
         if  not static_camera:
             self.rig = MovementRig()
             self.rig.add(self.camera)
-            self.rig.set_pos([0.5, 1, 5])
+            self.rig.set_position([0.5, 1, 5])
 
             self.scene.add(self.rig)
 

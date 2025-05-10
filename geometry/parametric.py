@@ -127,10 +127,10 @@ class Parametric(Geometry):
                                             face_norm_2.copy(), face_norm_2.copy(), face_norm_2.copy()]
 
 
-        self.addAttribute("vertex_position", position_data, "vec3")
-        self.addAttribute("vertex_color", color_data, "vec3")
-        self.addAttribute("vertex_uv", texture_uv_data, "vec2")
-        self.addAttribute("vertex_normal", vertex_normal_data, "vec3")
-        self.addAttribute("face_normal", vertex_face_normal_data, "vec3")
-        self.countVertices()
+        self.add_attribute("vertex_position", position_data, "vec3")
+        self.add_attribute("vertex_color", color_data, "vec3")
+        self.add_attribute("vertex_uv", texture_uv_data, "vec2")
+        self.add_attribute("vertex_normal", vertex_normal_data, "vec3")
+        self.add_attribute("face_normal", vertex_face_normal_data, "vec3")
+        self.count_vertices()
 

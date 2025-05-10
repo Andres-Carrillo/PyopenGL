@@ -28,7 +28,7 @@ class Base:
 
 
     def __init__opengl(self) -> None:
-        gl.glClearColor(0.1,0.2,0.4,1.0)
+        gl.glClearColor(0.0,0.0,0.0,1.0)
 
     def run(self):
         while not glfw.window_should_close(self.window):

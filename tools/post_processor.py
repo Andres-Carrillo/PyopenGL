@@ -33,9 +33,9 @@ class Postprocessor(object):
 
         uv_data = [ T0,T1,T3, T0,T3,T2 ]
 
-        self.rectangle_geo.addAttribute("vertex_position",pos_data,"vec2")
-        self.rectangle_geo.addAttribute("vertex_uv",uv_data,"vec2")
-        # self.rectangle_geo.countVertices()
+        self.rectangle_geo.add_attribute("vertex_position",pos_data,"vec2")
+        self.rectangle_geo.add_attribute("vertex_uv",uv_data,"vec2")
+
 
     def add_effect(self,effect:object) -> None:
         # create dummpy scene to store the scene after the effect
@@ -66,4 +66,5 @@ class Postprocessor(object):
             scene = self.scene_list[i]
             camera = self.camera_list[i]
             target = self.render_target_list[i]
+
             self.renderer.render(scene,camera,render_target=target)

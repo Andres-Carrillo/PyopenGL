@@ -32,8 +32,8 @@ class WaveTest(Test):
         for x in arange(-3.2,3.2,0.3):
             pos_data.append([x,sin(x),0])
         
-        geometry.addAttribute("vertex_position", pos_data, "vec3")
-        geometry.countVertices()
+        geometry.add_attribute("vertex_position", pos_data, "vec3")
+        geometry.count_vertices()
 
         point_mesh = Mesh(geometry, point_material)
 

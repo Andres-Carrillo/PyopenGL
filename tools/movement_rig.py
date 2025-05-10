@@ -53,9 +53,9 @@ class MovementRig(Object3D):
             self.translate(0,-move_amount,0)
             ### =========== ROTATION =================
         if input.is_key_pressed(GLFW_CONSTANTS.GLFW_KEY_Q):
-            self.rotate_z(rotate_amount)
+            self.rotate_y(rotate_amount)
         if input.is_key_pressed(GLFW_CONSTANTS.GLFW_KEY_E):
-            self.rotate_z(-rotate_amount)
+            self.rotate_y(-rotate_amount)
 
 
         ### =========== LOOKING UP AND DOWN =================
@@ -64,6 +64,12 @@ class MovementRig(Object3D):
 
         if input.is_key_pressed(GLFW_CONSTANTS.GLFW_KEY_G):
             self.look_attachment.rotate_x(-rotate_amount)
+
+        # ### =========== LOOKING LEFT AND RIGHT =================
+        # if input.is_key_pressed(GLFW_CONSTANTS.GLFW_KEY_Y):
+        #     self.look_attachment.rotate_y(rotate_amount)
+        # if input.is_key_pressed(GLFW_CONSTANTS.GLFW_KEY_H):
+        #     self.look_attachment.rotate_y(-rotate_amount)
 
 
 

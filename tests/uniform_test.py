@@ -39,7 +39,7 @@ class TestUniform(Base):
 
         position_attrib = Attribute("vec3",position_data)
 
-        position_attrib.associateVariable(self.program_ref,"position")
+        position_attrib.associate_variable(self.program_ref,"position")
 
         self.translation_1 = Uniform("vec3",[-0.5,0.0,0.0])
 
@@ -50,10 +50,10 @@ class TestUniform(Base):
 
         self._base_color_2 = Uniform("vec3",[1.0,0.0,0.0])
 
-        self.translation_1.locateVariable(self.program_ref,"translation")
-        self.translation_2.locateVariable(self.program_ref,"translation")
-        self.base_color_1.locateVariable(self.program_ref,"base_color")
-        self._base_color_2.locateVariable(self.program_ref,"base_color")
+        self.translation_1.locate_variable(self.program_ref,"translation")
+        self.translation_2.locate_variable(self.program_ref,"translation")
+        self.base_color_1.locate_variable(self.program_ref,"base_color")
+        self._base_color_2.locate_variable(self.program_ref,"base_color")
 
     def _init_vertex_shader(self)->str:
         vertex_shader_code = """
@@ -92,12 +92,12 @@ class TestUniform(Base):
         
         self.base_color_1.data[2] = 0.5*math.sin(self.timer.elapsed_time())
 
-        self.translation_1.uploadData()
-        self.base_color_1.uploadData()
+        self.translation_1.upload_data()
+        self.base_color_1.upload_data()
         gl.glDrawArrays(gl.GL_TRIANGLES,0,self.vertex_count)
 
-        self.translation_2.uploadData()
-        self._base_color_2.uploadData()
+        self.translation_2.upload_data()
+        self._base_color_2.upload_data()
         gl.glDrawArrays(gl.GL_TRIANGLES,0,self.vertex_count)
 
      

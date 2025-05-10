@@ -11,7 +11,7 @@ if package_dir not in sys.path:
 
 from tests.template import Test
 from core.textures.texture import Texture
-from geometry.two_dimensional.rectangle import  Rectangle
+from geometry.simple2D.rectangle import  Rectangle
 from meshes.mesh import Mesh
 from material.material import Material
 

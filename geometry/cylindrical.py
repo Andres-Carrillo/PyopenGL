@@ -1,5 +1,5 @@
 from geometry.parametric import Parametric
-from geometry.polygon import Polygon
+from geometry.simple2D.polygon import Polygon
 from core.matrix import Matrix
 from math import pi, sin, cos
 
@@ -21,7 +21,7 @@ class Cylindrical(Parametric):
 
             #transformation to position the polygon at the top of the cylindrical
             transform = Matrix.make_translation(0, height/2, 0) @ Matrix.make_rotate_y(-pi/2) @ Matrix.make_rotate_x(-pi/2)
-            top_geometry.applyTransform(transform)
+            top_geometry.apply_transform(transform)
 
             self.merge(top_geometry)
 
@@ -29,7 +29,7 @@ class Cylindrical(Parametric):
             bot_geometry = Polygon(radius=bot_radius, sides=seg_radius)
 
             transform = Matrix.make_translation(0, -height/2, 0) @ Matrix.make_rotate_y(-pi/2) @ Matrix.make_rotate_x(-pi/2)
-            bot_geometry.applyTransform(transform)
+            bot_geometry.apply_transform(transform)
 
             self.merge(bot_geometry)
 

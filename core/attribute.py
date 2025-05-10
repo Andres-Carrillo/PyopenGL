@@ -14,7 +14,7 @@ class Attribute:
 
         self.bufferRef = glGenBuffers(1)
 
-        self.uploadData()
+        self.upload_data()
 
     """
         This method is used to upload the data to the GPU. It creates a buffer object
@@ -25,7 +25,7 @@ class Attribute:
             Raises:
                 RuntimeError: If there is an error uploading the data to the GPU.
     """
-    def uploadData(self):
+    def upload_data(self):
         data = np.array(self.data,dtype=np.float32)
         glBindBuffer(GL_ARRAY_BUFFER,self.bufferRef)
 
@@ -49,7 +49,7 @@ class Attribute:
             Raises:
              RuntimeError: If the variable is not valid or if the data type is unknown.
     """
-    def associateVariable(self,program_ref:int,variable_name:str) -> None:
+    def associate_variable(self,program_ref:int,variable_name:str) -> None:
         # create a reference to a variable with the given name
         self.variable_ref = glGetAttribLocation(program_ref,variable_name)
 

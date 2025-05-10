@@ -30,8 +30,6 @@ class Material(object):
 
 
     def _init_settings(self) -> None:
-        # this method should be overridden by the inherited classes
-        # to set the opengl settings
         self.settings["draw_mode"] = gl.GL_TRIANGLES
 
 
@@ -42,7 +40,7 @@ class Material(object):
     def locate_uniforms(self) -> None:
         # locate the uniforms in the shader program
         for name, uniform in self.uniforms.items():
-            uniform.locateVariable(self.program, name)
+            uniform.locate_variable(self.program, name)
 
 
     def configure_settings(self) -> None:

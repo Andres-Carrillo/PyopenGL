@@ -31,7 +31,7 @@ class LightTest(Test):
         self.ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
         self.scene.add(self.ambient_light)
 
-        self.directional_light = DirectionalLight(color=[1, 1, 1], direction=[-1, -1, -2])
+        self.directional_light = DirectionalLight(color=[1, 1, 1], direction=[0, 0, 0])
         self.scene.add(self.directional_light)
 
         self.point_light = PointLight(color=[1, 0, 0], position=[1, 1, 0.8])
@@ -41,14 +41,13 @@ class LightTest(Test):
         sphere_geo = Sphere()
         
         #flat material type
-        flat_material = FlatMaterial(properties={"base_color":[0.5,0.5,1.0]},number_of_lights=3)
+        flat_material = FlatMaterial(properties={"base_color":[0.6,0.2,0.2]},number_of_lights=3)
 
         #lambert material type  
         lambert_mat = LambertMaterial(texture=grid_texture,number_of_lights=3)
 
         #phong material type
         phong_mat = PhongMaterial(properties={"base_color":[0.5,0.5,1.0]},number_of_lights=3)
-
 
         #create flat lighting sphere:
         self.flat_sphere = Mesh(geometry=sphere_geo, material=flat_material)
@@ -71,20 +70,17 @@ class LightTest(Test):
 
     def update(self):
             super().update()
-            self.point_light.set_pos([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
-            self.point_light.color = ([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
+            # self.point_light.set_pos([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
+            # self.point_light.color = ([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
 
-            self.directional_light.set_direction([-1, sin(self.timer.elapsed_time()), -2])
+            # self.directional_light.set_direction([-1, sin(self.timer.elapsed_time()), -2])
             
-            self.lambert_sphere.rotate_y(0.01)
-            self.lambert_sphere.rotate_x(0.01)
-            self.phong_sphere.rotate_y(0.01)
-            self.phong_sphere.rotate_x(0.01)
-            self.flat_sphere.rotate_y(0.01) 
-            self.flat_sphere.rotate_x(0.01)  
-           
-
-
+            # self.lambert_sphere.rotate_y(0.01)
+            # self.lambert_sphere.rotate_x(0.01)
+            # self.phong_sphere.rotate_y(0.01)
+            # self.phong_sphere.rotate_x(0.01)
+            # self.flat_sphere.rotate_y(0.01) 
+            # self.flat_sphere.rotate_x(0.01)  
 
 if __name__ == "__main__":
     test = LightTest()

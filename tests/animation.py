@@ -58,11 +58,6 @@ class AnimationTest(Test):
         material = Material(vertex_shader, fragment_shader)
         material.add_uniform("time", 0.0, "float")
         material.locate_uniforms()
-
-        print("Uniforms in the shader program:")
-        for name in material.uniforms:
-            print(name)
-
         self.time = 0
 
         self.mesh = Mesh(geometry, material)

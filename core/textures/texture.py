@@ -11,7 +11,7 @@ class Texture(object):
 
         # Texture reference from GPU setup through OpenGL
         self.texture_reference = gl.glGenTextures(1)
-
+        
         # Default properties for texture
         self.properties = {
             "magnify_filter":gl.GL_LINEAR,

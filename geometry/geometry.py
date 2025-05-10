@@ -7,25 +7,25 @@ class Geometry(object):
         self.vertex_count = None
 
     
-    def addAttribute(self, name:str, data:object,datatype:str):
+    def add_attribute(self, name:str, data:object,datatype:str):
         attribute = Attribute(datatype,data)
         self.attributes[name] = attribute
         
         if name == "vertex_position":
             self.vertex_count = len(data)
 
-    def countVertices(self):
+    def count_vertices(self):
         attribute = list(self.attributes.values())[0]
         self.vertex_count = len(attribute.data)
 
     def get_vertex_count(self):
         if self.vertex_count is None:
-            self.countVertices()
+            self.count_vertices()
             
         return self.vertex_count
 
 
-    def applyTransform(self,matrix,var_name:str = "vertex_position"):
+    def apply_transform(self,matrix,var_name:str = "vertex_position"):
         rotational_matrix = np.array([matrix[0][0:3],
                                       matrix[1][0:3],
                                       matrix[2][0:3]])
@@ -68,13 +68,13 @@ class Geometry(object):
         self.attributes[var_name].data = new_position
         self.attributes["vertex_normal"].data = new_vertex_normal
         self.attributes["face_normal"].data = new_face_normal
-        self.attributes[var_name].uploadData()
+        self.attributes[var_name].upload_data()
 
 
     def merge(self,other_geometry):
         for var_name, attrib_obj in self.attributes.items():
             attrib_obj.data += other_geometry.attributes[var_name].data
-            attrib_obj.uploadData()
+            attrib_obj.upload_data()
         
-        self.countVertices()
+        self.count_ertices()
            

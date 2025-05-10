@@ -1,35 +1,31 @@
 from material.light import LightMaterial
 from core.textures.texture import Texture
 import OpenGL.GL as gl
+from shaders.shaders import Shader
 
 class FlatMaterial(LightMaterial):
-    def __init__(self,texture:Texture=None, properties:dict={},number_of_lights:int = 1) -> None:
-        vertex_shader_code = """
-                                // ========= Base Light Struct =========:
-                                struct Light{
-                                    int light_type;
-                                    vec3 color;
-                                    vec3 direction;
-                                    vec3 position;
-                                    vec3 attenuation;
-                                };
+    def __init__(self,texture:Texture=None,noise:Texture = None, properties:dict={},number_of_lights:int = 1) -> None:
+        vertex_shader_code = Shader.light_struct() + LightMaterial.generate_light_uniform_list(number_of_lights) + """ \n """ + """ 
 
                                 vec3 calculate_light(Light light, vec3 point_pos,vec3 point_normal){
                                     float ambient = 0.0;
                                     float diffuse = 0.0;
                                     float specular = 0.0;
-                                    float attenuation = 0.0;
+                                    float attenuation = 1.0;
                                     vec3 light_dir = vec3(0.0,0.0,0.0);
 
                                     // ========= setup variables based on type of light =========:
-                                        // ambient light:
-                                    if (light.light_type == 0){ 
+                                                                    // ambient light:
+                                    if (light.light_type == 0)
+                                    { 
                                         ambient = 1.0;
-                                    }   // directional light:
-                                    else if (light.light_type == 1){ 
+                                    }   
+                                    else if (light.light_type == 1) // directional light:
+                                    { 
                                         light_dir = normalize(light.direction);
-                                    }   // point light:
-                                    else if (light.light_type == 2){ 
+                                    }   
+                                    else if (light.light_type == 2)// point light:
+                                    { 
                                         light_dir = normalize(point_pos - light.position);
                                         float distance = length(light.position - point_pos);
                                         attenuation = 1.0 / (light.attenuation[0] + 
@@ -38,7 +34,7 @@ class FlatMaterial(LightMaterial):
                                     }
 
                                     // ========= calculate the diffuse  values for directional and point lights =========:
-                                    if (light.light_type > 1){
+                                    if (light.light_type > 0){
                                         point_normal = normalize(point_normal);
                                         diffuse = max(dot(point_normal, -light_dir), 0.0);
                                         diffuse = diffuse * attenuation;
@@ -46,7 +42,9 @@ class FlatMaterial(LightMaterial):
 
                                     return light.color * (ambient + diffuse + specular);
                                 }
-                             """ + LightMaterial.generate_light_uniform_list(number_of_lights) + """ \n """ + """
+                             """ + """
+
+                                    
                                     uniform mat4 projection_matrix;
                                     uniform mat4 view_matrix;
                                     uniform mat4 model_matrix;
@@ -57,10 +55,10 @@ class FlatMaterial(LightMaterial):
                                     out vec3 light;
 
                                     void main(){
-                                        gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position,1.0);
+                                        gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position,1);
                                         uv  = vertex_uv;
-                                        vec3 position = vec3(model_matrix * vec4(vertex_position,1.0)); 
-                                        vec3 normal = normalize(vec3(model_matrix * vec4(face_normal,0.0)));
+                                        vec3 position = vec3(model_matrix * vec4(vertex_position,1)); 
+                                        vec3 calculated_normal = normalize(mat3(model_matrix) * face_normal);
                                         light = vec3(0.0,0.0,0.0); 
                                         """ + LightMaterial.generate_light_sum(number_of_lights) + """ \n """ + """
 
@@ -68,24 +66,30 @@ class FlatMaterial(LightMaterial):
 
                                  """
             
-        fragment_shader_code = """
+        fragment_shader_code = Shader.moving_distortion_shader() + """
                                 uniform vec3 base_color;
                                 uniform bool use_texture;
                                 uniform sampler2D texture_sampler;
                                 in vec2 uv;
                                 in vec3 light;
                                 out vec4 frag_color;
-                                void main(){
+                                void main()
+                                {
                                     // set the color to the base color with full alpha
                                     vec4 color = vec4(base_color,1.0);
                                     
                                     // if texture is used, use the texture color
-                                    if (use_texture){
+                                    if (apply_moving_distortion)
+                                    {
+                                        color *= time_distort(uv,uv_offset,distortion_strength, time, noise, texture_sampler);
+                                    }
+                                    else if (use_texture)
+                                    {
                                         color *= texture(texture_sampler,uv);
                                     }
 
                                     // apply lighting to color
-                                    color *= vec4(light,1.0);
+                                    color *= vec4(light,1);
 
                                     // set the fragment color
                                     frag_color = color;
@@ -102,6 +106,14 @@ class FlatMaterial(LightMaterial):
         else:
             self.add_uniform("use_texture", True, "bool")
             self.add_uniform("texture_sampler", [texture.texture_reference,1], "sampler2D")
+        
+        # check for noise texture
+        if noise is not None:
+            self.add_uniform("apply_moving_distortion", True, "bool")
+            self.add_uniform("noise", [noise.texture_reference, 2], "sampler2D")
+            self.add_uniform("time", 0.0, "float")
+            self.add_uniform("uv_offset", [0.3,0.07], "vec2")
+            self.add_uniform("distortion_strength", 0.02, "float")
 
         self.locate_uniforms()
 

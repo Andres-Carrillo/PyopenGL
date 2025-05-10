@@ -4,7 +4,6 @@ import sys
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 
-print("dir: " ,package_dir)
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
@@ -47,7 +46,7 @@ class DrawHex(Base):
         self.vertex_count = len(position_data)
 
         position_attribute = Attribute("vec3", position_data)
-        position_attribute.associateVariable(self.program_ref, "position")
+        position_attribute.associate_variable(self.program_ref, "position")
 
         # Enable the vertex attribute array
         gl.glEnableVertexAttribArray(gl.glGetAttribLocation(self.program_ref, "position"))
@@ -123,7 +122,7 @@ class DrawMultipleObjects(Base):
 
         #set up the triangle vertex attribute
         tri_position_attribute = Attribute("vec3", tri_position_data)
-        tri_position_attribute.associateVariable(self.program_ref, "position")
+        tri_position_attribute.associate_variable(self.program_ref, "position")
         gl.glBindVertexArray(0)  
 
         self.vao_square_ref = gl.glGenVertexArrays(1)
@@ -133,7 +132,7 @@ class DrawMultipleObjects(Base):
         
         #set up the square vertex attribute
         square_position_attribute = Attribute("vec3", square_position_data)
-        square_position_attribute.associateVariable(self.program_ref, "position")
+        square_position_attribute.associate_variable(self.program_ref, "position")
 
         gl.glBindVertexArray(0)  # Unbind the VAO
 

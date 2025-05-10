@@ -44,9 +44,9 @@ class GridTool(Mesh):
                 color_data.append(grid_color)
 
 
-        geo.addAttribute("vertex_position",position_data,"vec3")
-        geo.addAttribute("vertex_color",color_data,"vec3")
-        geo.countVertices()
+        geo.add_attribute("vertex_position",position_data,"vec3")
+        geo.add_attribute("vertex_color",color_data,"vec3")
+        geo.count_vertices()
 
 
         mat = LineMaterial({

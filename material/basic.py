@@ -26,19 +26,21 @@ class BasicMaterial(Material):
                                 out vec4 frag_color;
                                 
                                 void main(){
-                                    vec4 temp_color = vec4(base_color,1.0);
+                                    frag_color = vec4(base_color,1.0);
                                     
                                     if (use_vertex_colors){
-                                        temp_color = vec4(color,1.0);
+                                        frag_color = vec4(color,1.0);
                                     }
 
-                                    frag_color = temp_color;
+                          
                                 }
                 """
         
 
         super().__init__(vertex_shader_code, fragment_shader_code)
-        self.add_uniform("base_color", (1.0, 0.0, 0.0), "vec3")
+        self.add_uniform("base_color", (1.0, 1.0, 1.0), "vec3")
+        
         if use_vertex_colors:
             self.add_uniform("use_vertex_colors", use_vertex_colors, "bool")
+
         self.locate_uniforms()

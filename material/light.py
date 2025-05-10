@@ -18,13 +18,12 @@ class LightMaterial(Material):
         Generates the light uniforms for the shader
         :return: str
         """
-        code = "\n\t\t\t\t\t//list of lights\n"
+        code = "\n   \t\t\t\t// Generated list of lights:\n"
 
         for i in range(number_of_lights):
-            code += f"\t\t\t\t\tuniform Light light_{i};\n"
+            code += f"   \t\t\t\tuniform Light light_{i};\n"
 
 
-        # code += "\n"
 
         return code
     
@@ -41,7 +40,7 @@ class LightMaterial(Material):
 
         code = "\n\t\t\t\t\t//calculate the effect of all the lights in the scene\n"
         for i in range(number_of_lights):
-            code += f"\t\t\t\t\tlight += calculate_light(light_{i}, position, normal);\n"
+            code += f"\t\t\t\t\tlight += calculate_light(light_{i}, position, calculated_normal);\n"
 
 
         code += "\n"

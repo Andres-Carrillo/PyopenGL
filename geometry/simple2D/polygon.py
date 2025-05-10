@@ -42,11 +42,11 @@ class Polygon(Geometry):
             normal_data.append(normal_vector)
 
         # add the attributes to the geometry
-        self.addAttribute("vertex_position", positions, "vec3")
-        self.addAttribute("vertex_color", colors, "vec3")
-        self.addAttribute("vertex_uv", uv_data, "vec2")
-        self.addAttribute("vertex_normal", normal_data, "vec3")
-        self.addAttribute("face_normal", normal_data, "vec3")
+        self.add_attribute("vertex_position", positions, "vec3")
+        self.add_attribute("vertex_color", colors, "vec3")
+        self.add_attribute("vertex_uv", uv_data, "vec2")
+        self.add_attribute("vertex_normal", normal_data, "vec3")
+        self.add_attribute("face_normal", normal_data, "vec3")
         
         # count the vertices
-        self.countVertices()
+        self.count_vertices()

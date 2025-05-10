@@ -37,14 +37,14 @@ class TransformationTest(Base):
 
         # Associate the vertex data with the shader program
         position_attribute = Attribute("vec3", position_data)
-        position_attribute.associateVariable(self.program_ref, "position")
+        position_attribute.associate_variable(self.program_ref, "position")
 
         # Create uniforms
         self.model = Uniform("mat4", Matrix.mat4_translation(0.0, 0.0, -1.0))
-        self.model.locateVariable(self.program_ref, "model_matrix")
+        self.model.locate_variable(self.program_ref, "model_matrix")
 
         self.projection = Uniform("mat4", Matrix.mat4_perspective())
-        self.projection.locateVariable(self.program_ref, "projection_matrix")
+        self.projection.locate_variable(self.program_ref, "projection_matrix")
 
         self.move_speed = 0.01
         self.rotation_speed = 90 * (pi / 180)
@@ -137,8 +137,8 @@ class TransformationTest(Base):
 
 
         gl.glUseProgram(self.program_ref)
-        self.projection.uploadData()
-        self.model.uploadData()
+        self.projection.upload_data()
+        self.model.upload_data()
         gl.glDrawArrays(gl.GL_TRIANGLES, 0, self.vertex_count)
 
 

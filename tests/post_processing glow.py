@@ -22,11 +22,16 @@ from effects.bright_filter import BrightFilterEffect
 from effects.blur_horizontal import HBlurEffect
 from effects.blur_vertical import VBlurEffect
 from effects.additive_blend import AdditiveBlendEffect
-
+from core.scene import Scene
+from material.surface import SurfaceMaterial
+from core.render_target import RenderTarget
+from math import sin,cos
 
 class PostProcessingTest(Test):
     def __init__(self):
-        super().__init__(title="Skybox Test",display_grid=False)
+        super().__init__(title="Glow Test",display_grid=False)
+        
+        
 
         sky_geo = Sphere(radius=50)
         sky_mat = TextureMaterial(Texture("images/sky.jpg"))
@@ -50,26 +55,45 @@ class PostProcessingTest(Test):
         self.scene.add(self.sphere_mesh)
 
         self.post_processor = Postprocessor(self.renderer, self.scene, self.camera)
-        self.blur_effect = HBlurEffect(texture_size=[self.window_width, self.window_height], blur_radius=50)
-        self.vertical_blur_effect = VBlurEffect(texture_size=[self.window_width, self.window_height], blur_radius=50)
+        self.glow_scene = Scene()
 
-        self.post_processor.add_effect(BrightFilterEffect(2.4))
-        self.post_processor.add_effect(self.blur_effect)
-        self.post_processor.add_effect(self.vertical_blur_effect)
+        red_mat = SurfaceMaterial(properties={"base_color":[1.0,0.5,1.0]})
 
-        main_scene = self.post_processor.render_target_list[0].texture
-        print(main_scene)
+        
 
-        self.post_processor.add_effect(AdditiveBlendEffect(blend_texture=main_scene, src_strength=2, blend_strength=1))
+        self.glow_sphere = Mesh(sphere_geo, red_mat)
+        self.glow_sphere.matrix = self.sphere_mesh.matrix
+
+        self.glow_scene.add(self.glow_sphere)
+
+        glow_target = RenderTarget(resolution=[self.window_width, self.window_height])
+        self.glow_pass = Postprocessor(self.renderer, self.glow_scene, self.camera, render_target=glow_target)
+
+        self.h_blur_effect = HBlurEffect(texture_size=[self.window_width, self.window_height], blur_radius=50)
+        self.v_blur_effect = VBlurEffect(texture_size=[self.window_width, self.window_height], blur_radius=50)
+        self.glow_pass.add_effect(self.h_blur_effect)
+        self.glow_pass.add_effect(self.v_blur_effect)
+
+        # combne glow with main scene
+        self.combo_pass = Postprocessor(self.renderer, self.scene, self.camera)
+
+        self.combo_pass.add_effect(AdditiveBlendEffect(blend_texture=glow_target.texture, src_strength=1, blend_strength=4))
+
+        # self.post_processor.add_effect(AdditiveBlendEffect(blend_texture=main_scene, src_strength=2, blend_strength=1))
 
 
 
     def update(self) -> None:
         self._base_update()
-        self.blur_effect.uniforms["texture_size"].data = [self.window_width, self.window_height]
-        self.vertical_blur_effect.uniforms["texture_size"].data = [self.window_width, self.window_height]
+        self.sphere_mesh.rotate_y(0.01337)
+        self.h_blur_effect.uniforms["texture_size"].data = [self.window_width, self.window_height]
+        self.v_blur_effect.uniforms["texture_size"].data = [self.window_width, self.window_height]
 
-        self.post_processor.render()
+        self.glow_sphere.material.uniforms["base_color"].data = [sin(self.timer.elapsed_time()), 1, 1]    
+        # self.post_processor.render()
+        self.glow_pass.render()
+        self.combo_pass.render()
+
 
 
 if __name__ == "__main__":

@@ -1,20 +1,40 @@
-from core.matrix import Matrix
 import numpy as np
+from core.matrix import Matrix
 
-class Object3D(object):
-    """"Base for 3d Objects"""
-    def __init__(self,parent=None):
-        self.matrix = Matrix.mat4_identity()
-        self.parent = parent
-        self.children = []
 
-    def add(self,child:'Object3D') -> None:
-        self.children.append(child)
-        child.parent = self
+class Object3D:
+    """ Represent a node in the scene graph tree structure """
+    def __init__(self):
+        # local transform matrix with respect to the parent of the object
+        self._matrix = Matrix.mat4_identity()
+        self._parent = None
+        self._children_list = []
 
-    def remove(self,child:'Object3D') -> None:
-        self.children.remove(child)
-        child.parent = None
+    @property
+    def children_list(self):
+        return self._children_list
+
+    @children_list.setter
+    def children_list(self, children_list):
+        self._children_list = children_list
+
+    @property
+    def descendant_list(self):
+        """ Return a single list containing all descendants """
+        # master list of all descendant nodes
+        descendant_list = []
+        # nodes to be added to descendant list,
+        # and whose children will be added to this list
+        nodes_to_process = [self]
+        # continue processing nodes while any are left
+        while len(nodes_to_process) > 0:
+            # remove first node from list
+            node = nodes_to_process.pop(0)
+            # add this node to descendant list
+            descendant_list.append(node)
+            # children of this node must also be processed
+            nodes_to_process = node._children_list + nodes_to_process
+        return descendant_list
 
     @property
     def global_matrix(self):
@@ -22,10 +42,10 @@ class Object3D(object):
         Calculate the transformation of this Object3D
         relative to the root Object3D of the scene graph
         """
-        if self.parent is None:
-            return self.matrix
+        if self._parent is None:
+            return self._matrix
         else:
-            return self.parent.global_matrix @ self.matrix
+            return self._parent.global_matrix @ self._matrix
 
     @property
     def global_position(self):
@@ -34,99 +54,104 @@ class Object3D(object):
                 self.global_matrix.item((1, 3)),
                 self.global_matrix.item((2, 3))]
 
+    @property
+    def local_matrix(self):
+        return self._matrix
 
-    def get_world_matrix(self):
-        if self.parent is not None:
-            return self.parent.get_world_matrix() @ self.matrix
-        else:
-            return self.matrix
-        
-    def get_children(self):
-        kids = []
-        nodes = [self]
+    @local_matrix.setter
+    def local_matrix(self, matrix):
+        self._matrix = matrix
 
-        # BFS to get all children
-        # This is a simple BFS implementation
-        # that uses a queue to traverse the tree
-        # and collect all nodes. Can be optimized 
-        while len(nodes) > 0:
-            node = nodes.pop(0)
-            kids.append(node)
-            nodes = node.children + nodes
+    @property
+    def local_position(self):
+        """
+        Return the local position of the object (with respect to its parent)
+        """
+        # The position of an object can be determined from entries in the
+        # last column of the transform matrix
+        return [self._matrix.item((0, 3)),
+                self._matrix.item((1, 3)),
+                self._matrix.item((2, 3))]
 
-        return kids
+    @property
+    def parent(self):
+        return self._parent
 
+    @parent.setter
+    def parent(self, parent):
+        self._parent = parent
 
-    def apply_transformation(self,transfor_mat:Matrix,local=True) -> None:
+    @property
+    def rotation_matrix(self):
+        """
+        Returns 3x3 submatrix with rotation data.
+        3x3 top-left submatrix contains only rotation data.
+        """
+        return np.array(
+            [self._matrix[0][0:3],
+             self._matrix[1][0:3],
+             self._matrix[2][0:3]]
+        ).astype(float)
 
+    @property
+    def direction(self):
+        forward = np.array([0, 0, -1]).astype(float)
+        return list(self.rotation_matrix @ forward)
+
+    def add(self, child):
+        self._children_list.append(child)
+        child.parent = self
+
+    def remove(self, child):
+        self._children_list.remove(child)
+        child.parent = None
+
+    # apply geometric transformations
+    def apply_matrix(self, matrix, local=True):
         if local:
-            self.matrix = self.matrix @ transfor_mat
+            # local transform
+            self._matrix = self._matrix @ matrix
         else:
-            self.matrix = transfor_mat @ self.matrix
+            # global transform
+            self._matrix = matrix @ self._matrix
 
+    def translate(self, x, y, z, local=True):
+        m = Matrix.mat4_translation(x, y, z)
+        self.apply_matrix(m, local)
 
-    def translate(self,x:float,y:float,z:float,local=True) -> None:
-        translation_matrix = Matrix.mat4_translation(x,y,z)
-        self.apply_transformation(translation_matrix,local)
+    def rotate_x(self, angle, local=True):
+        m = Matrix.mat4_rotate_x(angle)
+        self.apply_matrix(m, local)
 
-    def rotate_z(self,angle:float,local=True) -> None:
-        rotation_matrix = Matrix.mat4_rotate_z(angle)
-        self.apply_transformation(rotation_matrix,local)
+    def rotate_y(self, angle, local=True):
+        m = Matrix.mat4_rotate_y(angle)
+        self.apply_matrix(m, local)
 
-    def rotate_x(self,angle:float,local=True) -> None:
-        rotation_matrix = Matrix.mat4_rotate_x(angle)
-        self.apply_transformation(rotation_matrix,local)
+    def rotate_z(self, angle, local=True):
+        m = Matrix.mat4_rotate_z(angle)
+        self.apply_matrix(m, local)
 
-    def rotate_y(self,angle:float,local=True) -> None:
-        rotation_matrix = Matrix.mat4_rotate_y(angle)
-        self.apply_transformation(rotation_matrix,local)
+    def scale(self, s, local=True):
+        m = Matrix.mat4_scale_uniform(s)
+        self.apply_matrix(m, local)
 
-    def scale(self,scale_value:float,local=True) -> None:
-        scaling_matrix = Matrix.mat4_scale_uniform(scale_value)
-        self.apply_transformation(scaling_matrix,local)
+    def set_position(self, position):
+        """ Set the local position of the object """
+        self._matrix[0, 3] = position[0]
+        self._matrix[1, 3] = position[1]
+        self._matrix[2, 3] = position[2]
+        # self._matrix.itemset((1, 3), position[1])
+        # self._matrix.itemset((2, 3), position[2])
 
-    def scale(self,x:float,y:float,z:float,local=True) -> None:
-        scaling_matrix = Matrix.mat4_scale(x,y,z)
-        self.apply_transformation(scaling_matrix,local)
+    def look_at(self, target_position):
+        self._matrix = Matrix.make_look_at(self.global_position, target_position)
 
-    def get_pos(self):
-        return [self.matrix[0][3],self.matrix[1][3],self.matrix[2][3]]
-    
-    def get_global_pos(self):
-        global_matrix = self.get_world_matrix()
-
-        return [global_matrix[0][3],global_matrix[1][3],global_matrix[2][3]]
-
-    def set_pos(self,pos:np.ndarray)->None:
-        self.matrix[0][3] = pos[0]
-        self.matrix[1][3] = pos[1]
-        self.matrix[2][3] = pos[2]
-
-
-    def look_at(self,target:np.ndarray) -> None:
-        self.matrix = Matrix.make_look_at(self.global_position,target)
-    
-    def get_rotation(self) -> np.ndarray:
-        return np.array([self.matrix[0][0:3],
-                         self.matrix[1][0:3],
-                         self.matrix[2][0:3]])
-    
-    def get_direction(self) -> list:
-        forward = np.array([0,0,-1])
-        return list(self.get_rotation() @ forward)
-    
-
-    def set_direction(self,direction:np.ndarray)-> None:
-        position = self.get_pos()
-        
-        target = [position[0] + direction[0],
-                 position[1] + direction[1],
-                 position[2] + direction[2]]
-        
-        self.look_at(target)
-
-        
-
-
-
+    def set_direction(self, direction):
+        position = self.local_position
+        target_position = [
+            position[0] + direction[0],
+            position[1] + direction[1],
+            position[2] + direction[2]
+        ]
+        self.look_at(target_position)
 

@@ -46,7 +46,7 @@ class Test(Base):
 
         # Upload all uniforms
         for var_name, uniform_obj in self.mesh.material.uniforms.items():
-            uniform_obj.uploadData()
+            uniform_obj.upload_data()
 
         # Update the render settings for the material
         self.mesh.material.update_render_settings()

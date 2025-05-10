@@ -45,10 +45,10 @@ class BoxGeometry(Geometry):
 
         normal_data = [n1] * 6 + [n2] * 6 + [n3] * 6 + [n4] * 6 + [n5] * 6 + [n6] * 6
         
-        self.addAttribute( "vertex_position", position_data,"vec3")
-        self.addAttribute( "vertex_color", color_data,"vec3")
-        self.addAttribute( "vertex_uv", uv_data,"vec2")
-        self.addAttribute( "vertex_normal", normal_data,"vec3")
-        self.addAttribute( "face_normal", normal_data,"vec3")
+        self.add_attribute( "vertex_position", position_data,"vec3")
+        self.add_attribute( "vertex_color", color_data,"vec3")
+        self.add_attribute( "vertex_uv", uv_data,"vec2")
+        self.add_attribute( "vertex_normal", normal_data,"vec3")
+        self.add_attribute( "face_normal", normal_data,"vec3")
 
-        self.countVertices()
+        self.count_vertices()

@@ -11,7 +11,7 @@ if package_dir not in sys.path:
 
 from tests.template import Test
 from geometry.box import BoxGeometry
-from geometry.two_dimensional.rectangle import Rectangle
+from geometry.simple2D.rectangle import Rectangle
 from meshes.mesh import Mesh
 from core.textures.text import TextTexture
 from core.textures.texture import Texture
@@ -38,7 +38,7 @@ class BillboardTest(Test):
 
         label_material = TextureMaterial(texture=label_texture)
         label_geometry = Rectangle(width=1, height=0.5)
-        label_geometry.applyTransform(Matrix.mat4_rotate_y(3.14))
+        label_geometry.apply_transform(Matrix.mat4_rotate_y(3.14))
 
         self.label = Mesh(label_geometry, label_material)
         self.label.set_pos([0, 1, 0])

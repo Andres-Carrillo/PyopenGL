@@ -6,10 +6,13 @@ class Matrix(object):
     # Construct a 2D matrix of dimension size x size
     @staticmethod
     def identity(size:int)->np.ndarray:
-        # glm.identity(size)
-        # print(glm.identity(size))
-        return np.identity(size,dtype=np.float32)
-
+        return np.array(
+            [[1, 0, 0, 0],
+             [0, 1, 0, 0],
+             [0, 0, 1, 0],
+             [0, 0, 0, 1]]
+        ).astype(float)
+    
     # Construct 4x4 identity matrix for basis of 3D Transformations
     @staticmethod
     def mat4_identity()->np.ndarray:
@@ -18,68 +21,57 @@ class Matrix(object):
     # Construct 4x4 translation matrix for 3D Transformations
     @staticmethod
     def mat4_translation(x,y,z)->np.ndarray:
-        mat = Matrix.mat4_identity()
-        
-        mat[0][3] = x
-        mat[1][3] = y
-        mat[2][3] = z
-
-        return mat
+        return np.array(
+                    [[1, 0, 0, x],
+                    [0, 1, 0, y],
+                    [0, 0, 1, z],
+                    [0, 0, 0, 1]]
+                ).astype(float)
     
     # Construct 4x4 rotation matrix for 3D rotations about the x axis
     @staticmethod
     def mat4_rotate_x(angle:float)->np.ndarray:
-        mat = Matrix.mat4_identity()
-        
         c = cos(angle)
         s = sin(angle)
-
-        mat[1][1] = c
-        mat[1][2] = -s
-        mat[2][1] = s
-        mat[2][2] = c
-
-        return mat
+        return np.array(
+            [[1,  0,  0,  0],
+             [0,  c, -s,  0],
+             [0,  s,  c,  0],
+             [0,  0,  0,  1]]
+        ).astype(float)
     
     @staticmethod
     def mat4_rotate_y(angle:float)->np.ndarray:
-        mat = Matrix.mat4_identity()
-        
         c = cos(angle)
         s = sin(angle)
-
-        mat[0][0] = c
-        mat[0][2] = s
-        mat[2][0] = -s
-        mat[2][2] = c
-
-        return mat
+        return np.array(
+            [[c,  0,  s,  0],
+             [0,  1,  0,  0],
+             [-s, 0,  c,  0],
+             [0,  0,  0,  1]]
+        ).astype(float)
     
 
     @staticmethod
     def mat4_rotate_z(angle:float)->np.ndarray:
-        mat = Matrix.mat4_identity()
-        
         c = cos(angle)
         s = sin(angle)
-
-        mat[0][0] = c
-        mat[0][1] = -s
-        mat[1][0] = s
-        mat[1][1] = c
-
-        return mat
+        return np.array(
+            [[c, -s,  0,  0],
+             [s,  c,  0,  0],
+             [0,  0,  1,  0],
+             [0,  0,  0,  1]]
+        ).astype(float)
     
     # construct 4x4 scaling matrix for 3D scaling
     @staticmethod
     def mat4_scale_uniform(scale_val:float)->np.ndarray:
-        mat = Matrix.mat4_identity()
-        
-        mat[0][0] = scale_val
-        mat[1][1] = scale_val
-        mat[2][2] = scale_val
-
-        return mat
+        return np.array(
+            [[scale_val, 0, 0, 0],
+             [0, scale_val, 0, 0],
+             [0, 0, scale_val, 0],
+             [0, 0, 0, 1]]
+        ).astype(float)
         
     @staticmethod
     def mat4_scale(x:float,y:float,z:float)->np.ndarray:

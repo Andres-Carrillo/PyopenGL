@@ -15,7 +15,7 @@ class Camera(Object3D):
 
     def update_view_matrix(self):
         """Update the view matrix based on the camera's position and orientation"""
-        self.view_matrix = inv(self.get_world_matrix())
+        self.view_matrix = inv(self.global_matrix)
 
 
     def set_perspective(self,angle_of_view:float = 50.0,aspect_ratio:float=1.0, near:float = 0.1, far:float =1000):

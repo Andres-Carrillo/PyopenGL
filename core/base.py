@@ -42,7 +42,7 @@ class Base:
         glfw.set_framebuffer_size_callback(self.window, self._on_resize)
         
         # set the background color
-        gl.glClearColor(0.2, 0.2, 0.2, 1.0)  
+        gl.glClearColor(0.0, 0.0, 0.0, 1.0)  
 
     """
         Initializes GLFW with the given OpenGL version.
