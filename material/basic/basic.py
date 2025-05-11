@@ -1,5 +1,5 @@
-from material.material import Material
-from core.uniform import Uniform
+from material.basic.material import Material
+from core.glsl.uniform import Uniform
 import OpenGL.GL as gl
 class BasicMaterial(Material):
 

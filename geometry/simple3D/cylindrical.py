@@ -1,6 +1,6 @@
 from geometry.parametric import Parametric
 from geometry.simple2D.polygon import Polygon
-from core.matrix import Matrix
+from core.utils.matrix import Matrix
 from math import pi, sin, cos
 
 class Cylindrical(Parametric):

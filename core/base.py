@@ -1,6 +1,6 @@
 import glfw
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
-from core.input import Input
+from core.utils.input import Input
 from core.utils.timer import Timer
 from core.utils.fps import FPS
 import OpenGL.GL as gl

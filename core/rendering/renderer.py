@@ -1,7 +1,7 @@
 import OpenGL.GL as gl
 from meshes.mesh import Mesh
 from core.light.light import Light
-from core.render_target import RenderTarget
+from core.rendering.render_target import RenderTarget
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
 from core.light.shadow import Shadow
 

@@ -9,9 +9,9 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from core.base import Base
-from core.renderer import Renderer
-from core.scene import Scene
-from core.camera import Camera
+from core.rendering.renderer import Renderer
+from core.rendering.scene import Scene
+from core.rendering.camera import Camera
 from tools.grid import GridTool
 from math import pi
 from tools.movement_rig import MovementRig

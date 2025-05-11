@@ -1,5 +1,5 @@
 import numpy as np
-from core.matrix import Matrix
+from core.utils.matrix import Matrix
 
 
 class Object3D:

@@ -1,8 +1,8 @@
-from core.renderer import Renderer
-from core.scene import Scene
-from core.camera import Camera
+from core.rendering.renderer import Renderer
+from core.rendering.scene import Scene
+from core.rendering.camera import Camera
 from meshes.mesh import Mesh
-from core.render_target import RenderTarget
+from core.rendering.render_target import RenderTarget
 from geometry.geometry import Geometry
 
 

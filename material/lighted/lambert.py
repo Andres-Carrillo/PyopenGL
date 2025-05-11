@@ -1,4 +1,4 @@
-from material.light import LightMaterial
+from material.lighted.light import LightMaterial
 from core.textures.texture import Texture
 from shaders.shaders import Shader
 import OpenGL.GL as gl

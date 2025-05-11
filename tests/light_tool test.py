@@ -14,15 +14,15 @@ from geometry.sphere import Sphere
 from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
 from core.light.point import PointLight
-from material.phong import PhongMaterial
-from material.lambert import LambertMaterial
-from material.flat import FlatMaterial
+from material.lighted.phong import PhongMaterial
+from material.lighted.lambert import LambertMaterial
+from material.lighted.flat import FlatMaterial
 from core.textures.texture import Texture
 from meshes.mesh import Mesh
 from tools.directional_light_tool import DirectionalLightTool
 from tools.point_light_tool import PointLightTool
 from math import sin,cos,pi
-from material.material import Material
+from material.basic.material import Material
 from geometry.simple2D.rectangle import Rectangle
 
 class LightTest(Test):
@@ -33,7 +33,7 @@ class LightTest(Test):
         noise_texture = Texture("images/rgb-noise.jpg")
         water_texture = Texture("images/pool_water.jpg")   
 
-        self.distort_mat = PhongMaterial(texture=water_texture,noise=noise_texture,number_of_lights=3)
+        self.distort_mat = PhongMaterial(texture=water_texture,noise=noise_texture,number_of_lights=3,use_shadow=True)
 
 
 
@@ -71,8 +71,7 @@ class LightTest(Test):
         lambert_mat = LambertMaterial(properties={"base_color":[0.2, 0.5, 0.5]},number_of_lights=3,use_shadow=True)
 
         #phong material type
-        phong_mat = PhongMaterial(texture=Texture("images/brick-wall.jpg"),bump_texture=Texture("images/brick-wall-normal-map.jpg"),
-                                  number_of_lights=3,use_shadow=True)
+        phong_mat = PhongMaterial(properties={"base_color":[0.2, 0.5, 0.5]},number_of_lights=3,use_shadow=True)
 
         #create flat lighting sphere:
         self.flat_sphere = Mesh(geometry=sphere_geo, material=flat_material)
@@ -92,16 +91,16 @@ class LightTest(Test):
         floor.set_position([0, 0, -1])
         floor.rotate_x(-pi / 2)
 
-        # #water sphere
-        # self.water_sphere = Mesh(geometry=sphere_geo, material=self.distort_mat)
-        # self.water_sphere.set_pos([0, 2.2, 0])
+        #water sphere
+        self.water_sphere = Mesh(geometry=sphere_geo, material=self.distort_mat)
+        self.water_sphere.set_position([0, 4.2, 0])
 
         # add the spheres to the scene
         self.scene.add(self.flat_sphere)
         self.scene.add(self.lambert_sphere)
         self.scene.add(self.phong_sphere)
         self.scene.add(floor)
-        # self.scene.add(self.water_sphere)
+        self.scene.add(self.water_sphere)
         self.renderer.enable_shadows(self.directional_light)
 
 
@@ -110,16 +109,18 @@ class LightTest(Test):
             # self.directional_light.set_direction([-1, sin(0.5*self.timer.elapsed_time()), 0])
             # super().update()
             time_delta = self.timer.delta_time()
-            # self.point_light.set_position([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
+            self.point_light.set_position([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
 
             self.directional_light.set_direction([sin(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), -2])
             self.directional_light.rotate_y(0.0137,True)
 
             
-            self.renderer.render(self.scene, self.camera)
+           
             # self.flat_sphere.material.uniforms["time"].data += time_delta
             # self.lambert_sphere.material.uniforms["time"].data += time_delta
-            # self.water_sphere.material.uniforms["time"].data += time_delta * 2
+            self.water_sphere.material.uniforms["time"].data += time_delta * 2
+
+            self.renderer.render(self.scene, self.camera)
 
 
 if __name__ == "__main__":

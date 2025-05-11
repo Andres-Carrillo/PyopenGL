@@ -12,7 +12,7 @@ if package_dir not in sys.path:
 from tests.template import Test
 from core.light.ambient import AmbientLight
 from core.light.point import PointLight
-from material.phong import PhongMaterial
+from material.lighted.phong import PhongMaterial
 from core.textures.texture import Texture
 from meshes.mesh import Mesh
 from tools.point_light_tool import PointLightTool

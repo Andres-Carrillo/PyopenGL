@@ -1,4 +1,4 @@
-from material.basic import BasicMaterial
+from material.basic.basic import BasicMaterial
 import OpenGL.GL as gl
 
 class SurfaceMaterial(BasicMaterial):

@@ -1,4 +1,4 @@
-from material.material import Material
+from material.basic.material import Material
 
 class LightMaterial(Material):
     def __init__(self,number_of_lights:int = 1,vertex_shader_code:str = "",fragment_shader_code:str = "") -> None:   

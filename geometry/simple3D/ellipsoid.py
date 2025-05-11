@@ -1,6 +1,6 @@
 from geometry.parametric import Parametric
 from math import pi, sin, cos
-from core.matrix import Matrix
+from core.utils.matrix import Matrix
 
 class Ellipsoid(Parametric):
     def __init__(self, width=1, height=1, depth=1, theta_segments=16, phi_segments=32):

@@ -9,11 +9,11 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 
-from core.matrix import Matrix
+from core.utils.matrix import Matrix
 from core.base import Base
 from core.utils.openGLUtils import GlUtils
-from core.attribute import Attribute
-from core.uniform import Uniform
+from core.glsl.attribute import Attribute
+from core.glsl.uniform import Uniform
 from core.utils.timer import Timer
 import glfw.GLFW as GLFW_CONSTANTS
 import OpenGL.GL as gl

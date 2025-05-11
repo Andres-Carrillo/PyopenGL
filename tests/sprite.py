@@ -13,7 +13,7 @@ from tests.template import Test
 from geometry.simple2D.rectangle import Rectangle
 from meshes.mesh import Mesh
 from core.textures.texture import Texture
-from material.sprite import Sprite
+from material.basic.sprite import Sprite
 from math import floor
 
 

@@ -1,5 +1,5 @@
 from core.utils.openGLUtils import GlUtils
-from core.uniform import Uniform
+from core.glsl.uniform import Uniform
 import OpenGL.GL as gl
 
 class Material(object):

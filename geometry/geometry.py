@@ -1,4 +1,4 @@
-from core.attribute import Attribute
+from core.glsl.attribute import Attribute
 import numpy as np
 
 class Geometry(object):

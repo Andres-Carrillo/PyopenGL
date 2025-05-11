@@ -1,5 +1,5 @@
 from geometry.sphere import Sphere
-from material.surface import SurfaceMaterial
+from material.basic.surface import SurfaceMaterial
 from meshes.mesh import Mesh
 from core.light.point import PointLight
 

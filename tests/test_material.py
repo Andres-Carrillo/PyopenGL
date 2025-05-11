@@ -10,11 +10,11 @@ if package_dir not in sys.path:
 
 
 from core.base import Base
-from material.surface import SurfaceMaterial
+from material.basic.surface import SurfaceMaterial
 from geometry.box import BoxGeometry
 from meshes.mesh import Mesh
 import OpenGL.GL as gl
-from core.camera import Camera
+from core.rendering.camera import Camera
 
 class Test(Base):
     def __init__(self):
