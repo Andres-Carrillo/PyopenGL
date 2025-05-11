@@ -30,7 +30,7 @@ class Renderer(object):
         descendant_list = scene.descendant_list
         mesh_filter = lambda x: isinstance(x, Mesh)
         mesh_list = list(filter(mesh_filter, descendant_list))
-
+        print("Mesh List: ",mesh_list)
         # shadow pass
         if self.shadows_enabled:
           
@@ -39,8 +39,8 @@ class Renderer(object):
             # Set render target properties
             gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._shadow_object.render_target.frame_buffer)
             gl.glViewport(0, 0, self._shadow_object.render_target.width, self._shadow_object.render_target.height)
-            # Set default color to white, used when no objects present to cast shadows
-            gl.glClearColor(1, 1, 1, 1)
+            # # Set default color to white, used when no objects present to cast shadows
+            # gl.glClearColor(1, 1, 1, 1)
             gl.glClear(gl.GL_COLOR_BUFFER_BIT)
             gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
             # Everything in the scene gets rendered with depthMaterial so

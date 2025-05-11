@@ -4,6 +4,8 @@ import OpenGL.GL as gl
 class BasicMaterial(Material):
 
     def __init__(self,vertex_shader_code = None, fragment_shader_code = None,use_vertex_colors = True) -> None:
+        
+        print("creating the basic material")
         if vertex_shader_code is None:
             vertex_shader_code = """
                                 uniform mat4 projection_matrix;
@@ -36,11 +38,13 @@ class BasicMaterial(Material):
                                 }
                 """
         
+        print("vertex shader code: ",vertex_shader_code)
+        print("fragment shader code: ",fragment_shader_code)
 
         super().__init__(vertex_shader_code, fragment_shader_code)
         self.add_uniform("base_color", (1.0, 1.0, 1.0), "vec3")
         
-        if use_vertex_colors:
-            self.add_uniform("use_vertex_colors", use_vertex_colors, "bool")
+       
+        self.add_uniform("use_vertex_colors", use_vertex_colors, "bool")
 
         self.locate_uniforms()

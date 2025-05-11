@@ -123,7 +123,13 @@ class Matrix(object):
         # All vectors should have length 1
         forward = np.divide(forward, np.linalg.norm(forward))
         right = np.divide(right, np.linalg.norm(right))
-        up = np.divide(up, np.linalg.norm(up))
+        
+        #need check to avoid division by zero
+        if np.linalg.norm(up) > 0:
+            up = np.divide(up, np.linalg.norm(up))
+        else:
+            up = np.array([0, 1, 0])
+        # up = np.divide(up, np.linalg.norm(up))
         return np.array(
             [[right[0], up[0], -forward[0], position[0]],
              [right[1], up[1], -forward[1], position[1]],

@@ -13,7 +13,7 @@ class FPS:
         self._cur_time = self.timer.elapsed_time()
         
         if self._last_time != 0.0:
-            self._delta_time = self._cur_time - self._last_time
+            self._delta_time = (self._cur_time - self._last_time)
             self._fps = 1.0 / self._delta_time
         else:
             self._fps = 0.0

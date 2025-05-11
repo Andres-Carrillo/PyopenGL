@@ -11,7 +11,10 @@ class LineMaterial(BasicMaterial):
 
         self.settings["line_type"] = "connected"
 
+        print("about to set the properties for the line material")
         self.set_properties(properties)
+
+        print("set properties for the line material")
 
     def update_render_settings(self) -> None:
         gl.glLineWidth(self.settings["line_width"])

@@ -48,6 +48,8 @@ class GridTool(Mesh):
         geo.add_attribute("vertex_color",color_data,"vec3")
         geo.count_vertices()
 
+        print("addded attributes to the grid")
+
 
         mat = LineMaterial({
             "use_vertex_colors":True,
@@ -55,6 +57,7 @@ class GridTool(Mesh):
             "line_type":"segments"
         })
 
+        print("created the material for the grid")
 
         super().__init__(geo,mat)   
 
