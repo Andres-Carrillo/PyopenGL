@@ -11,7 +11,7 @@ if package_dir not in sys.path:
 
 from core.base import Base
 from material.basic.surface import SurfaceMaterial
-from geometry.box import BoxGeometry
+from geometry.simple3D.box import BoxGeometry
 from meshes.mesh import Mesh
 import OpenGL.GL as gl
 from core.rendering.camera import Camera
@@ -25,7 +25,7 @@ class Test(Base):
 
         # Create a camera
         self.camera = Camera(aspect_ratio=800 / 600)
-        self.camera.set_pos([0, 0, 4])  # Position the camera 4 units away from the origin
+        self.camera.set_position([0, 0, 4])  # Position the camera 4 units away from the origin
         self.camera.update_view_matrix()  # Update the view matrix based on the camera's position and orientation
 
     def update(self):
@@ -38,7 +38,7 @@ class Test(Base):
         gl.glBindVertexArray(self.mesh.vao_ref)
 
         # Update the model matrix
-        self.mesh.material.uniforms["model_matrix"].data = self.mesh.get_world_matrix()
+        self.mesh.material.uniforms["model_matrix"].data = self.mesh.global_matrix
 
         # Update the view and projection matrices
         self.mesh.material.uniforms["view_matrix"].data = self.camera.view_matrix

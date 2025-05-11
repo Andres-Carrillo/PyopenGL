@@ -11,9 +11,9 @@ if package_dir not in sys.path:
 
 from tests.template import Test
 from core.textures.texture import Texture
-from material.texture import TextureMaterial
+from material.basic.texture import TextureMaterial
 from geometry.simple2D.rectangle import  Rectangle
-from geometry.sphere import Sphere
+from geometry.simple3D.sphere import Sphere
 from meshes.mesh import Mesh  
 
 from tools.post_processor import Postprocessor

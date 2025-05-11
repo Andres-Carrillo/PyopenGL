@@ -11,8 +11,8 @@ if package_dir not in sys.path:
 
 from tests.template import Test
 
-from geometry.sphere import Sphere
-from material.material import Material
+from geometry.simple3D.sphere import Sphere
+from material.basic.material import Material
 from meshes.mesh import Mesh
 from core.utils.timer import Timer
 
@@ -21,7 +21,7 @@ from core.utils.timer import Timer
 class AnimationTest(Test):
     def __init__(self):
         super().__init__(title="Animation Test")
-        self.camera.set_pos([0, 0, 7])
+        self.camera.set_position([0, 0, 7])
 
         geometry = Sphere(radius=3,seg_radius=128,seg_height=128)
 

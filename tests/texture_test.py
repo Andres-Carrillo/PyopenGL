@@ -10,16 +10,16 @@ if package_dir not in sys.path:
 
 from tests.template import Test
 from core.textures.texture import Texture
-from material.texture import TextureMaterial
+from material.basic.texture import TextureMaterial
 from geometry.simple2D.rectangle import  Rectangle
-from geometry.box import BoxGeometry
-from geometry.sphere import Sphere
+from geometry.simple3D.box import BoxGeometry
+from geometry.simple3D.sphere import Sphere
 from meshes.mesh import Mesh  
 
 class TextureTest(Test):
     def __init__(self):
         super().__init__(title="Texture Test", display_grid=False)
-        self.camera.set_pos([0, 0, 2])
+        self.camera.set_position([0, 0, 2])
         geometry = Sphere(radius=0.5, seg_radius=128, seg_height=64)
         grid = Texture("images/lunar.jpeg")
         material = TextureMaterial(texture=grid)

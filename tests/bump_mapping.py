@@ -29,7 +29,7 @@ class LightTest(Test):
 
 
 
-        self.camera.set_pos([0, 0, 6])
+        self.camera.set_position([0, 0, 6])
 
         self.ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
         self.scene.add(self.ambient_light)
@@ -54,7 +54,7 @@ class LightTest(Test):
             
             super().update()
   
-            self.point_light.set_pos([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
+            self.point_light.set_position([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
 
 
 

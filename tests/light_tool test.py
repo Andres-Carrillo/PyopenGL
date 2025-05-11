@@ -10,7 +10,7 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from tests.template import Test
-from geometry.sphere import Sphere
+from geometry.simple3D.sphere import Sphere
 from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
 from core.light.point import PointLight

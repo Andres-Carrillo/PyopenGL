@@ -10,9 +10,9 @@ if package_dir not in sys.path:
 
 
 from meshes.mesh import Mesh
-from geometry.box import Geometry
-from material.point import PointMaterial
-from material.line import LineMaterial
+from geometry.geometry import Geometry
+from material.basic.point import PointMaterial
+from material.basic.line import LineMaterial
 from math import sin
 from numpy import arange
 from tests.template import Test
@@ -21,7 +21,7 @@ from tests.template import Test
 class WaveTest(Test):
     def __init__(self):
         super().__init__(title="Wave Test",display_grid=False)
-        self.camera.set_pos([0, 0, 5])
+        self.camera.set_position([0, 0, 5])
         geometry = Geometry()
         point_material = PointMaterial(
             {"base_color": [1, 1, 0],
@@ -38,7 +38,7 @@ class WaveTest(Test):
         point_mesh = Mesh(geometry, point_material)
 
         line_material = LineMaterial(
-            {"base_color": [1, 0, 1],
+            {"base_color": [1, 1, 1],
              "line_width": 2}
         )
 

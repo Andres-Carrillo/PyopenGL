@@ -1,4 +1,4 @@
-from geometry.ellipsoid import Ellipsoid
+from geometry.simple3D.ellipsoid import Ellipsoid
 from math import pi, sin, cos
 
 class Sphere(Ellipsoid):

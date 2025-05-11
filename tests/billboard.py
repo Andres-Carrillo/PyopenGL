@@ -10,20 +10,20 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from tests.template import Test
-from geometry.box import BoxGeometry
+from geometry.simple3D.box import BoxGeometry
 from geometry.simple2D.rectangle import Rectangle
 from meshes.mesh import Mesh
 from core.textures.text import TextTexture
 from core.textures.texture import Texture
-from material.texture import TextureMaterial
-from core.matrix import Matrix
+from material.basic.texture import TextureMaterial
+from core.utils.matrix import Matrix
 
 
 class BillboardTest(Test):
 
     def __init__(self):
         super().__init__(title="Billboard Test", display_grid=False)
-        self.camera.set_pos([0, 0, 1])
+        self.camera.set_position([0, 0, 1])
 
         label_texture = TextTexture(text=" This is a Crate ",
                                     system_font_name="Arial Bold",
@@ -41,7 +41,7 @@ class BillboardTest(Test):
         label_geometry.apply_transform(Matrix.mat4_rotate_y(3.14))
 
         self.label = Mesh(label_geometry, label_material)
-        self.label.set_pos([0, 1, 0])
+        self.label.set_position([0, 1, 0])
         self.scene.add(self.label)
 
 
@@ -57,7 +57,7 @@ class BillboardTest(Test):
 
     def update(self):
         self.rig.update(self.input_handler, self.timer.delta_time())
-        self.label.look_at(self.camera.get_global_pos())
+        self.label.look_at(self.camera.global_position)
       
         self.renderer.render(self.scene, self.camera)
 

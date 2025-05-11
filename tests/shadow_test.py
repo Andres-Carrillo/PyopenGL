@@ -11,16 +11,16 @@ if package_dir not in sys.path:
 
 
 from tests.template import Test
-from geometry.sphere import Sphere
+from geometry.simple3D.sphere import Sphere
 from geometry.simple2D.rectangle import Rectangle
 from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
 from core.light.point import PointLight
-from material.phong import PhongMaterial
-from material.lambert import LambertMaterial
+from material.lighted.phong import PhongMaterial
+from material.lighted.lambert import LambertMaterial
 from tools.directional_light_tool import DirectionalLightTool
 from core.textures.texture import Texture
-from material.texture import TextureMaterial
+from material.basic.texture import TextureMaterial
 from meshes.mesh import Mesh
 from math import sin,cos,pi
 

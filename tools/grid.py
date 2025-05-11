@@ -1,6 +1,6 @@
 from meshes.mesh import Mesh
 from geometry.geometry import Geometry
-from material.line import LineMaterial
+from material.basic.line import LineMaterial
 
 
 class GridTool(Mesh):

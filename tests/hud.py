@@ -8,13 +8,13 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 # from core.app_base import Base
-from core.camera import Camera
+from core.rendering.camera import Camera
 from meshes.mesh import Mesh
-from core.scene import Scene
+from core.rendering.scene import Scene
 from core.textures.texture import Texture
-from geometry.box import BoxGeometry
+from geometry.simple3D.box import BoxGeometry
 from geometry.simple2D.rectangle import Rectangle
-from material.texture import TextureMaterial
+from material.basic.texture import TextureMaterial
 from core.textures.text import TextTexture
 from tests.template import Test
 

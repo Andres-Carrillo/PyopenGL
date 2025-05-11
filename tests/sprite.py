@@ -21,7 +21,7 @@ class SpriteTest(Test):
 
     def __init__(self):
         super().__init__(title="Sprite Test", display_grid=True)
-        self.rig.set_pos([0, 0.5, 3])
+        self.rig.set_position([0, 0.5, 3])
 
         geometry = Rectangle(width=1, height=1)
         tile_set = Texture("images/cloud.jpg")
@@ -35,7 +35,7 @@ class SpriteTest(Test):
         self.tilesPerSecond= 4
 
         self.sprite = Mesh(geometry, sprite_material)
-        self.sprite.set_pos([0, 0.5, 0])
+        self.sprite.set_position([0, 0.5, 0])
         self.scene.add(self.sprite)
 
     def update(self):
@@ -43,7 +43,7 @@ class SpriteTest(Test):
     
         tile_number = floor(self.timer.elapsed_time() * self.tilesPerSecond)
         self.sprite.material.uniforms["tile_number"].data = tile_number
-        self.sprite.look_at(self.camera.get_global_pos())
+        self.sprite.look_at(self.camera.global_position)
         # Update the scene with the texture applied
         self.renderer.render(self.scene, self.camera)
 

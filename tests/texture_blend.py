@@ -13,14 +13,14 @@ from tests.template import Test
 from core.textures.texture import Texture
 from geometry.simple2D.rectangle import  Rectangle
 from meshes.mesh import Mesh
-from material.material import Material
+from material.basic.material import Material
 from core.utils.timer import Timer
 
 
 class AnimatedTextureTest(Test):
     def __init__(self):
         super().__init__(title="Blending Texture Test",display_grid = False,static_camera=True)
-        self.camera.set_pos([0, 0, 4])
+        self.camera.set_position([0, 0, 4])
 
         vertex_shader_code = """
                                 uniform mat4 projection_matrix;

@@ -1,4 +1,4 @@
-from geometry.sphere import Sphere
+from geometry.simple3D.sphere import Sphere
 from material.basic.surface import SurfaceMaterial
 from meshes.mesh import Mesh
 from core.light.point import PointLight

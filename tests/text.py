@@ -10,19 +10,19 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from tests.template import Test
-from geometry.box import BoxGeometry
+from geometry.simple3D.box import BoxGeometry
 from meshes.mesh import Mesh
 from core.textures.text import TextTexture
-from material.texture import TextureMaterial
+from material.basic.texture import TextureMaterial
 
 class TextureTest(Test):
     def __init__(self):
         super().__init__(title="Texture Test", display_grid=False)
-        self.camera.set_pos([0,0,1])
+        self.camera.set_position([0,0,1])
         geometry = BoxGeometry(width=2,height=2,depth=2)
 
         message = TextTexture(text="Python 3D",
-                              sys_font_name="Impact",
+                              system_font_name="Impact",
                               font_size=32,
                               font_color=[0, 0, 200],
                               image_width=256,

@@ -11,14 +11,14 @@ if package_dir not in sys.path:
 
 from tests.template import Test
 from core.textures.texture import Texture
-from material.texture import TextureMaterial
+from material.basic.texture import TextureMaterial
 from geometry.simple2D.rectangle import  Rectangle
-from geometry.sphere import Sphere
+from geometry.simple3D.sphere import Sphere
 from meshes.mesh import Mesh  
-from core.render_target import RenderTarget
-from geometry.box import BoxGeometry
-from material.surface import SurfaceMaterial
-from core.camera import Camera
+from core.rendering.render_target import RenderTarget
+from geometry.simple3D.box import BoxGeometry
+from material.basic.surface import SurfaceMaterial
+from core.rendering.camera import Camera
 
 class SkyboxTest(Test):
     def __init__(self):
@@ -38,13 +38,13 @@ class SkyboxTest(Test):
         sphere_geo = Sphere()
         sphere_mat = TextureMaterial(Texture("images/grid.jpg"))
         self.sphere_mesh = Mesh(sphere_geo, sphere_mat)
-        self.sphere_mesh.set_pos([-1.2, 1, 0])
+        self.sphere_mesh.set_position([-1.2, 1, 0])
         self.scene.add(self.sphere_mesh)
 
         box_geo = BoxGeometry(width=2,height=2,depth=0.2)
         box_mat = SurfaceMaterial({"base_color": [0, 0, 0]})
         box = Mesh(box_geo, box_mat)
-        box.set_pos([1.2, 1, 0])
+        box.set_position([1.2, 1, 0])
         self.scene.add(box)
 
         # Create a render target for the second camera
@@ -53,11 +53,11 @@ class SkyboxTest(Test):
         screen_geo = Rectangle(width=1.8, height=1.8)
         screen_mat = TextureMaterial(self.render_target.texture)
         self.screen = Mesh(screen_geo, screen_mat)
-        self.screen.set_pos([1.2, 1, 0.11])
+        self.screen.set_position([1.2, 1, 0.11])
         self.scene.add(self.screen)
         # Set up the second camera
         self.sky_cam = Camera(aspect_ratio=self.window_width/self.window_height)
-        self.sky_cam.set_pos([0, 10, 0.1])
+        self.sky_cam.set_position([0, 10, 0.1])
         self.sky_cam.look_at([0, 0, 0])
         self.scene.add(self.sky_cam)
 

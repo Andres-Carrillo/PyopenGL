@@ -11,8 +11,8 @@ if package_dir not in sys.path:
 
 from core.base import Base
 from core.utils.openGLUtils import GlUtils
-from core.attribute import Attribute
-from core.input import Input
+from core.glsl.attribute import Attribute
+from core.utils.input import Input
 import OpenGL.GL as gl
 import glfw
 

@@ -10,15 +10,15 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from tests.template import Test
-from geometry.sphere import Sphere
+from geometry.simple3D.sphere import Sphere
 from meshes.mesh import Mesh
-from material.material import Material
+from material.basic.material import Material
 
 
 class ProceduralTextureTest(Test):
     def __init__(self):
         super().__init__(title="Noise Texture Test",display_grid = False,static_camera=True)
-        self.camera.set_pos([0, 0, 1.5])
+        self.camera.set_position([0, 0, 1.5])
 
         vertex_shader_code = """
                                 uniform mat4 projection_matrix;

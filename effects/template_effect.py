@@ -1,4 +1,4 @@
-from material.material import Material
+from material.basic.material import Material
 
 
 class TemplateEffect(Material):
