@@ -62,7 +62,7 @@ class PostProcessingTest(Test):
         
 
         self.glow_sphere = Mesh(sphere_geo, red_mat)
-        self.glow_sphere.matrix = self.sphere_mesh.matrix
+        self.glow_sphere._matrix = self.sphere_mesh._matrix
 
         self.glow_scene.add(self.glow_sphere)
 

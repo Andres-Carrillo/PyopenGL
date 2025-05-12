@@ -30,7 +30,7 @@ class Renderer(object):
         descendant_list = scene.descendant_list
         mesh_filter = lambda x: isinstance(x, Mesh)
         mesh_list = list(filter(mesh_filter, descendant_list))
-        print("Mesh List: ",mesh_list)
+        
         # shadow pass
         if self.shadows_enabled:
           
