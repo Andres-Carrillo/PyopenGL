@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 
 class Input:
     def __init__(self):
-        print("creating input handler")
+
         self.quit = False
         self.key_queue = []
         self.key_pressed_list = []

@@ -1,5 +1,6 @@
 import OpenGL.GL as gl
 import numpy as np
+import PyQt5
 
 class Uniform(object):
 
@@ -11,6 +12,7 @@ class Uniform(object):
 
     
     def locate_variable(self,program_ref,var_name):
+
         if self.data_type =="Light":
             # create a dictionary to hold the light type based on struct within the shader
             self.var_ref = {}
