@@ -24,7 +24,7 @@ class WaveTest(Test):
         self.camera.set_position([0, 0, 5])
         geometry = Geometry()
         point_material = PointMaterial(
-            {"base_color": [1, 1, 0],
+            {"base_color": [1, 1, 1],
              "point_size":10}
         )
         
@@ -46,6 +46,11 @@ class WaveTest(Test):
         
         self.scene.add(point_mesh)
         self.scene.add(line_mesh)
+        
+    def update(self) -> None:
+        self._base_update()
+        # render the scene        
+        self.renderer.render(self.scene, self.camera)
        
         
 

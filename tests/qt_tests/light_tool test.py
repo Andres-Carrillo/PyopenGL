@@ -8,6 +8,8 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
+
+    
 from core.qt_base import QGLApp
 from geometry.simple3D.sphere import Sphere
 from core.light.ambient import AmbientLight
@@ -25,6 +27,8 @@ from material.basic.material import Material
 from geometry.simple2D.rectangle import Rectangle
 from PyQt5 import QtWidgets
 import sys
+from meshes.sphere import SphereMesh
+
 class LightTest(QGLApp):
     def __init__(self):
         super().__init__(title="Light Test", display_grid=False)
@@ -32,7 +36,7 @@ class LightTest(QGLApp):
         # must be called whenever an openGl function is called
         # so any initialization of openGL functions should be done here
         # only after making the context current
-        self.gl_widget.makeCurrent()
+        self.gl_widget.makeCurrent() 
 
         noise_texture = Texture("images/rgb-noise.jpg")
         water_texture = Texture("images/pool_water.jpg")   
@@ -40,21 +44,18 @@ class LightTest(QGLApp):
         self.distort_mat = PhongMaterial(texture=water_texture,noise=noise_texture,number_of_lights=3,use_shadow=True)
 
 
-
-       
-
         self.gl_widget._camera.set_position([0, 0, 6])
 
         grid_texture = Texture(image_path="images/grid.jpg")
 
         self.ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
-        self.gl_widget._scene.add(self.ambient_light)
+        self.gl_widget.scene.add(self.ambient_light)
 
         self.directional_light = DirectionalLight(color=[0.8, 0.8, 0.8], direction=[-1, -1, 0])
-        self.gl_widget._scene.add(self.directional_light)
+        self.gl_widget.scene.add(self.directional_light)
 
         self.point_light = PointLight(color=[0.9, 0, 0], position=[1, 1, 0.8])
-        self.gl_widget._scene.add(self.point_light)
+        self.gl_widget.scene.add(self.point_light)
 
 
         # add the light tools to the scene
@@ -95,36 +96,18 @@ class LightTest(QGLApp):
         floor.set_position([0, 0, -1])
         floor.rotate_x(-pi / 2)
 
+
         #water sphere
         self.water_sphere = Mesh(geometry=sphere_geo, material=self.distort_mat)
         self.water_sphere.set_position([0, 4.2, 0])
 
         # add the spheres to the scene
-        self.gl_widget._scene.add(self.flat_sphere)
-        self.gl_widget._scene.add(self.lambert_sphere)
-        self.gl_widget._scene.add(self.phong_sphere)
-        self.gl_widget._scene.add(floor)
-        self.gl_widget._scene.add(self.water_sphere)
-        self.gl_widget._renderer.enable_shadows(self.directional_light)
-
-
-    # def update(self):
-    #         self._base_update()
-    #         # self.directional_light.set_direction([-1, sin(0.5*self.timer.elapsed_time()), 0])
-    #         # super().update()
-    #         time_delta = self.timer.delta_time()
-    #         self.point_light.set_position([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
-
-    #         self.directional_light.set_direction([sin(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), -2])
-    #         self.directional_light.rotate_y(0.0137,True)
-
-            
-           
-    #         # self.flat_sphere.material.uniforms["time"].data += time_delta
-    #         # self.lambert_sphere.material.uniforms["time"].data += time_delta
-    #         self.water_sphere.material.uniforms["time"].data += time_delta * 2
-
-    #         self.renderer.render(self.scene, self.camera)
+        self.gl_widget.scene.add(self.flat_sphere)
+        self.gl_widget.scene.add(self.lambert_sphere)
+        self.gl_widget.scene.add(self.phong_sphere)
+        self.gl_widget.scene.add(floor)
+        self.gl_widget.scene.add(self.water_sphere)
+        self.gl_widget.renderer.enable_shadows(self.directional_light)
 
 
 

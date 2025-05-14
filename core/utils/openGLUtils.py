@@ -1,59 +1,95 @@
 import OpenGL.GL as gl
 from OpenGL.GL.shaders import compileProgram, compileShader
+from PyQt5.QtGui import QOpenGLShaderProgram,QOpenGLShader
 
 class GlUtils(object):
-
+    
+    IS_QT = False
+    
     @staticmethod
     def InitializeShader(code:str, shader_type:int) -> int:
         # add header to shader code
         shader_code = '#version 330 core' + code
-        # create dummy shader
-        shader = gl.glCreateShader(shader_type)
 
-        # store shader code in shader
-        gl.glShaderSource(shader, shader_code)
-        # compile shader
-        gl.glCompileShader(shader)
-
-        # check for compile errors
-        compile_status = gl.glGetShaderiv(shader, gl.GL_COMPILE_STATUS)
-        if compile_status != gl.GL_TRUE:
-            info_log = gl.glGetShaderInfoLog(shader)
-            gl.glDeleteShader(shader)
-            raise RuntimeError(f"Shader compilation failed: {info_log.decode()}")
+        # if shader_type is QOpenGLShader.ShaderTypeBit:
+        if isinstance(shader_type, QOpenGLShader.ShaderTypeBit):
+                    # create dummy shader
+            shader = QOpenGLShader(shader_type)
+            
+            # store shader code in shader & check for compile errors
+            if not shader.compileSourceCode(shader_code):
+                raise RuntimeError(f"Shader compilation failed: {shader.log()}")
+            
+            return shader
         
-        return shader
+        else:
+            # create dummy shader
+            shader = gl.glCreateShader(shader_type)
+
+            # store shader code in shader
+            gl.glShaderSource(shader, shader_code)
+            # compile shader
+            gl.glCompileShader(shader)
+
+            # check for compile errors
+            compile_status = gl.glGetShaderiv(shader, gl.GL_COMPILE_STATUS)
+            if compile_status != gl.GL_TRUE:
+                info_log = gl.glGetShaderInfoLog(shader)
+                gl.glDeleteShader(shader)
+                raise RuntimeError(f"Shader compilation failed: {info_log.decode()}")
+            
+            return shader
     
 
     @staticmethod
     def InitializeProgram(vertex_shader_code:str, fragment_shader_code:str) -> int:
-        vertex_shader_ref = GlUtils.InitializeShader(vertex_shader_code, gl.GL_VERTEX_SHADER)
-        fragment_shader_ref = GlUtils.InitializeShader(fragment_shader_code, gl.GL_FRAGMENT_SHADER)
+       
+        # handle the case where the shader is a QOpenGLShader
+        if GlUtils.IS_QT:
+            print("Using QOpenGLShader")
+            vertex_shader_ref = GlUtils.InitializeShader(vertex_shader_code, QOpenGLShader.Vertex)
+            fragment_shader_ref = GlUtils.InitializeShader(fragment_shader_code, QOpenGLShader.Fragment)
+            # create program
+            program = QOpenGLShaderProgram()
+            
+            # attach shaders to program
+            if not program.addShader(vertex_shader_ref):
+                raise RuntimeError(f"Vertex shader compilation failed: {program.log()}")
+            
+            if not program.addShader(fragment_shader_ref):
+                raise RuntimeError(f"Fragment shader compilation failed: {program.log()}")
+            
+            # link program
+            if not program.link():
+                raise RuntimeError(f"Program linking failed: {program.log()}")
+            
+            # bind program
+            program.bind()
+            
+            return program.programId()
+        else:
+            vertex_shader_ref = GlUtils.InitializeShader(vertex_shader_code, gl.GL_VERTEX_SHADER)
+            fragment_shader_ref = GlUtils.InitializeShader(fragment_shader_code, gl.GL_FRAGMENT_SHADER)
 
-        # check for shader compilation errors
-        GlUtils.check_shader_compilation(vertex_shader_ref)
-        GlUtils.check_shader_compilation(fragment_shader_ref)
+            # check for shader compilation errors
+            GlUtils.check_shader_compilation(vertex_shader_ref)
+            GlUtils.check_shader_compilation(fragment_shader_ref)
+            
+            # create program
+            program = gl.glCreateProgram()
+
+            #attach shaders to program
+            gl.glAttachShader(program,vertex_shader_ref)
+            gl.glAttachShader(program,fragment_shader_ref)
+
+            # link program
+            gl.glLinkProgram(program)
+
+            # check for link errors
+            GlUtils.check_program_linking(program)
+            
+            return program
         
-        # create program
-        program = gl.glCreateProgram()
-
-        #attach shaders to program
-        gl.glAttachShader(program,vertex_shader_ref)
-        gl.glAttachShader(program,fragment_shader_ref)
-
-        # link program
-        gl.glLinkProgram(program)
-
-
-
-        # check for link errors
-        GlUtils.check_program_linking(program)
-
-        
-
-        return program
-
-     
     @staticmethod
     def create_shader_module(filepath:str,module_type: int) -> int:
         source_code = ""

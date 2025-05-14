@@ -1,5 +1,9 @@
 from core.object3D import Object3D
 import OpenGL.GL as gl
+from geometry.simple3D.sphere import Sphere
+from material.basic.basic import BasicMaterial
+from material.lighted.flat import FlatMaterial
+from geometry.geometry import Geometry
 
 class Mesh(Object3D):
 
@@ -20,3 +24,22 @@ class Mesh(Object3D):
             attrib_obj.associate_variable(self.material.program,var_name)
 
         gl.glBindVertexArray(0)
+
+
+
+""" SphereMesh class
+This class creates a sphere mesh with a specified radius, number of segments, and rings.
+It also allows for the use of a custom material and the number of lights affecting the material.
+The class inherits from the Mesh class and initializes the geometry and material for the sphere.
+As well as the shader program for the material and geometry."""
+class SphereMesh(Mesh):
+    def __init__(self,material:BasicMaterial = None,
+                 geometry:Geometry = None,num_of_light:int=1,position:list = [0,0,0]):
+        
+        
+        if material is None:
+            material = FlatMaterial(properties={"base_color": [1.0, 1.0, 1.0]}, number_of_lights=num_of_light)
+
+
+        super().__init__(geometry=geometry, material=material)
+        self.set_position(position)

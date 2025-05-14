@@ -16,7 +16,7 @@ class Geometry(object):
 
     def count_vertices(self):
         attribute = list(self.attributes.values())[0]
-        self.vertex_count = len(attribute.data)
+        self.vertex_count = len(attribute._data)
 
     def get_vertex_count(self):
         if self.vertex_count is None:
@@ -30,9 +30,9 @@ class Geometry(object):
                                       matrix[1][0:3],
                                       matrix[2][0:3]])
         
-        old_position = self.attributes[var_name].data
-        old_vertex_normal_data = self.attributes["vertex_normal"].data
-        old_face_normal_data = self.attributes["face_normal"].data
+        old_position = self.attributes[var_name]._data
+        old_vertex_normal_data = self.attributes["vertex_normal"]._data
+        old_face_normal_data = self.attributes["face_normal"]._data
         new_position = []
         new_vertex_normal = []
         new_face_normal = []
@@ -73,7 +73,7 @@ class Geometry(object):
 
     def merge(self,other_geometry):
         for var_name, attrib_obj in self.attributes.items():
-            attrib_obj.data += other_geometry.attributes[var_name].data
+            attrib_obj.data += other_geometry.attributes[var_name]._data
             attrib_obj.upload_data()
         
         self.count_ertices()

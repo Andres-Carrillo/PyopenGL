@@ -56,9 +56,6 @@ class Material(object):
             else:
                 raise RuntimeError(f"Property {name} not found in material")
             
-        print("properties set for the material")
-            
-
 
     def update_render_settings(self):
         """ Configure OpenGL with render settings """
