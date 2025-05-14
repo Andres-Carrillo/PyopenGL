@@ -28,7 +28,7 @@ class DrawHex(Base):
         self._init_fragment_shader()
         
         self.program_ref = GlUtils.InitializeProgram(self.vs_code, self.framgent_code)
-        self.vao_ref = gl.glGenVertexArrays(1)
+        self.vao_ref = gl.glGenVertexArrays(0)
 
         gl.glBindVertexArray(self.vao_ref)
         gl.glLineWidth(14)

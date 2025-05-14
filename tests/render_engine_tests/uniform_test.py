@@ -15,7 +15,6 @@ from core.glsl.attribute import Attribute
 from core.glsl.uniform import Uniform
 import OpenGL.GL as gl
 from core.utils.timer import Timer
-import glfw.GLFW as GLFW_CONSTANTS
 import math
 
 class TestUniform(Base):
@@ -57,6 +56,7 @@ class TestUniform(Base):
 
     def _init_vertex_shader(self)->str:
         vertex_shader_code = """
+                        
                                  in vec3 position;
                                  uniform vec3 translation;
                                  void main()
