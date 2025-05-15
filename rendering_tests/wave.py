@@ -15,7 +15,7 @@ from material.point import PointMaterial
 from material.line import LineMaterial
 from math import sin
 from numpy import arange
-from tests.template import Test
+from rendering_tests.template import Test
 
 
 class WaveTest(Test):

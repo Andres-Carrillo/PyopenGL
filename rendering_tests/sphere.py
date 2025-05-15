@@ -12,7 +12,7 @@ from core.renderer import Renderer
 from core.scene import Scene
 from geometry.sphere import Sphere
 from material.material import Material
-from tests.template import Test
+from rendering_tests.template import Test
 from core.utils.timer import Timer
 
 

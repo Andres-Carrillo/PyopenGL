@@ -11,7 +11,7 @@ if package_dir not in sys.path:
 from meshes.mesh import Mesh
 from geometry.box import BoxGeometry
 from material.surface import SurfaceMaterial
-from tests.template import Test
+from rendering_tests.template import Test
 
 class FrameworkTest(Test):
 

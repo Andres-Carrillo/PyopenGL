@@ -57,3 +57,5 @@ class Test(Base):
         self._base_update()
         # render the scene        
         self.renderer.render(self.scene, self.camera)
+
+

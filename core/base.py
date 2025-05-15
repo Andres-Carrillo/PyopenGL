@@ -5,6 +5,20 @@ from core.utils.timer import Timer
 from core.utils.fps import FPS
 import OpenGL.GL as gl
 import pygame as pg
+# import dearpygui.dearpygui as dpg
+# import dearpygui.demo as demo
+
+# dpg.create_context()
+# dpg.create_viewport(title='Custom Title', width=600, height=600)
+
+# demo.show_demo()
+
+# dpg.setup_dearpygui()
+# dpg.show_viewport()
+# dpg.start_dearpygui()
+# dpg.destroy_context()
+
+
 
 """ 
         Base class for all applications.
@@ -94,8 +108,7 @@ class Base:
 
         # Enable V-Sync
         glfw.swap_interval(1)
-
-
+    
     """
             Initializes the variables used in the application.
             This function is called in the constructor.
@@ -182,3 +195,288 @@ class Base:
         gl.glViewport(0, 0, width, height)
         self.window_width = width
         self.window_height = height
+
+
+
+# import dearpygui.dearpygui as dpg
+# from core.utils.timer import Timer
+# from core.utils.fps import FPS
+
+# import dearpygui.dearpygui as dpg
+# from core.utils.timer import Timer
+# from core.utils.fps import FPS
+# import OpenGL.GL as gl
+
+
+# class DearGuiBase:
+#     """
+#     Base class for all applications using Dear PyGui with PyOpenGL rendering.
+#     This class handles the initialization of Dear PyGui, the creation of a window,
+#     and the integration of OpenGL rendering.
+#     Derived classes should implement the `update` method to provide their own application logic.
+#     """
+
+#     def __init__(self, title: str = "My App", width: int = 800, height: int = 600) -> None:
+#         # Initialize Dear PyGui context
+#         dpg.create_context()
+
+#         # Create a viewport (window)
+#         self.title = title
+#         self.window_width = width
+#         self.window_height = height
+#         dpg.create_viewport(title=self.title, width=self.window_width, height=self.window_height)
+
+#         # Initialize class variables
+#         self._init_vars()
+
+#         # Set up Dear PyGui callbacks
+#         self._setup_callbacks()
+
+#         # Set up Dear PyGui viewport
+#         dpg.setup_dearpygui()
+
+#         # Initialize OpenGL
+#         self._init_opengl()
+
+#     def _init_vars(self) -> None:
+#         """Initializes the variables used in the application."""
+#         self.timer = Timer()
+#         self.fps_counter = FPS()
+#         self.show_fps = True
+
+#     def _setup_callbacks(self) -> None:
+#         """Sets up callbacks for Dear PyGui events."""
+#         # Add a callback for window resize
+#         dpg.set_viewport_resize_callback(self._on_resize)
+
+#     def _init_opengl(self) -> None:
+#         """Initializes OpenGL settings."""
+#         # Set the OpenGL viewport to match the window size
+#         gl.glViewport(0, 0, self.window_width, self.window_height)
+
+#         # Set the background color
+#         gl.glClearColor(0.1, 0.1, 0.1, 1.0)
+
+#     def update(self):
+#         """
+#         Derived classes should implement this function to update
+#         the application state, render the scene, and handle input.
+#         """
+#         pass
+
+#     def render(self) -> None:
+#         """
+#         Handles OpenGL rendering. Derived classes can override this method
+#         to implement custom rendering logic.
+#         """
+#         # Clear the screen
+#         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+
+#         # Example: Render a simple triangle (can be replaced with custom rendering logic)
+#         gl.glBegin(gl.GL_TRIANGLES)
+#         gl.glColor3f(1.0, 0.0, 0.0)  # Red
+#         gl.glVertex2f(-0.5, -0.5)
+#         gl.glColor3f(0.0, 1.0, 0.0)  # Green
+#         gl.glVertex2f(0.5, -0.5)
+#         gl.glColor3f(0.0, 0.0, 1.0)  # Blue
+#         gl.glVertex2f(0.0, 0.5)
+#         gl.glEnd()
+
+#     def run(self) -> None:
+#         """
+#         Run function of the application.
+#         Derived classes need not implement this function unless
+#         they wish to extend it with additional logic.
+#         """
+#         # Show the viewport
+#         dpg.show_viewport()
+
+#         # Main loop for all applications
+#         while dpg.is_dearpygui_running():
+#             # Update logic to be implemented in derived classes
+#             self.update()
+
+#             # Perform OpenGL rendering
+#             self.render()
+
+#             # Add FPS counter to the window title
+#             if self.show_fps:
+#                 self._display_fps()
+
+#             # Render Dear PyGui
+#             dpg.render_dearpygui_frame()
+
+#         # Cleanup after the main loop exits
+#         self.quit()
+
+#     def _display_fps(self) -> None:
+#         """Calculates the frames per second (FPS) and displays it in the window title."""
+#         fps = self.fps_counter.update()
+#         dpg.set_viewport_title(f"{self.title} - FPS: {fps:.2f}")
+
+#     def quit(self) -> None:
+#         """
+#         Quits the application by destroying the Dear PyGui context.
+#         It cleans up the resources used by the application.
+#         """
+#         dpg.destroy_context()
+
+#     def __del__(self) -> None:
+#         """Destructor for the Base class. Cleans up resources."""
+#         self.quit()
+
+#     def _on_resize(self, sender, app_data) -> None:
+#         """
+#         Callback function for window resize events.
+#         Adjusts the OpenGL viewport to match the new window size.
+#         Args:
+#             sender: The sender of the event.
+#             app_data: The event data containing the new width and height.
+#         """
+#         if isinstance(app_data, tuple):
+#             self.window_width, self.window_height = app_data[0], app_data[1]
+#         elif isinstance(app_data, dict):
+#             self.window_width, self.window_height = app_data['width'], app_data['height']
+#         else:
+#             raise TypeError(f"Unexpected type for app_data: {type(app_data)}")
+
+#         # Update the OpenGL viewport
+#         gl.glViewport(0, 0, self.window_width, self.window_height)
+
+
+import imgui
+from imgui.integrations.glfw import GlfwRenderer
+
+class ImGuiBase:
+    """
+    Base class for all applications using ImGui and GLFW.
+    This class handles the initialization of GLFW, ImGui, and the OpenGL context.
+    Derived classes should implement the `update` and `render` methods to provide
+    their own application logic and rendering.
+    """
+
+    def __init__(self, title: str = "My App", width: int = 800, height: int = 600) -> None:
+        # Initialize GLFW
+        if not glfw.init():
+            raise Exception("GLFW could not be initialized!")
+
+        # Set OpenGL version and profile
+        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+
+        # Create a GLFW window
+        self.window = glfw.create_window(width, height, title, None, None)
+        if not self.window:
+            glfw.terminate()
+            raise Exception("GLFW window could not be created!")
+
+        # Make the OpenGL context current
+        glfw.make_context_current(self.window)
+
+        # Enable V-Sync
+        glfw.swap_interval(1)
+
+        # Initialize ImGui
+        imgui.create_context()
+        self.impl = GlfwRenderer(self.window)
+
+        # Store window properties
+        self.title = title
+        self.window_width = width
+        self.window_height = height
+
+        # Initialize utility classes
+        self.timer = Timer()
+        self.fps_counter = FPS()
+        self.show_fps = True
+
+        # Set the OpenGL viewport
+        gl.glViewport(0, 0, self.window_width, self.window_height)
+
+        # Set the background color
+        gl.glClearColor(0.1, 0.1, 0.1, 1.0)
+
+        # Set resize callback
+        glfw.set_framebuffer_size_callback(self.window, self._on_resize)
+
+    def _on_resize(self, window, width, height) -> None:
+        """
+        Callback function for window resize events.
+        Adjusts the OpenGL viewport to match the new window size.
+        """
+        self.window_width = width
+        self.window_height = height
+        gl.glViewport(0, 0, width, height)
+
+    def update(self):
+        """
+        Derived classes should implement this function to update
+        the application state and handle input.
+        """
+        pass
+
+    def render(self):
+        """
+        Derived classes should implement this function to render
+        the scene using OpenGL.
+        """
+        pass
+
+    def run(self) -> None:
+        """
+        Main loop for the application. Handles ImGui rendering,
+        OpenGL rendering, and GLFW event polling.
+        """
+        while not glfw.window_should_close(self.window):
+            # Poll events
+            glfw.poll_events()
+            self.impl.process_inputs()
+
+            # Start a new ImGui frame
+            imgui.new_frame()
+
+            # Update application logic
+            self.update()
+
+            # Clear the screen
+            gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+
+            # Render the scene
+            self.render()
+
+            # Render ImGui
+            imgui.render()
+            self.impl.render(imgui.get_draw_data())
+
+            # Swap buffers
+            glfw.swap_buffers(self.window)
+
+            # Display FPS in the window title
+            if self.show_fps:
+                self._display_fps()
+
+        # Cleanup
+        self.quit()
+
+    def _display_fps(self) -> None:
+        """
+        Calculates the frames per second (FPS) and displays it in the window title.
+        """
+        fps = self.fps_counter.update()
+        glfw.set_window_title(self.window, f"{self.title} - FPS: {fps:.2f}")
+
+    def quit(self) -> None:
+        """
+        Cleans up resources and terminates GLFW and ImGui.
+        """
+        self.impl.shutdown()
+        imgui.destroy_context()
+        glfw.destroy_window(self.window)
+        glfw.terminate()
+
+    def __del__(self) -> None:
+        """
+        Destructor for the Base class. Ensures resources are cleaned up.
+        """
+        self.quit()

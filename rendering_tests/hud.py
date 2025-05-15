@@ -16,7 +16,7 @@ from geometry.box import BoxGeometry
 from geometry.simple2D.rectangle import Rectangle
 from material.texture import TextureMaterial
 from core.textures.text import TextTexture
-from tests.template import Test
+from rendering_tests.template import Test
 
 class Example(Test):
     """

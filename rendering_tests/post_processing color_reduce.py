@@ -9,7 +9,7 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from tests.template import Test
+from rendering_tests.template import Test
 from core.textures.texture import Texture
 from material.texture import TextureMaterial
 from geometry.simple2D.rectangle import  Rectangle
@@ -17,12 +17,12 @@ from geometry.sphere import Sphere
 from meshes.mesh import Mesh  
 
 from tools.post_processor import Postprocessor
-from effects.pixelation import PixelationEffect
+from effects.color_reduce import ColorReduceEffect
 
 
-class PixelationTest(Test):
+class ColorReduceTest(Test):
     def __init__(self):
-        super().__init__(title="Pixelation Test",display_grid=False)
+        super().__init__(title="Color Reduction Test",display_grid=False)
 
         sky_geo = Sphere(radius=50)
         sky_mat = TextureMaterial(Texture("images/sky.jpg"))
@@ -46,19 +46,17 @@ class PixelationTest(Test):
         self.scene.add(self.sphere_mesh)
 
         self.post_processor = Postprocessor(self.renderer, self.scene, self.camera)
-        self.post_effect = PixelationEffect(resolution=(800,600),pixel_size=10)
 
-        self.post_processor.add_effect(self.post_effect)
+        self.post_processor.add_effect(ColorReduceEffect())
 
 
 
     def update(self) -> None:
         self._base_update()
-        self.post_effect.uniforms["resolution"].data = (self.window_width, self.window_height)
         self.post_processor.render()
 
 
 if __name__ == "__main__":
-    test = PixelationTest()
+    test = ColorReduceTest()
     test.run()
     test.quit()

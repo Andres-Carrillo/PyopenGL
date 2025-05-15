@@ -9,7 +9,7 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from tests.template import Test
+from rendering_tests.template import Test
 from core.textures.texture import Texture
 from material.texture import TextureMaterial
 from geometry.simple2D.rectangle import  Rectangle

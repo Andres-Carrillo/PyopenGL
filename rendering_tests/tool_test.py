@@ -12,7 +12,7 @@ from tools.axes_tool import AxesAid
 from tools.grid import GridTool
 from tools.movement_rig import MovementRig
 from math import pi
-from tests.template import Test
+from rendering_tests.template import Test
 
 class ToolTest(Test):
     def __init__(self):

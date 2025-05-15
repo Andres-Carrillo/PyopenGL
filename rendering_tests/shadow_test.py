@@ -10,7 +10,7 @@ if package_dir not in sys.path:
 
 
 
-from tests.template import Test
+from rendering_tests.template import Test
 from geometry.sphere import Sphere
 from geometry.simple2D.rectangle import Rectangle
 from core.light.ambient import AmbientLight
