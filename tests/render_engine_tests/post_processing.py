@@ -58,7 +58,6 @@ class PostProcessingTest(Test):
         self.post_processor.add_effect(self.vertical_blur_effect)
 
         main_scene = self.post_processor.render_target_list[0].texture
-        print(main_scene)
 
         self.post_processor.add_effect(AdditiveBlendEffect(blend_texture=main_scene, src_strength=2, blend_strength=1))
 

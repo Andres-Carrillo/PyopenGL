@@ -4,7 +4,7 @@ import OpenGL.GL as gl
 from shaders.shaders import Shader
 
 class FlatMaterial(LightMaterial):
-    def __init__(self,texture:Texture=None,noise:Texture = None, properties:dict={},number_of_lights:int = 1) -> None:
+    def __init__(self,texture:Texture=None,noise:Texture = None, properties:dict={},number_of_lights:int = 0) -> None:
         vertex_shader_code = Shader.light_struct() + LightMaterial.generate_light_uniform_list(number_of_lights) + """ \n """ + """ 
 
                                 vec3 calculate_light(Light light, vec3 point_pos,vec3 point_normal){
@@ -70,6 +70,7 @@ class FlatMaterial(LightMaterial):
                                 uniform vec3 base_color;
                                 uniform bool use_texture;
                                 uniform sampler2D texture_sampler;
+                                uniform bool using_lights;
                                 in vec2 uv;
                                 in vec3 light;
                                 out vec4 frag_color;
@@ -88,8 +89,11 @@ class FlatMaterial(LightMaterial):
                                         color *= texture(texture_sampler,uv);
                                     }
 
-                                    // apply lighting to color
-                                    color *= vec4(light,1);
+                                    if (using_lights)
+                                    {
+                                        // apply lighting to color
+                                        color *= vec4(light,1);
+                                    }
 
                                     // set the fragment color
                                     frag_color = color;
@@ -114,6 +118,8 @@ class FlatMaterial(LightMaterial):
             self.add_uniform("time", 0.0, "float")
             self.add_uniform("uv_offset", [0.3,0.07], "vec2")
             self.add_uniform("distortion_strength", 0.02, "float")
+
+      
 
         self.locate_uniforms()
 

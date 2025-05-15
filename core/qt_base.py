@@ -7,90 +7,6 @@ import glfw
 from core.utils.timer import Timer
 from core.utils.fps import FPS
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
-# from geometry.simple3D.sphere import Sphere
-# from core.light.ambient import AmbientLight
-# from core.light.directional import DirectionalLight
-# from core.light.point import PointLight
-# from material.lighted.phong import PhongMaterial
-# from material.lighted.lambert import LambertMaterial
-# from material.lighted.flat import FlatMaterial
-# from core.textures.texture import Texture
-# from meshes.mesh import Mesh
-
-# from config import SCREEN_WIDTH, SCREEN_HEIGHT
-# class GlWidget(QtOpenGL.QGLWidget):
-    # def __init__(self,parent:QtWidgets.QWidget=None,title:str="Test App",resolution:list=[800,600],
-    #              show_fps:bool=True,major_version:int=3,minor_version:int=3):
-    #     super().__init__(parent)
-    #     self._title = title        
-    #     self._major_version = major_version
-    #     self._minor_version = minor_version
-    #     self._fps_counter = FPS()
-    #     self._resolution = resolution
-    #     self._timer = Timer()
-    #     self._show_fps = show_fps
-    #     self._qtimer = QtCore.QTimer(self)
-    #     self._qtimer.timeout.connect(self.updateGL)
-    #     self._qtimer.start(16) #~60fps
-
-    #     format = QGLFormat()
-    #     format.setVersion(self._major_version, self._minor_version)
-    #     format.setProfile(QGLFormat.CoreProfile)
-    #     format.setSampleBuffers(True)
-        
-      
-    #     self.setWindowTitle(title)
-
-    #     self.setMinimumSize(800, 600)
-    #     self.setMouseTracking(True)
-
-    # @property
-    # def resolution(self) -> list:
-    #     return self._resolution
-    
-    # @property
-    # def aspect_ratio(self) -> float:
-    #     return self._resolution[0] / self._resolution[1]
-
-    # @property
-    # def title(self) -> str:
-    #     return self._title
-    
-    # @property
-    # def major_version(self) -> int:
-    #     return self._major_version
-    
-    # @property
-    # def minor_version(self) -> int:
-    #     return self._minor_version
-
-    # @property
-    # def fps_counter(self) -> FPS:
-    #     return self._fps_counter
-    
-    # @property
-    # def timer(self) -> Timer:
-    #     return self._timer
-    
-    # def initializeGL(self):
-    #     gl.glClearColor(0.0, 0.0, 0.0, 1.0)
-
-
-
-    # def piantGl(self) -> None:
-    #     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-    #     gl.glBegin(gl.GL_TRIANGLES)
-    #     gl.glColor3f(1.0, 0.0, 0.0)
-    #     gl.glVertex3f(0.0, 1.0, 0.0)
-    #     gl.glColor3f(0.0, 1.0, 0.0)
-    #     gl.glVertex3f(-1.0, -1.0, 0.0)
-    #     gl.glColor3f(0.0, 0.0, 1.0)
-    #     gl.glVertex3f(1.0, -1.0, 0.0)
-    #     gl.glEnd()
-
-
-    # def resizeGL(self, w:int, h:int) -> None:
-    #     gl.glViewport(0, 0, w, h)
 from core.rendering.renderer import Renderer
 from core.rendering.scene import Scene
 from core.rendering.camera import Camera
@@ -100,6 +16,11 @@ from tools.movement_rig import MovementRig
 from tools.grid import GridTool
 from math import pi
 from core.utils.qt_input import Input
+from material.lighted.phong import PhongMaterial
+from meshes.mesh import Mesh
+from geometry.simple3D.sphere import Sphere
+from material.lighted.flat import FlatMaterial
+
 # main GL Context
 class GLWidget(QtOpenGL.QGLWidget):
     def __init__(self,parent:QtWidgets.QWidget=None,resolution:list=[800,600],
@@ -124,6 +45,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         self._renderer = Renderer(clear_color=self._background_color,window_width=self._resolution[0],window_height=self._resolution[1])
         self._input_handler = Input()
         self._timer = Timer()
+      
     
         self.rig = None
 
@@ -147,6 +69,13 @@ class GLWidget(QtOpenGL.QGLWidget):
                             center_color=[1, 1, 0])
             grid.rotate_x(-pi / 2)
             self._scene.add(grid)
+
+        self._material = FlatMaterial(properties={"base_color": [1.0,0,0]})#PhongMaterial(number_of_lights=0)
+        self._geometry = Sphere()
+        self._mesh = Mesh(geometry=self._geometry, material=self._material)
+        self._mesh.set_position([0, 0, 0])
+        
+        self._scene.add(self._mesh)
     
     def paintGL(self):
         self._update()

@@ -5,7 +5,7 @@ from shaders.shaders import Shader
 
 class PhongMaterial(LightMaterial):
     def __init__(self,texture:Texture=None,noise:Texture = None,bump_texture:Texture = None,
-                  properties:dict={},number_of_lights:int = 1,use_shadow=False) -> None:
+                  properties:dict={},number_of_lights:int = 0,use_shadow=False) -> None:
         vertex_shader_code =  Shader.shadow_struct() + Shader.shadow_enabled_vertex_shader() 
         
         
@@ -62,6 +62,7 @@ class PhongMaterial(LightMaterial):
                                 uniform bool use_texture;
                                 uniform bool use_bump_texture;
                                 uniform bool use_shadow;
+                                uniform bool using_lights;
                                 uniform sampler2D texture_sampler;
                                 uniform sampler2D bump_texture;
                                 uniform float bump_strength;
@@ -96,13 +97,16 @@ class PhongMaterial(LightMaterial):
                                         calculated_normal += bump_strength * vec3(texture2D(bump_texture,uv));
                                     }
 
-                                    // calculate the lighting effect
-                                    vec3 light = vec3(0.0,0.0,0.0);
-                                    """ + LightMaterial.generate_light_sum(number_of_lights) + """ \n """ + """
+                                    if (using_lights)
+                                    {
+                                        // calculate the lighting effect
+                                        vec3 light = vec3(0.0,0.0,0.0);
+                                        """ + LightMaterial.generate_light_sum(number_of_lights) + """ \n """ + """
 
-                                    // apply lighting to color
-                                    color *= vec4(light,1.0);
-
+                                        // apply lighting to color
+                                        color *= vec4(light,1.0);
+                                    }
+                                    
                                     if (use_shadow)
                                     {
                                        

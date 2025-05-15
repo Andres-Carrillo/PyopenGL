@@ -94,9 +94,8 @@ class Renderer(object):
             # clear the depth buffer
             gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
         for mesh in viewable_meshes:
-            # print("mesh name:",mesh)
             # install the program for the mesh
-            print(gl.glUseProgram(mesh.material.program))
+            gl.glUseProgram(mesh.material.program)
             # bind vertex array object for the mesh
             gl.glBindVertexArray(mesh.vao_ref)
 
@@ -134,8 +133,8 @@ class Renderer(object):
             # ================== update the uniforms for the mesh stored in the material ==================
             for var_name,uniform_obj in mesh.material.uniforms.items():
 
-                # if uniform_obj.data is not None:
-                uniform_obj.upload_data()
+                if uniform_obj.data is not None:
+                    uniform_obj.upload_data()
 
 
             #update the render settings for the material

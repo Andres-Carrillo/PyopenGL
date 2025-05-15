@@ -5,7 +5,7 @@ import OpenGL.GL as gl
 
 class LambertMaterial(LightMaterial):
     def __init__(self,texture:Texture=None,noise:Texture= None,bump_texture:Texture=None,
-                  properties:dict={},number_of_lights:int = 1,use_shadow:bool = False) -> None:
+                  properties:dict={},number_of_lights:int = 0,use_shadow:bool = False) -> None:
         vertex_shader_code =   """
             uniform mat4 projection_matrix;
             uniform mat4 view_matrix;
@@ -91,6 +91,7 @@ class LambertMaterial(LightMaterial):
                                 uniform Shadow shadow_obj;
                                 uniform vec3 base_color;
                                 uniform bool use_texture;
+                                uniform bool using_lights;
                                 uniform sampler2D texture_sampler;
                                 uniform bool use_bump_texture;
                                 uniform sampler2D bump_texture;
@@ -125,12 +126,18 @@ class LambertMaterial(LightMaterial):
                                         calculated_normal += bump_strength * vec3(texture2D(bump_texture,uv));
                                     }
 
-                                    // calculate the lighting effect
-                                    vec3 light = vec3(0.0,0.0,0.0);
-                                    """ + LightMaterial.generate_light_sum(number_of_lights) + """ \n """ + """
+                                    
+                                    
+                                    if (using_lights)
+                                    {
+                                        // calculate the lighting effect
+                                        vec3 light = vec3(0.0,0.0,0.0);
+                                        """ + LightMaterial.generate_light_sum(number_of_lights) + """ \n """ + """
 
-                                    // apply lighting to color
-                                    color *= vec4(light,1.0);
+                                    
+                                        // apply lighting to color
+                                        color *= vec4(light,1.0);
+                                    }
 
                                     // shadow calculations
                                     if (use_shadow)

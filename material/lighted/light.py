@@ -1,14 +1,20 @@
 from material.basic.material import Material
 
 class LightMaterial(Material):
-    def __init__(self,number_of_lights:int = 1,vertex_shader_code:str = "",fragment_shader_code:str = "") -> None:   
+    def __init__(self,number_of_lights:int = 0,vertex_shader_code:str = "",fragment_shader_code:str = "") -> None:   
 
         super().__init__(vertex_shader_code,fragment_shader_code)
 
-        # initialize the light uniforms
-        # this will be used to store the lights within the shader
-        for i in range((number_of_lights)):
-            self.add_uniform(f"light_{i}",None,"Light")
+        if number_of_lights < 1:
+            self.add_uniform("using_lights", False, "bool")
+        else:
+            self.add_uniform("using_lights", True, "bool")
+            # initialize the light uniforms
+            # this will be used to store the lights within the shader
+            for i in range((number_of_lights)):
+                self.add_uniform(f"light_{i}",None,"Light")
+
+        
 
 
     # Static method to generate the glsl code for the light uniforms
