@@ -49,7 +49,6 @@ class MyApp(ImGuiBase):
 
         self.translation_1 = Uniform("vec3",[-0.5,0.0,0.0])
 
-
         self.translation_2 = Uniform("vec3",[0.5,0.0,0.0])
 
         self.base_color_1 = Uniform("vec3",[0.0,1.0,0.0])
@@ -118,78 +117,3 @@ class MyApp(ImGuiBase):
 if __name__ == "__main__":
     app = MyApp(title="ImGui with GLFW", width=800, height=600)
     app.run()
-
-# # Run the application
-# if __name__ == "__main__":
-#     app = MyApp(title="ImGui with GLFW", width=800, height=600)
-#     app.run()
-
-# def draw_triangle():
-#     """Draws a simple triangle using PyOpenGL."""
-#     glBegin(GL_TRIANGLES)
-#     glColor3f(1.0, 0.0, 0.0)  # Red
-#     glVertex2f(-0.5, -0.5)  # Bottom-left
-#     glColor3f(0.0, 1.0, 0.0)  # Green
-#     glVertex2f(0.5, -0.5)  # Bottom-right
-#     glColor3f(0.0, 0.0, 1.0)  # Blue
-#     glVertex2f(0.0, 0.5)  # Top
-#     glEnd()
-
-
-# def main():
-#     # Initialize GLFW
-#     if not glfw.init():
-#         print("Could not initialize GLFW")
-#         return
-
-#     # Create a GLFW window
-#     window = glfw.create_window(800, 600, "ImGui with GLFW and PyOpenGL", None, None)
-#     if not window:
-#         glfw.terminate()
-#         print("Could not create GLFW window")
-#         return
-
-#     # Make the OpenGL context current
-#     glfw.make_context_current(window)
-
-#     # Initialize ImGui
-#     imgui.create_context()
-#     impl = GlfwRenderer(window)
-
-#     # Main loop
-#     while not glfw.window_should_close(window):
-#         glfw.poll_events()
-#         impl.process_inputs()
-
-#         # Start a new ImGui frame
-#         imgui.new_frame()
-
-#         # Create UI elements
-#         imgui.begin("Example Window")  # Create a new ImGui window
-#         imgui.text("Hello, ImGui!")  # Display some text
-#         if imgui.button("Click Me!"):  # Create a button
-#             print("Button clicked!")
-#         _, slider_value = imgui.slider_float("Slider", 0.0, 1.0, 0.5)  # Create a slider
-#         imgui.end()
-
-#         # Clear the screen
-#         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
-#         # Draw the triangle
-#         draw_triangle()
-
-#         # Render ImGui
-#         imgui.render()
-#         impl.render(imgui.get_draw_data())
-
-#         # Swap buffers
-#         glfw.swap_buffers(window)
-
-#     # Cleanup
-#     impl.shutdown()
-#     imgui.destroy_context()
-#     glfw.terminate()
-
-
-# if __name__ == "__main__":
-#     main()
