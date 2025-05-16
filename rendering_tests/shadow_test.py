@@ -41,7 +41,7 @@ class ShadowTest(Test):
 
 
         sphere_geo = Sphere()
-        phong_material = LambertMaterial(texture=Texture("images/grid.jpg"),number_of_lights=2,use_shadow=True)
+        phong_material = PhongMaterial(number_of_lights=2,use_shadow=True)
 
         self.renderer.enable_shadows(shadow_light=self.directional_light,resolution=[self.window_width, self.window_height])
 

@@ -5,7 +5,7 @@ from shaders.shaders import Shader
 
 class PhongMaterial(LightMaterial):
     def __init__(self,texture:Texture=None,noise:Texture = None,bump_texture:Texture = None,
-                  properties:dict={},number_of_lights:int = 1,use_shadow=False) -> None:
+                  properties:dict={},number_of_lights:int = 0,use_shadow=False) -> None:
         vertex_shader_code =  Shader.shadow_struct() + Shader.shadow_enabled_vertex_shader() 
         
         
