@@ -4,29 +4,63 @@ import glfw.GLFW as GLFW_CONSTANTS
 class Input(object):
     def __init__(self) -> None:
         self.quit = False
-        self.key_queue = []
+        self.key_queue = set()
         # self.key_down_list = []
-        self.key_pressed_list = []
-        self.key_held_list = []
-        self.key_released_list = []
-        self.mouse_buttons = []
+        self.key_pressed_list = set()
+        self.key_held_list = set()
+        self.key_released_list = set()
+        self.mouse_buttons = set()
+        self._mouse_position = (0, 0)
+        self.mouse_wheel = (0, 0)
+        self.mouse_wheel_delta = (0, 0)
+
+    @property
+    def mouse_position(self):
+        return self._mouse_position
 
 
     def set_callbacks(self,window)->None:
         glfw.set_key_callback(window, self.key_callback)
-
+        glfw.set_mouse_button_callback(window, self.mouse_button_callback)
+        glfw.set_cursor_pos_callback(window, self.cursor_position_callback)
+    
 
     def key_callback(self, window, key, scancode, action, mods):
-
+        
         if action == GLFW_CONSTANTS.GLFW_PRESS: 
-            self.key_pressed_list.append(key)
-            self.key_queue.append(key)
+            self.key_pressed_list.add(key)
+            self.key_queue.add(key)
 
         elif action == GLFW_CONSTANTS.GLFW_RELEASE:
             self.key_pressed_list.remove(key)   
 
         if key == GLFW_CONSTANTS.GLFW_KEY_ESCAPE and action == GLFW_CONSTANTS.GLFW_PRESS:
             self.quit = True
+
+    def mouse_button_callback(self, window, button, action, mods):
+        if action == GLFW_CONSTANTS.GLFW_PRESS:
+            self.mouse_buttons.add(button)
+        elif action == GLFW_CONSTANTS.GLFW_RELEASE:
+            self.mouse_buttons.remove(button)
+
+    def right_click(self):
+        return GLFW_CONSTANTS.GLFW_MOUSE_BUTTON_RIGHT in self.mouse_buttons
+    
+    def left_click(self):
+        return GLFW_CONSTANTS.GLFW_MOUSE_BUTTON_LEFT in self.mouse_buttons
+    
+    def middle_click(self):
+        return GLFW_CONSTANTS.GLFW_MOUSE_BUTTON_MIDDLE in self.mouse_buttons
+    
+
+    def mouse_wheel_callback(self, window, xoffset, yoffset):
+        self.mouse_wheel = (xoffset, yoffset)
+        self.mouse_wheel_delta = (xoffset, yoffset)
+
+
+    def cursor_position_callback(self, window, xpos, ypos):
+        self._mouse_position = (xpos, ypos)
+
 
     def is_key_pressed(self, key) -> bool:
         return key in self.key_pressed_list
