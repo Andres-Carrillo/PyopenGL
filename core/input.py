@@ -13,6 +13,7 @@ class Input(object):
         self._mouse_position = (0, 0)
         self.mouse_wheel = (0, 0)
         self.mouse_wheel_delta = (0, 0)
+        self.mouse_held = False
 
     @property
     def mouse_position(self):
@@ -40,8 +41,10 @@ class Input(object):
     def mouse_button_callback(self, window, button, action, mods):
         if action == GLFW_CONSTANTS.GLFW_PRESS:
             self.mouse_buttons.add(button)
+            self.mouse_held = True
         elif action == GLFW_CONSTANTS.GLFW_RELEASE:
             self.mouse_buttons.remove(button)
+            self.mouse_held = False
 
     def right_click(self):
         return GLFW_CONSTANTS.GLFW_MOUSE_BUTTON_RIGHT in self.mouse_buttons

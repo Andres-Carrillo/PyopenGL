@@ -20,6 +20,9 @@ class Material(object):
         # and add their own uniforms
         self._init_uniforms()
         self._init_settings()
+
+        self.material_type = type(self).__name__
+        self.material_type = self.material_type.replace("Material","")
         
         
 
