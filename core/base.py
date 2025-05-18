@@ -255,6 +255,7 @@ class ImGuiBase:
          # Initialize ImGui
         imgui.create_context()
         self.impl = GlfwRenderer(self.window)
+        self.io = imgui.get_io()
 
 
     def _init_gl(self, background_color: list) -> None:
