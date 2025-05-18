@@ -10,6 +10,19 @@ class Object3D:
         self._parent = None
         self._children_list = []
 
+    def __hash__(self):
+        return id(self)
+    
+    def __eq__(self, other):
+        if not isinstance(other, Object3D):
+            return False
+        return id(self) == id(other)
+    
+    @property
+    def id(self):
+        """ Return the id of the object """
+        return id(self)
+
     @property
     def children_list(self):
         return self._children_list
