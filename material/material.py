@@ -6,6 +6,8 @@ class Material(object):
 
     def __init__(self,vertex_shader:str,fragment_shader:str) -> None:
         # initialize the material with vertex and fragment shaders and get program reference
+        self.vertex_shader = vertex_shader
+        self.fragment_shader = fragment_shader
         self.program = GlUtils.InitializeProgram(vertex_shader, fragment_shader)
         
         # uniform object dictionary
@@ -64,3 +66,21 @@ class Material(object):
     def update_render_settings(self):
         """ Configure OpenGL with render settings """
         pass
+
+    def compile_shaders(self,vertex_shader:str = None,fragment_shader:str = None) -> None:
+        """ Compile the shaders and link them to the program """
+
+        # if either shader is None, use the default shader
+        if vertex_shader is None:
+            vertex_shader = self.vertex_shader
+
+        if fragment_shader is None:
+            fragment_shader = self.fragment_shader
+
+        # update the shaders
+        self.vertex_shader = vertex_shader
+        self.fragment_shader = fragment_shader
+
+        # compile the shaders and link them to the program then store the program reference
+        self.program = GlUtils.InitializeProgram(vertex_shader, fragment_shader)
+        self.locate_uniforms()
