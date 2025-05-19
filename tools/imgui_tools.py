@@ -1,0 +1,199 @@
+import imgui
+from meshes.mesh import Mesh
+import math
+
+class ShaderEditor:
+    def __init__(self, mesh: Mesh = None,window_width:int = 800, window_height:int = 300):
+        self.window_width = window_width
+        self.window_height = window_height
+        self.show_editor = False
+        self.compile_error = False
+        self.mesh = mesh
+
+        if mesh:
+            self.vertex_shader = self.mesh.materia.vertex_shader
+            self.fragment_shader = self.mesh.material.fragment_shader
+        else:
+            self.vertex_shader = """"""
+            self.fragment_shader = """"""
+        
+
+
+    # for setting a new mesh without having to recompile the shaders or create a new editor
+    def change_mesh(self, mesh: Mesh = None):
+        self.mesh = mesh
+        if mesh:
+            self.vertex_shader = self.mesh.material.vertex_shader
+            self.fragment_shader = self.mesh.material.fragment_shader
+        else:
+            self.vertex_shader = """"""
+            self.fragment_shader = """"""
+
+    def show(self):
+        if self.show_editor:
+            imgui.begin("Shader Editor", imgui.WINDOW_ALWAYS_AUTO_RESIZE)
+            imgui.separator()
+            imgui.text("Vertex Shader Editor:")
+            imgui.separator()
+            _, self.vertex_shader = imgui.input_text_multiline("", self.vertex_shader, 1024 * 16, self.window_width, self.window_height)
+            
+            imgui.separator()
+            imgui.text("Fragment Shader Editor:")
+            imgui.separator()
+            _, self.fragment_shader = imgui.input_text_multiline(" ", self.fragment_shader, 1024 * 16, self.window_width, self.window_height)
+
+            if self.compile_error:
+                imgui.separator()
+                imgui.push_style_color(imgui.COLOR_TEXT, 1.0, 0.0, 0.0, 1.0)
+                imgui.text("Error compiling shaders:")
+                imgui.text(self.error_message)
+                imgui.pop_style_color()
+                imgui.separator()
+                imgui.text("Please check the shader code and try again.")
+                
+         
+            if(imgui.button("Compile")):
+                self.compile_shaders()
+
+            imgui.end()
+
+    def compile_shaders(self):
+        try:
+            self.mesh.material.compile_shaders(self.vertex_shader, self.fragment_shader)
+            self.compile_error = False
+            self.error_message = ""
+        except Exception as e:
+            self.error_message = str(e)
+            print("Error compiling shaders:", e)
+            self.compile_error = True
+
+
+# def shader_editor(mesh,vertex_source=None,fragment_source=None):
+#     if vertex_source is None:
+#         vertex_source = mesh.material.vertex_shader
+#     # vertex_buffer_len
+#     print("vertex source",vertex_source)
+
+#     if fragment_source is None:
+#             fragment_source = mesh.material.fragment_shader
+#     print("fragment source",fragment_source)
+#     input_width = 700
+#     input_height = 400
+    
+#     # Open the shader editor window
+#     imgui.begin("Shader Editor")
+
+#     imgui.separator()
+#     changed_v,new_vertex_code = imgui.input_text_multiline(" ", vertex_source, 2048, input_width,input_height)
+#     vertex_source =  new_vertex_code if changed_v else None
+    
+#     imgui.separator()
+#     changed_f,new_vertex_code = imgui.input_text_multiline("", fragment_source, 2048,input_width, input_height)
+#     fragment_source =  new_vertex_code if changed_f else None
+    
+#     imgui.separator()
+#     if imgui.button("Compile Shaders"):
+#         mesh.material.compile_shaders(vertex_source, fragment_source)
+#     # imgui.text("Edit the shaders here...")
+
+#     # Add your shader editing UI here
+#     imgui.end()
+
+#     return vertex_source, fragment_source
+
+
+def draw_mesh_property_editor(mesh):
+
+    # display the mesh material properties
+    imgui.separator()
+    open_header, _ = imgui.collapsing_header(mesh.material.material_type + " Material Properties")
+    if open_header:
+        for key, value in mesh.material.uniforms.items():
+            if key in ("model_matrix", "view_matrix", "projection_matrix"):
+                continue
+            if key == "use_vertex_colors":
+                changed, new_value = imgui.checkbox("Use Vertex Color", value.data)
+                imgui.same_line()
+                if changed:
+                    mesh.material.uniforms[key].data = new_value
+            if key == "wire_frame":
+                changed, new_value = imgui.checkbox("Wire Frame", value.data)
+                imgui.same_line()
+                if changed:
+                    mesh.material.uniforms[key].data = new_value
+            if key == "base_color":
+                changed, new_color = imgui.color_edit4("Base Color", value.data[0], value.data[1], value.data[2], 1.0)
+                if changed:
+                    mesh.material.set_properties({"base_color": new_color})
+
+        for key, value in mesh.material.settings.items():
+            if key == "wire_frame":
+                changed, new_value = imgui.checkbox("Wire Frame", value)
+                imgui.same_line()
+                if changed:
+                    mesh.material.settings[key] = new_value
+            if mesh.material.settings.get('wire_frame', False) and key == "line_width":
+                changed, new_value = imgui.slider_float("Line Width", value, 0.1, 10.0)
+                if changed:
+                    mesh.material.settings[key] = new_value
+            if key == "double_sided":
+                changed, new_value = imgui.checkbox("Double Sided", value)
+                imgui.same_line()
+                if changed:
+                    mesh.material.settings[key] = new_value
+
+
+def draw_position_editor(mesh):
+     # Display the mesh's current position and allow the user to edit it
+    imgui.separator()
+    open_header, _ = imgui.collapsing_header("Position transform")
+    if open_header:
+        changed_x, new_x_pos = imgui.input_int("X Position##pos", mesh.global_position[0])
+        changed_y, new_y_pos = imgui.input_int("Y Position##pos", mesh.global_position[1])
+        changed_z, new_z_pos = imgui.input_int("Z Position##pos", mesh.global_position[2])
+        if changed_x or changed_y or changed_z:
+            mesh.set_position([new_x_pos, new_y_pos, new_z_pos])
+
+def draw_rotation_editor(mesh,range =(-math.pi, math.pi)):
+    imgui.separator()
+    open_header, _ = imgui.collapsing_header("Rotation transform")
+    if open_header:
+        x_rot_changed, new_x_rot = imgui.slider_float("X Rotation", mesh.ueler_angles[0], range[0], range[1])
+        y_rot_changed, new_y_rot = imgui.slider_float("Y Rotation", mesh.ueler_angles[1], range[0], range[1])
+        z_rot_changed, new_z_rot = imgui.slider_float("Z Rotation", mesh.ueler_angles[2], range[0], range[1])
+        if x_rot_changed or y_rot_changed or z_rot_changed:
+            mesh.set_euler_rotation([new_x_rot*360, new_y_rot*360, new_z_rot*360])
+
+
+class MeshEditor:
+    # global EDIT_SHADERS
+
+    def __init__(self, mesh: Mesh = None):
+        self.mesh = mesh
+        self.shader_editor = ShaderEditor(mesh)
+
+    def change_mesh(self, mesh: Mesh = None):
+        self.mesh = mesh
+        self.shader_editor.change_mesh(mesh)
+
+    def show(self):
+        imgui.begin("Mesh Editor")  # Start a new ImGui window for the mesh editor
+        imgui.text("{}".format(self.mesh.geometry.object_type))
+
+        # Display the mesh's current position and allow the user to edit it
+        draw_position_editor(self.mesh)
+
+        # Display the mesh's current rotation and allow the user to edit it
+        draw_rotation_editor(self.mesh)
+
+        draw_mesh_property_editor(self.mesh)
+
+        imgui.separator()
+        if imgui.button("Edit Shaders"):
+            self.shader_editor.show_editor = not self.shader_editor.show_editor
+
+        imgui.end()  # End the mesh editor window
+
+        if self.shader_editor.show_editor:
+            # Open the shader editor window
+            self.shader_editor.show()

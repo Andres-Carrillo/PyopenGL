@@ -29,3 +29,27 @@ class Math:
             normal_vector = orthogonal_vector / norm if norm > 1e-6 else np.array(p0) / np.linalg.norm(p0)
 
             return normal_vector
+        
+
+        @staticmethod
+        def ray_cast(mouse_position, camera, width, height):
+        
+            x_normalized = (2.0*mouse_position[0]) / width - 1.0
+            y_normalized = 1.0 - (2.0*mouse_position[1]) / height
+            z = 1.0
+            
+            # Create a ray in normalized device coordinates
+            ray_nds = [x_normalized, y_normalized, z]
+            
+            # Convert to world coordinates
+            ray_clip = [ray_nds[0], ray_nds[1], -1.0, 1.0]
+            ray_eye = np.linalg.inv(camera.projection_matrix)  @ ray_clip
+            ray_eye = [ray_eye[0], ray_eye[1], -1.0, 0.0]
+            ray_wor = np.linalg.inv(camera.view_matrix) @ ray_eye
+            normalized_ray = [ray_wor[0], ray_wor[1], ray_wor[2]]
+            
+            # Normalize the ray
+            length = (normalized_ray[0]**2 + normalized_ray[1]**2 + normalized_ray[2]**2)**0.5
+            normalized_ray = [normalized_ray[0]/length, normalized_ray[1]/length, normalized_ray[2]/length]
+            
+            return normalized_ray
