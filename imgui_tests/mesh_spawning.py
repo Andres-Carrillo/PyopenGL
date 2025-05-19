@@ -19,6 +19,7 @@ from material.surface import SurfaceMaterial
 from material.lambert import LambertMaterial
 from material.phong import PhongMaterial
 from material.flat import FlatMaterial
+from tools.imgui_tools import MeshEditor
 # from core.input import Input
 
 import imgui
@@ -113,126 +114,6 @@ def drag_object(mouse_position, mesh, camera,width,height,input_handler):
             mesh.set_position(new_pos)
 
 
-def shader_editor(mesh,vertex_source=None,fragment_source=None):
-    if vertex_source is None:
-        vertex_source = mesh.material.vertex_shader
-    # vertex_buffer_len
-    print("vertex source",vertex_source)
-
-    if fragment_source is None:
-            fragment_source = mesh.material.fragment_shader
-    print("fragment source",fragment_source)
-    input_width = 700
-    input_height = 400
-    
-    # Open the shader editor window
-    imgui.begin("Shader Editor")
-
-    imgui.separator()
-    changed_v,new_vertex_code = imgui.input_text_multiline(" ", vertex_source, 2048, input_width,input_height)
-    vertex_source =  new_vertex_code if changed_v else None
-    
-    imgui.separator()
-    changed_f,new_vertex_code = imgui.input_text_multiline("", fragment_source, 2048,input_width, input_height)
-    fragment_source =  new_vertex_code if changed_f else None
-    
-    imgui.separator()
-    if imgui.button("Compile Shaders"):
-        mesh.material.compile_shaders(vertex_source, fragment_source)
-    # imgui.text("Edit the shaders here...")
-
-    # Add your shader editing UI here
-    imgui.end()
-
-    return vertex_source, fragment_source
-
-
-def draw_mesh_property_editor(mesh):
-
-    # display the mesh material properties
-    imgui.separator()
-    open_header, _ = imgui.collapsing_header(mesh.material.material_type + " Material Properties")
-    if open_header:
-        for key, value in mesh.material.uniforms.items():
-            if key in ("model_matrix", "view_matrix", "projection_matrix"):
-                continue
-            if key == "use_vertex_colors":
-                changed, new_value = imgui.checkbox("Use Vertex Color", value.data)
-                imgui.same_line()
-                if changed:
-                    mesh.material.uniforms[key].data = new_value
-            if key == "wire_frame":
-                changed, new_value = imgui.checkbox("Wire Frame", value.data)
-                imgui.same_line()
-                if changed:
-                    mesh.material.uniforms[key].data = new_value
-            if key == "base_color":
-                changed, new_color = imgui.color_edit4("Base Color", value.data[0], value.data[1], value.data[2], 1.0)
-                if changed:
-                    mesh.material.set_properties({"base_color": new_color})
-
-        for key, value in mesh.material.settings.items():
-            if key == "wire_frame":
-                changed, new_value = imgui.checkbox("Wire Frame", value)
-                imgui.same_line()
-                if changed:
-                    mesh.material.settings[key] = new_value
-            if mesh.material.settings.get('wire_frame', False) and key == "line_width":
-                changed, new_value = imgui.slider_float("Line Width", value, 0.1, 10.0)
-                if changed:
-                    mesh.material.settings[key] = new_value
-            if key == "double_sided":
-                changed, new_value = imgui.checkbox("Double Sided", value)
-                imgui.same_line()
-                if changed:
-                    mesh.material.settings[key] = new_value
-
-
-def draw_position_editor(mesh):
-     # Display the mesh's current position and allow the user to edit it
-    imgui.separator()
-    open_header, _ = imgui.collapsing_header("Position transform")
-    if open_header:
-        changed_x, new_x_pos = imgui.input_int("X Position##pos", mesh.global_position[0])
-        changed_y, new_y_pos = imgui.input_int("Y Position##pos", mesh.global_position[1])
-        changed_z, new_z_pos = imgui.input_int("Z Position##pos", mesh.global_position[2])
-        if changed_x or changed_y or changed_z:
-            mesh.set_position([new_x_pos, new_y_pos, new_z_pos])
-
-def draw_rotation_editor(mesh,range =(-math.pi, math.pi)):
-    imgui.separator()
-    open_header, _ = imgui.collapsing_header("Rotation transform")
-    if open_header:
-        x_rot_changed, new_x_rot = imgui.slider_float("X Rotation", mesh.ueler_angles[0], range[0], range[1])
-        y_rot_changed, new_y_rot = imgui.slider_float("Y Rotation", mesh.ueler_angles[1], range[0], range[1])
-        z_rot_changed, new_z_rot = imgui.slider_float("Z Rotation", mesh.ueler_angles[2], range[0], range[1])
-        if x_rot_changed or y_rot_changed or z_rot_changed:
-            mesh.set_euler_rotation([new_x_rot*360, new_y_rot*360, new_z_rot*360])
-    
-def mesh_editor(mesh):
-    global EDIT_SHADERS
-
-    imgui.begin("Mesh Editor")  # Start a new ImGui window for the mesh editor
-    imgui.text("{}".format(mesh.geometry.object_type))
-
-    # Display the mesh's current position and allow the user to edit it
-    draw_position_editor(mesh)
-
-    # Display the mesh's current rotation and allow the user to edit it
-    draw_rotation_editor(mesh)
-   
-    draw_mesh_property_editor(mesh)
-
-    imgui.separator()
-    if imgui.button("Edit Mesh"):
-        EDIT_SHADERS = not EDIT_SHADERS
-
-    imgui.end()  # End the mesh editor window
-
-    if EDIT_SHADERS:
-        # Open the shader editor window
-        shader_editor(mesh)
-
 class Test(BaseApp):
     def __init__(self, width=800, height=600):
         super().__init__(title="Testing Spawning Meshing", display_grid=True,static_camera=False, width=width, height=height)
@@ -240,12 +121,14 @@ class Test(BaseApp):
         self.selected_mesh= None
         self._geometry_type = None
         self._material_type = None
+        self.mesh_editor = MeshEditor()
+        self.disable_camera_rig = False
 
 
     def update(self):
         # Example: Add ImGui UI elements
         imgui.begin("Mesh Spawning")
-        if imgui.button("Span Mesh"):
+        if imgui.button("Spawn Mesh"):
             geo = BoxGeometry()
             surface_material = SurfaceMaterial()
             box = Mesh(geometry=geo, material=surface_material)
@@ -257,14 +140,15 @@ class Test(BaseApp):
         imgui.end()
 
         if self._is_targetting_object and self.selected_mesh is not None:
-            mesh_editor(self.selected_mesh)
-
+            self.mesh_editor.show()
+            self.disable_camera_rig = True
 
     def render(self):
         # clock delta time so all objects can be updated with the same delta time
         self._tick()
         # Update the input handler
-        self._handle_input()
+        if not self.disable_camera_rig:
+            self._handle_input()
          
          # set the window size in case the window was resized
         self.renderer.update_window_size(self.window_width, self.window_height)
@@ -282,17 +166,20 @@ class Test(BaseApp):
 
     def _handle_mouse_input(self):
          if self.input_handler.left_click() or self.input_handler.right_click():
-            # print(" left clicked mouse at position",self.input_handler.mouse_position)
             
             mesh_picked = self.scene.pick_object(self.input_handler.mouse_position, self.camera,width=self.window_width, height=self.window_height)
             
             if mesh_picked:
                 self.selected_mesh = mesh_picked
                 self._is_targetting_object = True
+                if not self.mesh_editor.mesh:
+                    self.mesh_editor.change_mesh(self.selected_mesh)
 
             if not mesh_picked and self.input_handler.right_click():
                 self._is_targetting_object = False
                 self.selected_mesh = None
+                self.mesh_editor.change_mesh(None)
+                self.disable_camera_rig = False
                 
 
             if self.input_handler.left_click() and self.input_handler.mouse_held and mesh_picked:

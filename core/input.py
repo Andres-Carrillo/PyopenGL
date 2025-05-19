@@ -1,5 +1,6 @@
 import glfw
 import glfw.GLFW as GLFW_CONSTANTS
+from imgui.integrations.glfw import GlfwRenderer
 
 class Input(object):
     def __init__(self) -> None:
@@ -14,19 +15,29 @@ class Input(object):
         self.mouse_wheel = (0, 0)
         self.mouse_wheel_delta = (0, 0)
         self.mouse_held = False
+        self.imgui_renderer = None
 
     @property
     def mouse_position(self):
         return self._mouse_position
 
 
-    def set_callbacks(self,window)->None:
-        glfw.set_key_callback(window, self.key_callback)
+    def set_callbacks(self,window,imgui_renderer)->None:
+        self.imgui_renderer = imgui_renderer    
+        def key_callback(window, key, scancode, action, mods):
+            self.key_callback(window, key, scancode, action, mods)
+            imgui_renderer.keyboard_callback(window, key, scancode, action, mods)
+        glfw.set_key_callback(window, key_callback)
+
         glfw.set_mouse_button_callback(window, self.mouse_button_callback)
         glfw.set_cursor_pos_callback(window, self.cursor_position_callback)
-    
+
 
     def key_callback(self, window, key, scancode, action, mods):
+        if self.imgui_renderer is not None:
+            self.imgui_renderer.keyboard_callback(window, key, scancode, action, mods)
+        if key == GLFW_CONSTANTS.GLFW_KEY_BACKSPACE:
+            print("Backspace pressed")
         
         if action == GLFW_CONSTANTS.GLFW_PRESS: 
             self.key_pressed_list.add(key)

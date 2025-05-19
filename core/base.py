@@ -191,7 +191,7 @@ class Base:
         self.window_height = height
 
 
-
+from imgui.integrations.glfw import GlfwRenderer
 class ImGuiBase:
     """
     Base class for all applications using ImGui and GLFW.
@@ -219,8 +219,9 @@ class ImGuiBase:
         self.fps_counter = FPS()
         self.show_fps = show_fps
         self.input_handler = Input()
+        self.imgui_renderer = GlfwRenderer(self.window)
 
-        self.input_handler.set_callbacks(self.window)
+        self.input_handler.set_callbacks(self.window,self.imgui_renderer)
 
         self._init_gl(background_color)
 
