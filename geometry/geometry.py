@@ -36,9 +36,9 @@ class Geometry(object):
                                       matrix[1][0:3],
                                       matrix[2][0:3]])
         
-        old_position = self.attributes["vertex_position"].data
-        old_vertex_normal_data = self.attributes["vertex_normal"].data
-        old_face_normal_data = self.attributes["face_normal"].data
+        old_position = self.attributes["vertex_position"]._data
+        old_vertex_normal_data = self.attributes["vertex_normal"]._data
+        old_face_normal_data = self.attributes["face_normal"]._data
         new_position = []
         new_vertex_normal = []
         new_face_normal = []
@@ -71,9 +71,9 @@ class Geometry(object):
             new_face_normal.append(new_normal)
 
         # update data and upload it
-        self.attributes["vertex_position"].data = new_position
-        self.attributes["vertex_normal"].data = new_vertex_normal
-        self.attributes["face_normal"].data = new_face_normal
+        self.attributes["vertex_position"]._data = new_position
+        self.attributes["vertex_normal"]._data = new_vertex_normal
+        self.attributes["face_normal"]._data = new_face_normal
 
 
         # upload the data to the GPU
@@ -86,7 +86,7 @@ class Geometry(object):
 
     def merge(self,other_geometry):
         for var_name, attrib_obj in self.attributes.items():
-            attrib_obj.data += other_geometry.attributes[var_name]._data
+            attrib_obj._data += other_geometry.attributes[var_name]._data
             attrib_obj.upload_data()
         
         self.count_vertices()
@@ -94,7 +94,7 @@ class Geometry(object):
 
     def AA_bounding_box(self):
         # get the min and max values of the vertex positions
-        vertex_positions = self.attributes["vertex_position"].data
+        vertex_positions = self.attributes["vertex_position"]._data
         # print("vertex positions", vertex_positions)
         min_x = min(vertex_positions, key=lambda x: x[0])[0]
         max_x = max(vertex_positions, key=lambda x: x[0])[0]

@@ -1,7 +1,7 @@
 from meshes.mesh import Mesh
 from geometry.geometry import Geometry
-from material.line import LineMaterial
-from material.surface import SurfaceMaterial
+from material.basic.line import LineMaterial
+from material.basic.surface import SurfaceMaterial
 
 class GridTool(Mesh):
     def __init__(self,size:int =10, division:int = 10,grid_color:list = [0,0,0],center_color = [0.5,0.5,0.5],line_width=1):

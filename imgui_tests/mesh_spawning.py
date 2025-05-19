@@ -11,14 +11,14 @@ if package_dir not in sys.path:
 
 
 from meshes.mesh import Mesh
-from geometry.box import BoxGeometry
-from geometry.sphere import Sphere
-from geometry.cylinder import Cylinder
-from geometry.plane import Plane
-from material.surface import SurfaceMaterial
-from material.lambert import LambertMaterial
-from material.phong import PhongMaterial
-from material.flat import FlatMaterial
+from geometry.simple3D.box import BoxGeometry
+from geometry.simple3D.sphere import Sphere
+from geometry.simple3D.cylinder import Cylinder
+from geometry.simple3D.plane import Plane
+from material.basic.surface import SurfaceMaterial
+from material.lighted.lambert import LambertMaterial
+from material.lighted.phong import PhongMaterial
+from material.lighted.flat import FlatMaterial
 from tools.imgui_tools import MeshEditor
 # from core.input import Input
 

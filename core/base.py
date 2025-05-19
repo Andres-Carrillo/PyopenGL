@@ -5,10 +5,10 @@ from core.utils.timer import Timer
 from core.utils.fps import FPS
 import OpenGL.GL as gl
 import pygame as pg
-from core.scene import Scene
-from core.renderer import Renderer
+from core.rendering.scene import Scene
+from core.rendering.renderer import Renderer
 from tools.grid import GridTool
-from core.camera import Camera
+from core.rendering.camera import Camera
 from tools.movement_rig import MovementRig
 from math import pi
 import imgui
