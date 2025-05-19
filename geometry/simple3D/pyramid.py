@@ -1,4 +1,4 @@
-from geometry.cylindrical import Cylindrical
+from geometry.simple3D.cylindrical import Cylindrical
 
 class Pyramid(Cylindrical):
 
