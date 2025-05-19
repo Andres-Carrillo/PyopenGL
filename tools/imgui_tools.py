@@ -2,106 +2,6 @@ import imgui
 from meshes.mesh import Mesh
 import math
 
-class ShaderEditor:
-    def __init__(self, mesh: Mesh = None,window_width:int = 800, window_height:int = 300):
-        self.window_width = window_width
-        self.window_height = window_height
-        self.show_editor = False
-        self.compile_error = False
-        self.mesh = mesh
-
-        if mesh:
-            self.vertex_shader = self.mesh.materia.vertex_shader
-            self.fragment_shader = self.mesh.material.fragment_shader
-        else:
-            self.vertex_shader = """"""
-            self.fragment_shader = """"""
-        
-
-
-    # for setting a new mesh without having to recompile the shaders or create a new editor
-    def change_mesh(self, mesh: Mesh = None):
-        self.mesh = mesh
-        if mesh:
-            self.vertex_shader = self.mesh.material.vertex_shader
-            self.fragment_shader = self.mesh.material.fragment_shader
-        else:
-            self.vertex_shader = """"""
-            self.fragment_shader = """"""
-
-    def show(self):
-        if self.show_editor:
-            imgui.begin("Shader Editor", imgui.WINDOW_ALWAYS_AUTO_RESIZE)
-            imgui.separator()
-            imgui.text("Vertex Shader Editor:")
-            imgui.separator()
-            _, self.vertex_shader = imgui.input_text_multiline("", self.vertex_shader, 1024 * 16, self.window_width, self.window_height)
-            
-            imgui.separator()
-            imgui.text("Fragment Shader Editor:")
-            imgui.separator()
-            _, self.fragment_shader = imgui.input_text_multiline(" ", self.fragment_shader, 1024 * 16, self.window_width, self.window_height)
-
-            if self.compile_error:
-                imgui.separator()
-                imgui.push_style_color(imgui.COLOR_TEXT, 1.0, 0.0, 0.0, 1.0)
-                imgui.text("Error compiling shaders:")
-                imgui.text(self.error_message)
-                imgui.pop_style_color()
-                imgui.separator()
-                imgui.text("Please check the shader code and try again.")
-                
-         
-            if(imgui.button("Compile")):
-                self.compile_shaders()
-
-            imgui.end()
-
-    def compile_shaders(self):
-        try:
-            self.mesh.material.compile_shaders(self.vertex_shader, self.fragment_shader)
-            self.compile_error = False
-            self.error_message = ""
-        except Exception as e:
-            self.error_message = str(e)
-            print("Error compiling shaders:", e)
-            self.compile_error = True
-
-
-# def shader_editor(mesh,vertex_source=None,fragment_source=None):
-#     if vertex_source is None:
-#         vertex_source = mesh.material.vertex_shader
-#     # vertex_buffer_len
-#     print("vertex source",vertex_source)
-
-#     if fragment_source is None:
-#             fragment_source = mesh.material.fragment_shader
-#     print("fragment source",fragment_source)
-#     input_width = 700
-#     input_height = 400
-    
-#     # Open the shader editor window
-#     imgui.begin("Shader Editor")
-
-#     imgui.separator()
-#     changed_v,new_vertex_code = imgui.input_text_multiline(" ", vertex_source, 2048, input_width,input_height)
-#     vertex_source =  new_vertex_code if changed_v else None
-    
-#     imgui.separator()
-#     changed_f,new_vertex_code = imgui.input_text_multiline("", fragment_source, 2048,input_width, input_height)
-#     fragment_source =  new_vertex_code if changed_f else None
-    
-#     imgui.separator()
-#     if imgui.button("Compile Shaders"):
-#         mesh.material.compile_shaders(vertex_source, fragment_source)
-#     # imgui.text("Edit the shaders here...")
-
-#     # Add your shader editing UI here
-#     imgui.end()
-
-#     return vertex_source, fragment_source
-
-
 def draw_mesh_property_editor(mesh):
 
     # display the mesh material properties
@@ -142,7 +42,6 @@ def draw_mesh_property_editor(mesh):
                 if changed:
                     mesh.material.settings[key] = new_value
 
-
 def draw_position_editor(mesh):
      # Display the mesh's current position and allow the user to edit it
     imgui.separator()
@@ -164,10 +63,69 @@ def draw_rotation_editor(mesh,range =(-math.pi, math.pi)):
         if x_rot_changed or y_rot_changed or z_rot_changed:
             mesh.set_euler_rotation([new_x_rot*360, new_y_rot*360, new_z_rot*360])
 
+class ShaderEditor:
+    def __init__(self, mesh: Mesh = None,window_width:int = 800, window_height:int = 300):
+        self.window_width = window_width
+        self.window_height = window_height
+        self.show_editor = False
+        self.compile_error = False
+        self.mesh = mesh
+
+        if mesh:
+            self.vertex_shader = self.mesh.materia.vertex_shader
+            self.fragment_shader = self.mesh.material.fragment_shader
+        else:
+            self.vertex_shader = """"""
+            self.fragment_shader = """"""
+
+    # for setting a new mesh without having to recompile the shaders or create a new editor
+    def change_mesh(self, mesh: Mesh = None):
+        self.mesh = mesh
+        if mesh:
+            self.vertex_shader = self.mesh.material.vertex_shader
+            self.fragment_shader = self.mesh.material.fragment_shader
+        else:
+            self.vertex_shader = """"""
+            self.fragment_shader = """"""
+
+    def show(self):
+        if self.show_editor:
+            imgui.begin("Shader Editor", imgui.WINDOW_ALWAYS_AUTO_RESIZE)
+            imgui.separator()
+            imgui.text("Vertex Shader Editor:")
+            imgui.separator()
+            _, self.vertex_shader = imgui.input_text_multiline("", self.vertex_shader, 1024 * 16, self.window_width, self.window_height)
+            
+            imgui.separator()
+            imgui.text("Fragment Shader Editor:")
+            imgui.separator()
+            _, self.fragment_shader = imgui.input_text_multiline(" ", self.fragment_shader, 1024 * 16, self.window_width, self.window_height)
+
+            if self.compile_error:
+                imgui.separator()
+                imgui.push_style_color(imgui.COLOR_TEXT, 1.0, 0.0, 0.0, 1.0)
+                imgui.text("Error compiling shaders:")
+                imgui.text(self.error_message)
+                imgui.pop_style_color()
+                imgui.separator()
+                imgui.text("Please check the shader code and try again.")
+                
+            if(imgui.button("Compile")):
+                self.compile_shaders()
+
+            imgui.end()
+
+    def compile_shaders(self):
+        try:
+            self.mesh.material.compile_shaders(self.vertex_shader, self.fragment_shader)
+            self.compile_error = False
+            self.error_message = ""
+        except Exception as e:
+            self.error_message = str(e)
+            print("Error compiling shaders:", e)
+            self.compile_error = True
 
 class MeshEditor:
-    # global EDIT_SHADERS
-
     def __init__(self, mesh: Mesh = None):
         self.mesh = mesh
         self.shader_editor = ShaderEditor(mesh)
