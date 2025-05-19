@@ -13,6 +13,7 @@ from tools.movement_rig import MovementRig
 from math import pi
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
+from imgui.integrations.glfw import GlfwRenderer
 
 """ 
         Base class for all glfw only applications.
@@ -191,7 +192,6 @@ class Base:
         self.window_height = height
 
 
-from imgui.integrations.glfw import GlfwRenderer
 class ImGuiBase:
     """
     Base class for all applications using ImGui and GLFW.
@@ -355,8 +355,6 @@ class ImGuiBase:
         Destructor for the Base class. Ensures resources are cleaned up.
         """
         self.quit()
-
-
 
 
 class BaseApp(ImGuiBase):
