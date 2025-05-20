@@ -1,6 +1,4 @@
 from material.basic.material import Material
-from core.glsl.uniform import Uniform
-import OpenGL.GL as gl
 class BasicMaterial(Material):
 
     def __init__(self,vertex_shader_code = None, fragment_shader_code = None,
@@ -41,6 +39,7 @@ class BasicMaterial(Material):
                 """
 
         super().__init__(vertex_shader_code, fragment_shader_code)
+        
         self.add_uniform("base_color", (1.0, 1.0, 1.0), "vec3")
         
        
