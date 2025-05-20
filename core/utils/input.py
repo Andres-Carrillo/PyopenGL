@@ -22,11 +22,12 @@ class Input(object):
         return self._mouse_position
 
 
-    def set_callbacks(self,window,imgui_renderer)->None:
+    def set_callbacks(self,window,imgui_renderer=None)->None:
         self.imgui_renderer = imgui_renderer    
         def key_callback(window, key, scancode, action, mods):
             self.key_callback(window, key, scancode, action, mods)
-            imgui_renderer.keyboard_callback(window, key, scancode, action, mods)
+            if self.imgui_renderer is not None:
+                self.imgui_renderer.keyboard_callback(window, key, scancode, action, mods)
         glfw.set_key_callback(window, key_callback)
 
         glfw.set_mouse_button_callback(window, self.mouse_button_callback)
