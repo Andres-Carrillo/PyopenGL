@@ -1,0 +1,257 @@
+import pathlib
+import sys
+import warnings
+import imgui
+import numpy as np
+import glfw.GLFW as GLFW_CONSTANTS
+import random
+warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygame")
+# Get the package directory
+package_dir = str(pathlib.Path(__file__).resolve().parents[1])
+
+# Add the package directory into sys.path if necessary
+if package_dir not in sys.path:
+    sys.path.insert(0, package_dir)
+
+from meshes.mesh import Mesh
+from geometry.simple3D.box import BoxGeometry
+from geometry.simple3D.sphere import Sphere
+from geometry.simple3D.cylinder import Cylinder
+from geometry.simple3D.plane import Plane
+from material.basic.surface import SurfaceMaterial
+from material.lighted.lambert import LambertMaterial
+from material.lighted.phong import PhongMaterial
+from material.lighted.flat import FlatMaterial
+from tools.imgui_tools import MeshEditor
+from core.base import BaseApp
+from core.utils.math import Math as RenderMath
+from material.basic.material import MATERIAL_TYPE
+from geometry.geometry import GEOMETRY_TYPE
+
+def rodrigues_rotation_matrix(axis, theta):
+    """
+    Returns the rotation matrix using Rodrigues' rotation formula.
+    axis: 3-element array-like, should be normalized
+    theta: rotation angle in radians
+    """
+    axis = np.asarray(axis, dtype=np.float64)
+    axis = axis / np.linalg.norm(axis)
+    K = np.array([
+        [0, -axis[2], axis[1]],
+        [axis[2], 0, -axis[0]],
+        [-axis[1], axis[0], 0]
+    ])
+    I = np.eye(3)
+    R = I + np.sin(theta) * K + (1 - np.cos(theta)) * (K @ K)
+    # Convert to 4x4 matrix
+    R4 = np.eye(4)
+    R4[:3, :3] = R
+    return R4
+
+
+def ray_plane_intersection(ray_origin, ray_direction, plane_point, plane_normal):
+    """
+    Find the intersection point of a ray and a plane.
+    ray_origin: np.array([x, y, z]) - origin of the ray (camera position)
+    ray_direction: np.array([dx, dy, dz]) - normalized direction of the ray
+    plane_point: np.array([x, y, z]) - a point on the plane (e.g., object's original position)
+    plane_normal: np.array([nx, ny, nz]) - normal vector of the plane (e.g., [0, 1, 0] for y=constant)
+    Returns: intersection point as np.array([x, y, z]) or None if no intersection
+    """
+    ray_direction = ray_direction / np.linalg.norm(ray_direction)
+    denom = np.dot(plane_normal, ray_direction)
+    if abs(denom) < 1e-6:
+        return None  # Ray is parallel to the plane
+    t = np.dot(plane_point - ray_origin, plane_normal) / denom
+    if t < 0:
+        return None  # Intersection is behind the ray origin
+    intersection = ray_origin + t * ray_direction
+    return intersection
+
+def choose_drag_plane(ray_direction, mesh_position):
+    # Find the axis least aligned with the ray direction
+    abs_dir = np.abs(ray_direction)
+    # The axis with the smallest component is the best normal
+    axis = np.argmin(abs_dir)
+    if axis == 0:
+        # X is the best normal, so use the YZ plane (normal [1,0,0])
+        plane_normal = np.array([1, 0, 0])
+        plane_point = np.array(mesh_position)
+    elif axis == 1:
+        # Y is the best normal, so use the XZ plane (normal [0,1,0])
+        plane_normal = np.array([0, 1, 0])
+        plane_point = np.array(mesh_position)
+    else:
+        # Z is the best normal, so use the XY plane (normal [0,0,1])
+        plane_normal = np.array([0, 0, 1])
+        plane_point = np.array(mesh_position)
+    return plane_point, plane_normal
+
+
+def drag_object(mouse_position, mesh, camera,width,height,input_handler):
+  # Get ray origin and direction from your camera and mouse
+    ray_origin = np.array(camera.global_position)  # or self.camera.global_position
+    ray_direction = RenderMath.ray_cast(mouse_position, camera, width, height)
+
+    if input_handler.is_key_pressed(GLFW_CONSTANTS.GLFW_KEY_1):
+        plane_point = np.array([0, mesh.global_position[1], mesh.global_position[2]])
+        plane_normal = np.array([1, 0, 0])
+    else:
+        plane_point = np.array([mesh.global_position[0], mesh.global_position[1], 0])
+        plane_normal = np.array([0, 0, 1])
+    
+    new_pos = ray_plane_intersection(ray_origin, ray_direction, plane_point, plane_normal)
+
+    if new_pos is not None:
+            mesh.set_position(new_pos)
+
+def point_in_rectangle(point, rect):
+    """
+    Check if a point is inside a rectangle defined by its top-left and bottom-right corners.
+    :param point: Tuple (x, y) representing the point.
+    :param rect: List [x1, y1, x2, y2] representing the rectangle (top-left and bottom-right corners).
+    :return: True if the point is inside the rectangle, False otherwise.
+    """
+    x1, y1, x2, y2 = rect
+    return x1 <= point[0] <= x2 and y1 <= point[1] <= y2
+
+def point_in_deadzones(point, deadzones):
+    """
+    Check if a point is inside any of the deadzones.
+    :param point: Tuple (x, y) representing the point.
+    :param deadzones: List of deadzones, where each deadzone is defined by [x1, y1, x2, y2].
+    :return: True if the point is inside any deadzone, False otherwise.
+    """
+    for zone in deadzones:
+        if point_in_rectangle(point, zone):
+            return True
+        
+    return False
+
+
+def get_geometry(geometry_type):
+    if geometry_type == GEOMETRY_TYPE.BOX.value:
+        return BoxGeometry()
+    elif geometry_type == GEOMETRY_TYPE.SPHERE.value:
+        return Sphere()
+    elif geometry_type == GEOMETRY_TYPE.CYLINDER.value:
+        return Cylinder()
+    elif geometry_type == GEOMETRY_TYPE.PLANE.value:
+        return Plane()
+    
+
+
+def get_material(material_type):
+    if material_type == MATERIAL_TYPE.SURFACE.value:
+        return SurfaceMaterial()
+    elif material_type == MATERIAL_TYPE.LIGHT.value:
+        return LambertMaterial()
+    elif material_type == MATERIAL_TYPE.FLAT.value:
+        return FlatMaterial()
+    elif material_type == MATERIAL_TYPE.PHONG.value:
+        return PhongMaterial()
+
+class SceneEditor(BaseApp):
+    def __init__(self, width=800, height=600):
+        super().__init__(title="SceneEditor", display_grid=True,static_camera=False, width=width, height=height)
+        self._is_targetting_object = False
+        self.selected_mesh= None
+        self._geometry_type = None
+        self._material_type = None
+        self.mesh_editor = MeshEditor()
+        self.disable_camera_rig = False
+        self._geometry_type = GEOMETRY_TYPE.BOX.value
+        self._material_type = MATERIAL_TYPE.SURFACE.value
+
+        self.menu_deadzones = []
+
+    def update(self):
+        self.menu_deadzones = []
+        
+        imgui.begin("Create Object")
+        
+        if imgui.button("Generate Mesh"):
+            geo = get_geometry(self._geometry_type)
+            surface_material = get_material(self._material_type)
+            box = Mesh(geometry=geo, material=surface_material)
+            x_pos = random.uniform(-2, 2)
+            y_pos = random.uniform(-2, 2)
+            z_pos = random.uniform(-2, 2)
+            box.set_position([x_pos, y_pos, z_pos])
+            self.add_to_scene(box)
+
+        imgui.text("Geometry Type")
+        imgui.set_next_item_width(100)
+        _,self._geometry_type = imgui.combo("", self._geometry_type, [str(type) for type in GEOMETRY_TYPE])
+        imgui.same_line()
+        imgui.set_next_item_width(100)
+        # imgui.text("Material Type")
+        _,self._material_type = imgui.combo(" ", self._material_type, [str(type) for type in MATERIAL_TYPE])
+        
+        # store position of the menu to avoid mouse picking on objects while interacting with the menu
+        mesh_spawn_location = imgui.get_window_position()
+        mesh_spawn_size = imgui.get_window_size()
+    
+        self.menu_deadzones.append([mesh_spawn_location[0], mesh_spawn_location[1],
+                                  mesh_spawn_location[0] + mesh_spawn_size[0], 
+                                  mesh_spawn_location[1] + mesh_spawn_size[1]])
+        imgui.end()
+
+        if self._is_targetting_object and self.selected_mesh is not None:
+            self.mesh_editor.show()
+            self.disable_camera_rig = True
+
+            # store position of the menu to avoid mouse picking on objects while interacting with the menu
+            mesh_bbox,shader_bbox = self.mesh_editor.get_menu_deadzones()
+            self.menu_deadzones.append(mesh_bbox)
+            self.menu_deadzones.append(shader_bbox)
+
+
+    def render(self):
+        # clock delta time so all objects can be updated with the same delta time
+        self._tick()
+        # Update the input handler
+        if not self.disable_camera_rig:
+            self._handle_input()
+         
+         # set the window size in case the window was resized
+        self.renderer.update_window_size(self.window_width, self.window_height)
+        
+        # update the camera aspect ratio to avoid distortion
+        self.camera.update_aspect_ratio(self.window_width / self.window_height)
+
+        if not point_in_deadzones(self.input_handler.mouse_position, self.menu_deadzones):
+        # handle mouse input
+            self._handle_mouse_input()
+       
+        #render the scene
+        self.renderer.render(self.scene, self.camera)
+
+
+    def _handle_mouse_input(self):
+         if self.input_handler.left_click() or self.input_handler.right_click():
+            
+            mesh_picked = self.scene.pick_object(self.input_handler.mouse_position, self.camera,width=self.window_width, height=self.window_height)
+            
+            if mesh_picked:
+                self.selected_mesh = mesh_picked
+                self._is_targetting_object = True
+                if not self.mesh_editor.mesh:
+                    self.mesh_editor.change_mesh(self.selected_mesh)
+
+            if not mesh_picked and self.input_handler.right_click():
+                self._is_targetting_object = False
+                self.selected_mesh = None
+                self.mesh_editor.change_mesh(None)
+                self.disable_camera_rig = False
+                
+
+            if self.input_handler.left_click() and self.input_handler.mouse_held and mesh_picked:
+                drag_object(mouse_position=self.input_handler.mouse_position, mesh=self.selected_mesh, camera=self.camera, 
+                            width=self.window_width, height=self.window_height, input_handler=self.input_handler)
+
+# Run the application
+if __name__ == "__main__":
+
+    app = SceneEditor( width=1280, height=720)
+    app.run()
