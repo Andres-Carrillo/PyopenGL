@@ -1,6 +1,41 @@
 from core.utils.openGLUtils import GlUtils
 from core.glsl.uniform import Uniform
 import OpenGL.GL as gl
+from enum import Enum
+
+class MATERIAL_TYPE(Enum):
+    POINT = 0
+    LINE = 1
+    SURFACE = 2
+    SPRITE = 3
+    TEXTURE = 4
+    DEPTH = 5
+    FLAT = 6
+    LAMBERT = 7
+    PHONG = 8
+    LIGHT = 9
+
+    def __str__(self):
+        if self == MATERIAL_TYPE.POINT:
+            return "point"
+        elif self == MATERIAL_TYPE.LINE:
+            return "line"
+        elif self == MATERIAL_TYPE.SURFACE:
+            return "surface"
+        elif self == MATERIAL_TYPE.SPRITE:
+            return "sprite"
+        elif self == MATERIAL_TYPE.TEXTURE:
+            return "texture"
+        elif self == MATERIAL_TYPE.DEPTH:
+            return "depth"
+        elif self == MATERIAL_TYPE.FLAT:
+            return "flat"
+        elif self == MATERIAL_TYPE.LAMBERT:
+            return "lambert"
+        elif self == MATERIAL_TYPE.PHONG:
+            return "phong"
+        elif self == MATERIAL_TYPE.LIGHT:
+            return "light"
 
 class Material(object):
 
