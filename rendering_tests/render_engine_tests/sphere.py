@@ -7,21 +7,14 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from meshes.mesh import Mesh
-<<<<<<<< HEAD:rendering_tests/render_engine_tests/sphere.py
+
 from core.rendering.camera import Camera
 from core.rendering.renderer import Renderer
 from core.rendering.scene import Scene
 from geometry.simple3D.sphere import Sphere
 from material.basic.material import Material
-from tests.template import Test
-========
-from core.camera import Camera
-from core.renderer import Renderer
-from core.scene import Scene
-from geometry.sphere import Sphere
-from material.material import Material
+
 from rendering_tests.template import Test
->>>>>>>> dear_py_gui_test:rendering_tests/sphere.py
 from core.utils.timer import Timer
 
 

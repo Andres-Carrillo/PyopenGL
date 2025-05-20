@@ -9,13 +9,10 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-<<<<<<<< HEAD:rendering_tests/render_engine_tests/light_test.py
-from tests.template import Test
-from geometry.simple3D.sphere import Sphere
-========
 from rendering_tests.template import Test
-from geometry.sphere import Sphere
->>>>>>>> dear_py_gui_test:rendering_tests/light_test.py
+from geometry.simple3D.sphere import Sphere
+from rendering_tests.template import Test
+
 from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
 from core.light.point import PointLight

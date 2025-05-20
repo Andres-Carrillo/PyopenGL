@@ -35,7 +35,7 @@ class DrawPoint(Base):
             glfw.swap_buffers(self.window)
 
             # Poll for and process events
-            self.input_handler.update(self.window) 
+            self.input_handler.update() 
 
             if self.input_handler.quit:
                 break           

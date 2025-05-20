@@ -8,7 +8,7 @@ class PointLightTool(Mesh):
         color = point_light.color
         geometry = Sphere(radius=size,seg_radius=2,seg_height=4)
 
-        material = SurfaceMaterial({
+        material = SurfaceMaterial(properties={
             "base_color":color,
             "wire_frame":True,
             "double_sided":True,

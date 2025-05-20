@@ -2,11 +2,11 @@ import imgui
 from meshes.mesh import Mesh
 import math
 
-def draw_mesh_property_editor(mesh):
+def draw_mesh_uniform_editor(mesh):
 
     # display the mesh material properties
     imgui.separator()
-    open_header, _ = imgui.collapsing_header(mesh.material.material_type + " Material Properties")
+    open_header, _ = imgui.collapsing_header(mesh.material.material_type + " Uniforms")
     if open_header:
         for key, value in mesh.material.uniforms.items():
             if key in ("model_matrix", "view_matrix", "projection_matrix"):
@@ -26,21 +26,26 @@ def draw_mesh_property_editor(mesh):
                 if changed:
                     mesh.material.set_properties({"base_color": new_color})
 
+
+def draw_material_settings(mesh):
+    imgui.separator()
+    open_header, _ = imgui.collapsing_header(mesh.material.material_type + " Settings")
+    if open_header:
         for key, value in mesh.material.settings.items():
-            if key == "wire_frame":
-                changed, new_value = imgui.checkbox("Wire Frame", value)
-                imgui.same_line()
-                if changed:
-                    mesh.material.settings[key] = new_value
-            if mesh.material.settings.get('wire_frame', False) and key == "line_width":
-                changed, new_value = imgui.slider_float("Line Width", value, 0.1, 10.0)
-                if changed:
-                    mesh.material.settings[key] = new_value
-            if key == "double_sided":
-                changed, new_value = imgui.checkbox("Double Sided", value)
-                imgui.same_line()
-                if changed:
-                    mesh.material.settings[key] = new_value
+                if key == "wire_frame":
+                    changed, new_value = imgui.checkbox("Wire Frame", value)
+                    imgui.same_line()
+                    if changed:
+                        mesh.material.settings[key] = new_value
+                if mesh.material.settings.get('wire_frame', False) and key == "line_width":
+                    changed, new_value = imgui.slider_float("Line Width", value, 0.1, 10.0)
+                    if changed:
+                        mesh.material.settings[key] = new_value
+                if key == "double_sided":
+                    changed, new_value = imgui.checkbox("Double Sided", value)
+                    imgui.same_line()
+                    if changed:
+                        mesh.material.settings[key] = new_value
 
 def draw_position_editor(mesh):
      # Display the mesh's current position and allow the user to edit it
@@ -70,6 +75,8 @@ class ShaderEditor:
         self.show_editor = False
         self.compile_error = False
         self.mesh = mesh
+        self.menu_bbox = [0, 0, 0, 0]
+        self.error_message = ""
 
         if mesh:
             self.vertex_shader = self.mesh.materia.vertex_shader
@@ -113,6 +120,14 @@ class ShaderEditor:
             if(imgui.button("Compile")):
                 self.compile_shaders()
 
+            imgui.same_line()   
+            if(imgui.button("Edit Uniforms")):
+                print("Edit Uniforms")
+
+            window_pos = imgui.get_window_position()
+            window_size = imgui.get_window_size()
+            self.menu_bbox = [window_pos[0], window_pos[1], window_pos[0] + window_size[0], window_pos[1] + window_size[1]]
+
             imgui.end()
 
     def compile_shaders(self):
@@ -125,10 +140,15 @@ class ShaderEditor:
             print("Error compiling shaders:", e)
             self.compile_error = True
 
+
+    def get_menu_deadzones(self):
+        return self.menu_bbox
+
 class MeshEditor:
     def __init__(self, mesh: Mesh = None):
         self.mesh = mesh
         self.shader_editor = ShaderEditor(mesh)
+        self.menu_bbox = [0, 0, 0, 0]
 
     def change_mesh(self, mesh: Mesh = None):
         self.mesh = mesh
@@ -144,14 +164,25 @@ class MeshEditor:
         # Display the mesh's current rotation and allow the user to edit it
         draw_rotation_editor(self.mesh)
 
-        draw_mesh_property_editor(self.mesh)
+        draw_mesh_uniform_editor(self.mesh)
+
+        draw_material_settings(self.mesh)
 
         imgui.separator()
         if imgui.button("Edit Shaders"):
             self.shader_editor.show_editor = not self.shader_editor.show_editor
+
+        window_pos = imgui.get_window_position()
+        window_size = imgui.get_window_size()
+        self.menu_bbox = [window_pos[0], window_pos[1], window_pos[0] + window_size[0], window_pos[1] + window_size[1]]
 
         imgui.end()  # End the mesh editor window
 
         if self.shader_editor.show_editor:
             # Open the shader editor window
             self.shader_editor.show()
+
+
+    def get_menu_deadzones(self):
+        # return the menu bounding box for the mesh editor and shader editor
+        return [self.menu_bbox, self.shader_editor.menu_bbox]    

@@ -20,7 +20,7 @@ class ToolTest(Test):
         
         self.rig = MovementRig()
         self.rig.add(self.camera)
-        self.rig.set_pos([0.5, 1, 5])
+        self.rig.set_position([0.5, 1, 5])
 
         self.scene.add(self.rig)
 

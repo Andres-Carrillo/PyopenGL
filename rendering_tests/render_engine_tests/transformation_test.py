@@ -74,7 +74,7 @@ class TransformationTest(Base):
         return fragment_shader_code
     
     def update(self):
-        Timer.sleep(0.016)
+        # Timer.sleep(0.016)
 
         move_amount = self.move_speed * self.timer.delta_time()
         turn_amount = self.rotation_speed * self.timer.delta_time()

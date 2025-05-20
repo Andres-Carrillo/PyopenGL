@@ -2,7 +2,7 @@ import pathlib
 import sys
 
 # Get the package directory
-package_dir = str(pathlib.Path(__file__).resolve().parents[2])
+package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
@@ -10,13 +10,11 @@ if package_dir not in sys.path:
 
 
 
-<<<<<<<< HEAD:rendering_tests/render_engine_tests/shadow_test.py
-from tests.template import Test
-from geometry.simple3D.sphere import Sphere
-========
+
 from rendering_tests.template import Test
-from geometry.sphere import Sphere
->>>>>>>> dear_py_gui_test:rendering_tests/shadow_test.py
+from geometry.simple3D.sphere import Sphere
+from rendering_tests.template import Test
+from geometry.simple3D import Sphere
 from geometry.simple2D.rectangle import Rectangle
 from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
