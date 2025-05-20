@@ -1,6 +1,41 @@
 import OpenGL.GL as gl
 import numpy as np
 import PyQt5
+import enum
+
+class UNIFORM_TYPE(enum.Enum):
+    INT = 0
+    BOOL = 1
+    FLOAT = 2
+    VEC2 = 3
+    VEC3 = 4
+    VEC4 = 5
+    MAT4 = 6
+    SAMPLER2D = 7
+    LIGHT = 8
+    SHADOW = 9
+
+    def __str__(self):
+        if self == UNIFORM_TYPE.INT:
+            return "int"
+        elif self == UNIFORM_TYPE.BOOL:
+            return "bool"
+        elif self == UNIFORM_TYPE.FLOAT:
+            return "float"
+        elif self == UNIFORM_TYPE.VEC2:
+            return "vec2"
+        elif self == UNIFORM_TYPE.VEC3:
+            return "vec3"
+        elif self == UNIFORM_TYPE.VEC4:
+            return "vec4"
+        elif self == UNIFORM_TYPE.MAT4:
+            return "mat4"
+        elif self == UNIFORM_TYPE.SAMPLER2D:
+            return "sampler2D"
+        elif self == UNIFORM_TYPE.LIGHT:
+            return "Light"
+        elif self == UNIFORM_TYPE.SHADOW:
+            return "Shadow"
 
 class Uniform(object):
 
@@ -41,10 +76,8 @@ class Uniform(object):
         if self.var_ref == -1:
             return -1
         
-    def upload_data(self):
         
-        # if self.var_ref is None:
-        #     raise RuntimeError(f"Need to link variable to program.")
+    def upload_data(self):
         
         if self.var_ref !=-1:
             if self.data_type == "int":
