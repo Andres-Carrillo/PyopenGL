@@ -1,6 +1,29 @@
 import OpenGL.GL as gl
 from OpenGL.GL.shaders import compileProgram, compileShader
 from PyQt5.QtGui import QOpenGLShaderProgram,QOpenGLShader
+from core.glsl.uniform import UNIFORM_TYPE
+import numpy as np
+
+
+def str_to_matrix(data:str,size:int=4) -> np.ndarray:
+    """
+    This function takes a string and converts it to a matrix
+    """
+    #remove the brackets
+    data = data.replace("[","").replace("]","").replace(" ","")
+    print("normalized data: ",data)
+    #split the string by commas
+    # and convert it to a list of floats
+    data = data.split(",")
+    print("split data: ",data)
+    matrix = []
+    for i in range(size):
+        row = []
+        for j in range(size):
+            row.append(float(data[i*size+j]))
+        matrix.append(row)
+    
+    return np.array(matrix, dtype=np.float32)
 
 class GlUtils(object):
     
@@ -134,3 +157,38 @@ class GlUtils(object):
             info_log = gl.glGetProgramInfoLog(program_ref)
             print("log: ",info_log)
             raise RuntimeError(f"Program linking failed: {info_log}")
+        
+    @staticmethod
+    def make_uniform_data(data_type:UNIFORM_TYPE, data:str):
+        """
+        This function takes data_type and data both strings and converts the data to the appropriate type
+        """
+
+        print(f"data_type: {data_type}, data: {data}")
+
+        if data_type == UNIFORM_TYPE.INT:
+            return int(data)
+        elif data_type == UNIFORM_TYPE.BOOL:
+            if data.lower() == "true":
+                return True
+            elif data.lower() == "false":
+                return False
+            else:
+                raise RuntimeError(f"Invalid boolean value {data}")
+        elif data_type == UNIFORM_TYPE.FLOAT:
+            return float(data)
+        elif data_type == UNIFORM_TYPE.VEC2:
+            return [float(data[0]), float(data[1])]
+        elif data_type == UNIFORM_TYPE.VEC3:
+            return [float(data[0]), float(data[1]), float(data[2])]
+        elif data_type == UNIFORM_TYPE.VEC4:
+            return [float(data[0]), float(data[1]), float(data[2]), float(data[3])]
+        elif data_type == UNIFORM_TYPE.MAT4:
+            return str_to_matrix(data)
+        elif data_type == UNIFORM_TYPE.SAMPLER2D:
+            texture_obj_ref, texture_unit_ref = data
+            gl.glActiveTexture(gl.GL_TEXTURE0 + texture_unit_ref)
+            gl.glBindTexture(gl.GL_TEXTURE_2D, texture_obj_ref)
+            return gl.glUniform1i(data, texture_unit_ref)
+        else:
+            raise RuntimeError(f"Unsupported data type {data_type}")
