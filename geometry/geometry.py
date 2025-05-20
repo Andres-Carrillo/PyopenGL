@@ -1,5 +1,56 @@
 from core.glsl.attribute import Attribute
 import numpy as np
+from enum import Enum
+
+class GEOMETRY_TYPE(Enum):
+    CIRCLE = 0
+    RECTANGLE = 1
+    TRIANGLE = 2
+    QUAD = 3
+    PENTAGON = 4
+    HEXAGON = 5
+    HEPTAGON = 6
+    OCTAGON = 7
+    BOX = 8
+    PLANE = 9
+    SPHERE = 10
+    CYLINDER = 11
+    CONE = 12
+    PRISM = 13
+    PYRAMID = 14
+
+    def __str__(self):
+        if self == GEOMETRY_TYPE.CIRCLE:
+            return "circle"
+        elif self == GEOMETRY_TYPE.RECTANGLE:
+            return "rectangle"
+        elif self == GEOMETRY_TYPE.TRIANGLE:
+            return "triangle"
+        elif self == GEOMETRY_TYPE.QUAD:
+            return "quad"
+        elif self == GEOMETRY_TYPE.PENTAGON:
+            return "pentagon"
+        elif self == GEOMETRY_TYPE.HEXAGON:
+            return "hexagon"
+        elif self == GEOMETRY_TYPE.HEPTAGON:
+            return "heptagon"
+        elif self == GEOMETRY_TYPE.OCTAGON:
+            return "octagon"
+        elif self == GEOMETRY_TYPE.BOX:
+            return "box"
+        elif self == GEOMETRY_TYPE.PLANE:
+            return "plane"
+        elif self == GEOMETRY_TYPE.SPHERE:
+            return "sphere"
+        elif self == GEOMETRY_TYPE.CYLINDER:
+            return "cylinder"
+        elif self == GEOMETRY_TYPE.CONE:
+            return "cone"
+        elif self == GEOMETRY_TYPE.PRISM:
+            return "prism"
+        elif self == GEOMETRY_TYPE.PYRAMID:
+            return "pyramid"
+
 
 class Geometry(object):
     def __init__(self):
