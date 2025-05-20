@@ -1,6 +1,10 @@
 import pathlib
 import sys
 import warnings
+import imgui
+import numpy as np
+import glfw.GLFW as GLFW_CONSTANTS
+import random
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygame")
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[1])
@@ -8,7 +12,6 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[1])
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
-
 
 from meshes.mesh import Mesh
 from geometry.simple3D.box import BoxGeometry
@@ -20,21 +23,8 @@ from material.lighted.lambert import LambertMaterial
 from material.lighted.phong import PhongMaterial
 from material.lighted.flat import FlatMaterial
 from tools.imgui_tools import MeshEditor
-# from core.input import Input
-
-import imgui
-# from material.phong import PhongMaterial
 from core.base import BaseApp
-import random
-import math
-
 from core.utils.math import Math as RenderMath
-
-import numpy as np
-
-import glfw.GLFW as GLFW_CONSTANTS
-
-EDIT_SHADERS = False
 
 def rodrigues_rotation_matrix(axis, theta):
     """
@@ -113,10 +103,33 @@ def drag_object(mouse_position, mesh, camera,width,height,input_handler):
     if new_pos is not None:
             mesh.set_position(new_pos)
 
+def point_in_rectangle(point, rect):
+    """
+    Check if a point is inside a rectangle defined by its top-left and bottom-right corners.
+    :param point: Tuple (x, y) representing the point.
+    :param rect: List [x1, y1, x2, y2] representing the rectangle (top-left and bottom-right corners).
+    :return: True if the point is inside the rectangle, False otherwise.
+    """
+    x1, y1, x2, y2 = rect
+    return x1 <= point[0] <= x2 and y1 <= point[1] <= y2
 
-class Test(BaseApp):
+def point_in_deadzones(point, deadzones):
+    """
+    Check if a point is inside any of the deadzones.
+    :param point: Tuple (x, y) representing the point.
+    :param deadzones: List of deadzones, where each deadzone is defined by [x1, y1, x2, y2].
+    :return: True if the point is inside any deadzone, False otherwise.
+    """
+    for zone in deadzones:
+        if point_in_rectangle(point, zone):
+            return True
+        
+    return False
+
+
+class SceneEditor(BaseApp):
     def __init__(self, width=800, height=600):
-        super().__init__(title="Testing Spawning Meshing", display_grid=True,static_camera=False, width=width, height=height)
+        super().__init__(title="SceneEditor", display_grid=True,static_camera=False, width=width, height=height)
         self._is_targetting_object = False
         self.selected_mesh= None
         self._geometry_type = None
@@ -124,24 +137,42 @@ class Test(BaseApp):
         self.mesh_editor = MeshEditor()
         self.disable_camera_rig = False
 
+        self.menu_deadzones = []
 
     def update(self):
-        # Example: Add ImGui UI elements
-        imgui.begin("Mesh Spawning")
-        if imgui.button("Spawn Mesh"):
+        self.menu_deadzones = []
+        
+        imgui.begin("Create Object")
+        
+        if imgui.button("Generate Mesh"):
             geo = BoxGeometry()
             surface_material = SurfaceMaterial()
             box = Mesh(geometry=geo, material=surface_material)
-            x_pos = random.uniform(-5, 5)
-            y_pos = random.uniform(-5, 5)
-            z_pos = random.uniform(-5, 5)
+            x_pos = random.uniform(-2, 2)
+            y_pos = random.uniform(-2, 2)
+            z_pos = random.uniform(-2, 2)
             box.set_position([x_pos, y_pos, z_pos])
             self.add_to_scene(box)
+
+        
+        # store position of the menu to avoid mouse picking on objects while interacting with the menu
+        mesh_spawn_location = imgui.get_window_position()
+        mesh_spawn_size = imgui.get_window_size()
+    
+        self.menu_deadzones.append([mesh_spawn_location[0], mesh_spawn_location[1],
+                                  mesh_spawn_location[0] + mesh_spawn_size[0], 
+                                  mesh_spawn_location[1] + mesh_spawn_size[1]])
         imgui.end()
 
         if self._is_targetting_object and self.selected_mesh is not None:
             self.mesh_editor.show()
             self.disable_camera_rig = True
+
+            # store position of the menu to avoid mouse picking on objects while interacting with the menu
+            mesh_bbox,shader_bbox = self.mesh_editor.get_menu_deadzones()
+            self.menu_deadzones.append(mesh_bbox)
+            self.menu_deadzones.append(shader_bbox)
+
 
     def render(self):
         # clock delta time so all objects can be updated with the same delta time
@@ -156,9 +187,9 @@ class Test(BaseApp):
         # update the camera aspect ratio to avoid distortion
         self.camera.update_aspect_ratio(self.window_width / self.window_height)
 
-
+        if not point_in_deadzones(self.input_handler.mouse_position, self.menu_deadzones):
         # handle mouse input
-        self._handle_mouse_input()
+            self._handle_mouse_input()
        
         #render the scene
         self.renderer.render(self.scene, self.camera)
@@ -186,9 +217,8 @@ class Test(BaseApp):
                 drag_object(mouse_position=self.input_handler.mouse_position, mesh=self.selected_mesh, camera=self.camera, 
                             width=self.window_width, height=self.window_height, input_handler=self.input_handler)
 
-
 # Run the application
 if __name__ == "__main__":
-                
-    app = Test( width=800, height=600)
+
+    app = SceneEditor( width=1280, height=720)
     app.run()
