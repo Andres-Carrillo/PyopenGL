@@ -3,7 +3,7 @@ from core.textures.texture import Texture
 import OpenGL.GL as gl
 
 class Sprite(Material):
-    def __init__(self,texture:"Texture",properties = {}) -> None:
+    def __init__(self,texture:Texture,properties = {}) -> None:
         vertex_shader_code = """
                             uniform mat4 projection_matrix;
                             uniform mat4 view_matrix;
