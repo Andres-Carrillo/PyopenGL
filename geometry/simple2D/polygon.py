@@ -5,7 +5,7 @@ class Polygon(Geometry):
     def __init__(self, radius: float = 1, sides: int = 3) -> None:
         super().__init__()
         self.radius = radius
-        self.sides = sides
+        self.sides = int(sides)
         self._create_polygon()
 
     def _create_polygon(self):

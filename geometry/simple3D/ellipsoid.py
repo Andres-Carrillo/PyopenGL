@@ -8,8 +8,8 @@ class Ellipsoid(Parametric):
 
             phi = 2 * pi * u
             theta = (1 - v) * pi
-            return [width / 2 * sin(theta) * cos(phi),
-                    height / 2 * sin(theta) * sin(phi),
+            return [width / 2 * sin(theta) * cos(phi),\
+                    height / 2 * sin(theta) * sin(phi),\
                     depth / 2 * cos(theta)]
 
         super().__init__(0,

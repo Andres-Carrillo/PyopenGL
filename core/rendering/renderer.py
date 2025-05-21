@@ -132,7 +132,6 @@ class Renderer(object):
 
             # ================== update the uniforms for the mesh stored in the material ==================
             for var_name,uniform_obj in mesh.material.uniforms.items():
-
                 if uniform_obj.data is not None:
                     uniform_obj.upload_data()
 

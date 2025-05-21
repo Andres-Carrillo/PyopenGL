@@ -1,4 +1,4 @@
-from geometry.simple2D import Polygon
+from geometry.simple2D.polygon import Polygon
 
 class Pentagon(Polygon):
     def __init__(self, radius: float = 1) -> None:

@@ -146,7 +146,6 @@ class Geometry(object):
     def AA_bounding_box(self):
         # get the min and max values of the vertex positions
         vertex_positions = self.attributes["vertex_position"]._data
-        # print("vertex positions", vertex_positions)
         min_x = min(vertex_positions, key=lambda x: x[0])[0]
         max_x = max(vertex_positions, key=lambda x: x[0])[0]
         min_y = min(vertex_positions, key=lambda x: x[1])[1]

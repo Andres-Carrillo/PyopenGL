@@ -8,7 +8,7 @@ class Plane(Parametric):
             x = u 
             y = v 
             z = 0.0
-            return (x,y,z)
+            return [x,y,z]
         
 
         super().__init__(-width/2,width/2,seg_width,
