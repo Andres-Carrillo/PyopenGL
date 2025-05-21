@@ -1,14 +1,8 @@
 import imgui
-from meshes.mesh import Mesh
 import math
 from core.utils.openGLUtils import GlUtils
 from core.glsl.uniform import UNIFORM_TYPE
-from core.glsl.uniform import Uniform
-
-
 from meshes.mesh import Mesh
-
-
 # Geometry imports
 from geometry.geometry import GEOMETRY_TYPE
 from geometry.simple3D.box import BoxGeometry
@@ -38,7 +32,6 @@ from material.basic.line import LineMaterial
 from material.basic.point import PointMaterial
 from material.basic.sprite import Sprite
 from material.basic.texture import TextureMaterial
-
 import random
 
 
@@ -398,4 +391,3 @@ class ObjectSpawner:
             return PhongMaterial()
         else:
             raise ValueError(f"Unknown material type: {material_type}")
-
