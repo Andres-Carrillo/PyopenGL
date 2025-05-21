@@ -14,6 +14,10 @@ from math import pi
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 from imgui.integrations.glfw import GlfwRenderer
+from tools.imgui_tools import MeshEditor
+from tools.imgui_tools import ObjectSpawner
+from core.rendering.utils import drag_object
+from core.utils.math import Math
 
 """ 
         Base class for all glfw only applications.
@@ -204,10 +208,7 @@ class ImGuiBase:
                  show_fps:bool=True,major_version:int=3,minor_version:int=3,profile = glfw.OPENGL_CORE_PROFILE) -> None:
         
         self._init_glfw(title, width, height, major_version, minor_version, profile)
-
         self._init_imgui()
-
-
        
         # Store window properties
         self.title = title
@@ -227,7 +228,6 @@ class ImGuiBase:
 
         # Set resize callback
         glfw.set_framebuffer_size_callback(self.window, self._on_resize)
-
 
 
     def _init_glfw(self, title: str, width: int, height: int, major_version: int, minor_version: int, profile) -> None:
@@ -324,9 +324,6 @@ class ImGuiBase:
             # Swap buffers
             glfw.swap_buffers(self.window)
 
-            
-           
-
             # Display FPS in the window title
             if self.show_fps:
                 self._display_fps()
@@ -357,6 +354,14 @@ class ImGuiBase:
         self.quit()
 
 
+"""
+    BaseApp class for creating a 3D application with a scene, camera, and renderer.
+    Inherits from the ImGuiBase class.
+    This class provides functionality for rendering a scene with a camera,
+    handling input, and displaying a grid.
+    It uses ImGui for the user interface and GLFW for window management.
+    The camera can be static or dynamic, and the grid can be displayed or hidden.
+"""
 class BaseApp(ImGuiBase):
     def __init__(self, title="Test Framework", width=800, height=600,static_camera=True,display_grid=True):
         super().__init__(title, width, height)
@@ -373,7 +378,6 @@ class BaseApp(ImGuiBase):
             self.camera_rig.add(self.camera)
             self.add_to_scene(self.camera_rig)
             self.camera_rig.set_position([0.5, 1, 5])
-
 
         if display_grid:
             self.grid_tool = GridTool(size = self.camera.far,division=int(self.camera.far*2),grid_color=[1,1,1],center_color=[1,1,0])
@@ -412,8 +416,86 @@ class BaseApp(ImGuiBase):
         if self.camera_rig is not None:
             self.camera_rig.update(self.input_handler, self._time_delta)
 
-
-        
-
     def add_to_scene(self,mesh):
         self.scene.add(mesh)
+
+
+"""
+    SceneEditor class for creating and editing 3D objects in a scene.
+    Inherits from the BaseApp class.
+    This class provides functionality for object creation, mesh editing,
+    and rendering the scene with a camera.
+    It uses ImGui for the user interface and GLFW for window management.
+"""
+class SceneEditor(BaseApp):
+    def __init__(self, width=800, height=600):
+        super().__init__(title="SceneEditor", display_grid=True,static_camera=False, width=width, height=height)
+        self._is_targetting_object = False
+        self.disable_camera_rig = False
+        self.selected_mesh= None
+        self.menu_deadzones = []
+        self.mesh_editor = MeshEditor()
+        self.obj_maker = ObjectSpawner()
+        
+    def update(self):
+        self.menu_deadzones = []
+
+        # handle object creation
+        self.obj_maker.show()
+        self.menu_deadzones.append(self.obj_maker.get_menu_deadzones())
+        obj = self.obj_maker.get_object()
+        if obj is not None:
+            self.scene.add(obj)
+
+        # handle mesh editing
+        if self._is_targetting_object and self.selected_mesh is not None:
+            self.mesh_editor.show()
+            self.disable_camera_rig = True
+
+            # store position of the menu to avoid mouse picking while interacting with the menu
+            mesh_bbox,shader_bbox = self.mesh_editor.get_menu_deadzones()
+            self.menu_deadzones.append(mesh_bbox)
+            self.menu_deadzones.append(shader_bbox)
+
+
+    def render(self):
+        # clock delta time so all objects can be updated with the same delta time
+        self._tick()
+        # Update the input handler
+        if not self.mesh_editor.editing_shader:
+            self._handle_input()
+         
+         # set the window size in case the window was resized
+        self.renderer.update_window_size(self.window_width, self.window_height)
+        
+        # update the camera aspect ratio to avoid distortion
+        self.camera.update_aspect_ratio(self.window_width / self.window_height)
+
+        if not Math.point_in_regions(self.input_handler.mouse_position, self.menu_deadzones):
+        # handle mouse input
+            self._handle_mouse_input()
+       
+        #render the scene
+        self.renderer.render(self.scene, self.camera)
+
+
+    def _handle_mouse_input(self):
+         if self.input_handler.left_click() or self.input_handler.right_click():
+            
+            mesh_picked = self.scene.pick_object(self.input_handler.mouse_position, self.camera,width=self.window_width, height=self.window_height)
+            
+            if mesh_picked:
+                self.selected_mesh = mesh_picked
+                self._is_targetting_object = True
+                if not self.mesh_editor.mesh:
+                    self.mesh_editor.change_mesh(self.selected_mesh)
+
+            if not mesh_picked and self.input_handler.right_click():
+                self._is_targetting_object = False
+                self.selected_mesh = None
+                self.mesh_editor.change_mesh(None)
+                self.disable_camera_rig = False
+                
+            if self.input_handler.left_click() and self.input_handler.mouse_held and mesh_picked:
+                drag_object(mouse_position=self.input_handler.mouse_position, mesh=self.selected_mesh, camera=self.camera, 
+                            width=self.window_width, height=self.window_height, input_handler=self.input_handler)
