@@ -53,3 +53,33 @@ class Math:
             normalized_ray = [normalized_ray[0]/length, normalized_ray[1]/length, normalized_ray[2]/length]
             
             return normalized_ray
+        
+
+        @staticmethod
+        def point_in_rectangle(point, rect):
+            """
+            Check if a point is inside a rectangle defined by its top-left and bottom-right corners.
+            :param point: Tuple (x, y) representing the point.
+            :param rect: List [x1, y1, x2, y2] representing the rectangle (top-left and bottom-right corners).
+            :return: True if the point is inside the rectangle, False otherwise.
+            """
+            x1, y1, x2, y2 = rect
+            return x1 <= point[0] <= x2 and y1 <= point[1] <= y2
+
+        @staticmethod
+        def point_in_regions(point, deadzones):
+            """
+            Check if a point is inside any of the deadzones.
+            :param point: Tuple (x, y) representing the point.
+            :param deadzones: List of deadzones, where each deadzone is defined by [x1, y1, x2, y2].
+            :return: True if the point is inside any deadzone, False otherwise.
+            """
+            for zone in deadzones:
+                if Math.point_in_rectangle(point, zone):
+                    return True
+                
+            return False
+
+
+
+
