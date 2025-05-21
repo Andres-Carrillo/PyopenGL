@@ -35,8 +35,11 @@ class BBoxMesh:
         self.bbox_geometry.set_position(self.center)
         
     """ creates and returns a mesh based on the bounding box geometry and the line material """
-    def get_wireframe(self):
-        self._update()
+    def get_wireframe(self, update: bool = False):
+        # prevent double update when calling get_bbox
+        if update:
+            self._update()
+
         edge_material = SurfaceMaterial(properties={"base_color": [0.0, 1.0, 0.0]})
         edge_material.settings['wire_frame'] = True
         edge_material.settings['line_width'] = self.line_width 
@@ -45,8 +48,11 @@ class BBoxMesh:
         return Mesh(self.bbox_geometry, edge_material)
     
     """creates and returns a mesh based on the bounding box geometry and the point material """
-    def get_corners(self):
-        self._update()
+    def get_corners(self, update: bool = False):
+        # prevent double update when calling get_bbox
+        if update:
+            self._update()
+
         corner_material = PointMaterial(properties={"base_color": [1.0, 0.0, 0.0]})
         corner_material.settings['point_size'] = self.point_size
         corner_material.settings['double_sided'] = self.double_sided
@@ -55,5 +61,7 @@ class BBoxMesh:
 
     """returns the bounding box mesh and the wireframe mesh"""
     def get_bbox(self): 
-        return {"corners": self.get_corners(),
-                    "wireframe": self.get_wireframe()}
+        self._update()
+        return  {"corners": self.get_corners(),
+                    "wireframe": self.get_wireframe()
+                }
