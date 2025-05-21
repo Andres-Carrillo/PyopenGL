@@ -5,6 +5,43 @@ from core.utils.openGLUtils import GlUtils
 from core.glsl.uniform import UNIFORM_TYPE
 from core.glsl.uniform import Uniform
 
+
+from meshes.mesh import Mesh
+
+
+# Geometry imports
+from geometry.geometry import GEOMETRY_TYPE
+from geometry.simple3D.box import BoxGeometry
+from geometry.simple3D.sphere import Sphere
+from geometry.simple3D.cylinder import Cylinder
+from geometry.simple3D.plane import Plane
+from geometry.simple2D.rectangle import Rectangle
+from geometry.simple2D.circle import Circle
+from geometry.simple2D.triangle import Triangle
+from geometry.simple2D.polygon import Polygon
+from geometry.simple2D.pentagon import Pentagon
+from geometry.simple2D.hexagon import Hexagon
+from geometry.simple2D.octagon import Octagon
+from geometry.simple2D.heptagon import Heptagon
+from geometry.simple2D.quad import Quad
+from geometry.simple3D.cone import Cone
+from geometry.simple3D.prism import Prism
+from geometry.simple3D.pyramid import Pyramid
+
+# Material imports
+from material.basic.material import MATERIAL_TYPE
+from material.basic.surface import SurfaceMaterial
+from material.lighted.lambert import LambertMaterial
+from material.lighted.phong import PhongMaterial
+from material.lighted.flat import FlatMaterial
+from material.basic.line import LineMaterial
+from material.basic.point import PointMaterial
+from material.basic.sprite import Sprite
+from material.basic.texture import TextureMaterial
+
+import random
+
+
 def draw_mesh_uniform_editor(mesh):
     # display the mesh's current uniforms and allow the user to edit them
     imgui.separator()
@@ -207,6 +244,7 @@ class MeshEditor:
         self.mesh = mesh
         self.shader_editor = ShaderEditor(mesh,embedded=True)
         self.menu_bbox = [0, 0, 0, 0]
+        self.editing_shader = False
 
     def change_mesh(self, mesh: Mesh = None):
         self.mesh = mesh
@@ -238,9 +276,126 @@ class MeshEditor:
 
         if self.shader_editor.show_editor:
             # Open the shader editor window
+            self.editing_shader = True
             self.shader_editor.show()
 
 
     def get_menu_deadzones(self):
         # return the menu bounding box for the mesh editor and shader editor
-        return [self.menu_bbox, self.shader_editor.menu_bbox]    
+        return [self.menu_bbox, self.shader_editor.menu_bbox]   
+
+class ObjectSpawner: 
+    def __init__(self) -> None:
+        self.deadzones = []
+        self._range = None 
+        self._location = None
+        self._material_type = MATERIAL_TYPE.SURFACE.value
+        self._geometry_type = GEOMETRY_TYPE.BOX.value
+        self.menu_deadzones = []
+
+    def set_range(self, range:list = [-2,2]):
+        self._range = range
+
+    def set_location(self, location:list = [0,0,0]):
+        self._location = location
+
+    def get_object(self):
+        return self._obj
+    
+    def get_menu_deadzones(self):
+        return self.menu_deadzones
+
+    def show(self):
+        self.menu_deadzones = []
+
+        # self._geometry_type = GEOMETRY_TYPE.BOX.value
+        imgui.begin("Object Menu")
+
+        if imgui.button("Generate Mesh"):
+            geo = self.get_geometry(self._geometry_type)
+            surface_material = self.get_material(self._material_type)
+            self._obj = Mesh(geometry=geo, material=surface_material)
+
+            if self._location is not None:
+                self._obj.set_position(self._location)
+            if self._range is not None:
+                x_pos = random.uniform(-2, 2)
+                y_pos = random.uniform(-2, 2)
+                z_pos = random.uniform(-2, 2)
+                self._obj.set_position([x_pos, y_pos, z_pos])
+        else:
+            self._obj = None
+
+        
+        imgui.text("Geometry Type:")
+        imgui.same_line()
+        imgui.text(" Material Type:")
+        
+        imgui.set_next_item_width(100)
+        _,self._geometry_type = imgui.combo("", self._geometry_type, [str(geo_type) for geo_type in GEOMETRY_TYPE])
+        imgui.same_line()
+        imgui.set_next_item_width(100)
+
+        _,self._material_type = imgui.combo(" ", self._material_type, ["Point", "Line", "Surface", "Flat", "Lambert", "Phong"])
+
+        # store position of the menu to avoid mouse picking on objects while interacting with the menu
+        mesh_spawn_location = imgui.get_window_position()
+        mesh_spawn_size = imgui.get_window_size()
+    
+        self.menu_deadzones = [mesh_spawn_location[0], mesh_spawn_location[1],
+                                  mesh_spawn_location[0] + mesh_spawn_size[0], 
+                                  mesh_spawn_location[1] + mesh_spawn_size[1]]
+        imgui.end()
+
+
+    def get_geometry(self,geometry_type):
+        if geometry_type == GEOMETRY_TYPE.BOX.value:
+            return BoxGeometry()
+        elif geometry_type == GEOMETRY_TYPE.SPHERE.value:
+            return Sphere()
+        elif geometry_type == GEOMETRY_TYPE.CYLINDER.value:
+            return Cylinder()
+        elif geometry_type == GEOMETRY_TYPE.PLANE.value:
+            return Plane()
+        elif geometry_type == GEOMETRY_TYPE.CIRCLE.value:
+            return Circle()
+        elif geometry_type == GEOMETRY_TYPE.RECTANGLE.value:
+            return Rectangle()
+        elif geometry_type == GEOMETRY_TYPE.TRIANGLE.value:
+            return Triangle()
+        elif geometry_type == GEOMETRY_TYPE.CONE.value:
+            return Cone()
+        elif geometry_type == GEOMETRY_TYPE.PRISM.value:
+            return Prism()
+        elif geometry_type == GEOMETRY_TYPE.PYRAMID.value:
+            return Pyramid()
+        elif geometry_type == GEOMETRY_TYPE.PENTAGON.value:
+            return Pentagon()
+        elif geometry_type == GEOMETRY_TYPE.HEXAGON.value:
+            return Hexagon()
+        elif geometry_type == GEOMETRY_TYPE.OCTAGON.value:
+            return Octagon()
+        elif geometry_type == GEOMETRY_TYPE.HEPTAGON.value:
+            return Heptagon()
+        elif geometry_type == GEOMETRY_TYPE.QUAD.value:
+            return Quad()
+        elif geometry_type == GEOMETRY_TYPE.TRIANGLE.value:
+            return Triangle()
+
+        
+    def get_material(self,material_type):
+        if material_type == 0:
+            return PointMaterial()
+        elif material_type == 1:
+            return LineMaterial()
+        elif material_type == 2:
+            return SurfaceMaterial()
+        elif material_type == 3:
+            return FlatMaterial()
+        elif material_type == 4:
+            return LambertMaterial()
+        elif material_type == 5:
+            return PhongMaterial()
+        else:
+            raise ValueError(f"Unknown material type: {material_type}")
+
