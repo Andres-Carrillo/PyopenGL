@@ -1,8 +1,10 @@
 from material.basic.point import PointMaterial
 from material.basic.surface import SurfaceMaterial
 from geometry.simple3D.box import BoxGeometry
+from material.basic.line import LineMaterial
 from meshes.mesh import Mesh
 import numpy as np
+from OpenGL import GL as gl
 
 class BBoxMesh:
     def __init__(self, object_ref:Mesh,line_width:float=2.0,double_sided:bool=True,point_size:float=10.0) -> None:
@@ -31,8 +33,8 @@ class BBoxMesh:
                                (max_corner[1] + min_corner[1]) / 2,
                                (max_corner[2] + min_corner[2]) / 2])
         
-        self.bbox_geometry = BoxGeometry(width=self.width, height=self.height, depth=self.depth)
-        self.bbox_geometry.set_position(self.center)
+        self.wire_geometry = BoxGeometry(self.width, self.height, self.depth)
+        self.point_geometry = BoxGeometry(self.width, self.height, self.depth)
         
     """ creates and returns a mesh based on the bounding box geometry and the line material """
     def get_wireframe(self, update: bool = False):
@@ -40,12 +42,18 @@ class BBoxMesh:
         if update:
             self._update()
 
-        edge_material = SurfaceMaterial(properties={"base_color": [0.0, 1.0, 0.0]})
-        edge_material.settings['wire_frame'] = True
-        edge_material.settings['line_width'] = self.line_width 
+        edge_material = LineMaterial(properties={"base_color": [1.0, 0.0, 0.0]})
+        # edge_material.settings['wire_frame'] = True
+        edge_material.settings['use_vertex_colors'] = False
         edge_material.settings['double_sided'] = self.double_sided
+        # edge_material.settings["draw_mode"] = gl.GL_LINES
+        edge_material.settings['line_width'] = 5 
+        # edge_material.settings['double_sided'] = self.double_sided
+
+        wire_frame_mesh = Mesh(self.wire_geometry, edge_material)
+        wire_frame_mesh.set_position(self.object.global_position + self.center)
         
-        return Mesh(self.bbox_geometry, edge_material)
+        return wire_frame_mesh
     
     """creates and returns a mesh based on the bounding box geometry and the point material """
     def get_corners(self, update: bool = False):
@@ -57,7 +65,10 @@ class BBoxMesh:
         corner_material.settings['point_size'] = self.point_size
         corner_material.settings['double_sided'] = self.double_sided
 
-        return Mesh(self.bbox_geometry, corner_material)
+        corner_points_mesh = Mesh(self.point_geometry, corner_material)
+        corner_points_mesh.set_position(self.object.global_position + self.center)
+
+        return corner_points_mesh
 
     """returns the bounding box mesh and the wireframe mesh"""
     def get_bbox(self): 
