@@ -18,6 +18,9 @@ class Object3D:
             return False
         return id(self) == id(other)
     
+    def __str__(self):
+        return str(self.id)
+    
     @property
     def id(self):
         """ Return the id of the object """
