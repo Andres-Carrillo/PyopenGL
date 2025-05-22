@@ -436,6 +436,8 @@ class SceneEditor(BaseApp):
         self.menu_deadzones = []
         self.mesh_editor = MeshEditor()
         self.obj_maker = ObjectSpawner()
+        self.renderer.enable_bound_box()
+        # self.renderer.enable_bound_box()
         
     def update(self):
         self.menu_deadzones = []
