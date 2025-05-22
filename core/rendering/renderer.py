@@ -4,6 +4,12 @@ from core.light.light import Light
 from core.rendering.render_target import RenderTarget
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
 from core.light.shadow import Shadow
+from tools.bbox import BBoxMesh
+from tools.grid import GridTool
+from material.basic.point import PointMaterial
+from material.basic.line import LineMaterial
+from geometry.simple3D.box import BoxGeometry
+from geometry.simple3D.sphere import Sphere
 
 class Renderer(object):
     def __init__(self,clear_color:list = [0.0, 0.0, 0.],window_width:int=SCREEN_WIDTH,window_height:int = SCREEN_HEIGHT) -> None:
@@ -22,78 +28,113 @@ class Renderer(object):
         self.window_size = (window_width,window_height)
 
         self.shadows_enabled = False
-        # self.shadow_object = None
+        self.bound_box_enabled = False
+
         
 
     def render(self,scene:object,camera:object,clear_color:bool = True,clear_depth:bool = True,render_target:RenderTarget=None) -> None:
-        # Filter descendents
-        descendant_list = scene.descendant_list
-        mesh_filter = lambda x: isinstance(x, Mesh)
-        mesh_list = list(filter(mesh_filter, descendant_list))
-        
-        # shadow pass
-        if self.shadows_enabled:
-          
-            # self._shadow_object.render_target.height = self.window_size[1]
-            # self._shadow_object.render_target.width = self.window_size[0]
-            # Set render target properties
-            gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._shadow_object.render_target.frame_buffer)
-            gl.glViewport(0, 0, self._shadow_object.render_target.width, self._shadow_object.render_target.height)
-            # # Set default color to white, used when no objects present to cast shadows
-            # gl.glClearColor(1, 1, 1, 1)
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-            gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
-            # Everything in the scene gets rendered with depthMaterial so
-            # only need to call glUseProgram & set matrices once
-            gl.glUseProgram(self._shadow_object.material.program)
-            self._shadow_object.update_internal()
-            for mesh in mesh_list:
-                # Skip invisible meshes
-                if not mesh.visible:
-                    continue
-                # Only triangle-based meshes cast shadows
-                if mesh.material.settings["draw_mode"] != gl.GL_TRIANGLES:
-                    continue
-                # Bind VAO
-                gl.glBindVertexArray(mesh.vao_ref)
-                # Update transform data
-                self._shadow_object.material.uniforms["model_matrix"].data = mesh.global_matrix
-                # Update uniforms (matrix data) stored in shadow material
-                for var_name, uniform_obj in self._shadow_object.material.uniforms.items():
-                    uniform_obj.upload_data()
-                gl.glDrawArrays(gl.GL_TRIANGLES, 0, mesh.geometry.vertex_count)
+        # filter out only the visible meshes in the scene
+        obj_list = scene.descendant_list
+        viewable_filter = lambda x: isinstance(x,Mesh) and x.visible
+        viewable_meshes = list(filter(viewable_filter,obj_list))
 
+        # filter out only the lights in the scene
+        light_filter = lambda x: isinstance(x,Light)
+        light_list = list(filter(light_filter,obj_list))
+
+        self._update_viewport(render_target,clear_color,clear_depth)
+
+        # handle shadows
+        self._shadow_pass(viewable_meshes)
+
+        # handle rendering viewable meshes
+        self._render_meshes(camera,viewable_meshes,light_list)
+
+        self._render_bboxes(viewable_meshes,camera)
+
+    def update_window_size(self,window_width, window_height):
+            self.window_size = (window_width, window_height)
     
-        #update camera
+    @property
+    def shadow_object(self):
+        return self._shadow_object
+
+    def enable_shadows(self,shadow_light:Light,strenth:float = 0.5,resolution:list = [512,512]):
+        self.shadows_enabled = True
+        self._shadow_object = Shadow(light_source=shadow_light,resolution=resolution,strength=strenth)
+
+    def enable_bound_box(self):
+        self.bbox_dict = {}
+        self.bound_box_enabled = True
+
+    def _update_bound_box(self,mesh:Mesh):
+        if not self.bound_box_enabled:
+            return
+        
+        if type(mesh) == GridTool:
+            return
+
+        mesh_id = str(mesh)
+                
+        if mesh_id not in self.bbox_dict.keys():
+            bbox = BBoxMesh(mesh)
+            self.bbox_dict[mesh_id] = bbox
+        else:
+            bbox = self.bbox_dict[mesh_id]
+            bbox._update()
+            print("bbox updated")
+
+
+    def _shadow_pass(self,mesh_list):
+        if not self.shadows_enabled:
+            return
+
+        # Set render target properties
+        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._shadow_object.render_target.frame_buffer)
+        gl.glViewport(0, 0, self._shadow_object.render_target.width, self._shadow_object.render_target.height)
+
+        # # Set default color to black, used when no objects present to cast shadows
+        gl.glClearColor(0, 0, 0, 1)
+
+        # Clear color and depth buffers
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+        gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
+        
+        # Everything in the scene gets rendered with depthMaterial so
+        # only need to call glUseProgram & set matrices once
+        gl.glUseProgram(self._shadow_object.material.program)
+        self._shadow_object.update_internal()
+        
+        for mesh in mesh_list:
+            # Skip invisible meshes
+            if not mesh.visible:
+                continue
+            # Only triangle-based meshes cast shadows
+            if mesh.material.settings["draw_mode"] != gl.GL_TRIANGLES:
+                continue
+            # Bind VAO
+            gl.glBindVertexArray(mesh.vao_ref)
+            # Update transform data
+            self._shadow_object.material.uniforms["model_matrix"].data = mesh.global_matrix
+            # Update uniforms (matrix data) stored in shadow material
+            for var_name, uniform_obj in self._shadow_object.material.uniforms.items():
+                uniform_obj.upload_data()
+            gl.glDrawArrays(gl.GL_TRIANGLES, 0, mesh.geometry.vertex_count)
+
+            # Unbind VAO
+            gl.glBindVertexArray(0)
+
+
+
+    def _render_meshes(self,camera,viewable_meshes,light_list):
+        # update camera
         camera.update_view_matrix()
 
-        kid_list = scene.descendant_list
-
-        viewable_filter = lambda x: isinstance(x,Mesh) and x.visible
-
-        light_filter = lambda x: isinstance(x,Light)
-
-        viewable_meshes = list(filter(viewable_filter,kid_list))
-
-        light_list = list(filter(light_filter,kid_list))
-
-                # self.__create_shadow_map(viewable_meshes)
-        # set the viewport to the size of the window
-        if (render_target  == None):
-            gl.glBindFramebuffer(gl.GL_FRAMEBUFFER,0)
-            gl.glViewport(0, 0, self.window_size[0], self.window_size[1])
-        else: # set the viewport to the size of the render target
-            gl.glBindFramebuffer(gl.GL_FRAMEBUFFER,render_target.frame_buffer)
-            gl.glViewport(0, 0, render_target.width, render_target.height)
-
-        if clear_color:
-            # clear the color buffer
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-
-        if clear_depth:
-            # clear the depth buffer
-            gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
         for mesh in viewable_meshes:
+            # if bounding boxes are enabled, update the bounding box for each mesh
+            # if self.bound_box_enabled:
+            
+
             # install the program for the mesh
             gl.glUseProgram(mesh.material.program)
             # bind vertex array object for the mesh
@@ -142,203 +183,179 @@ class Renderer(object):
             # draw the mesh
             gl.glDrawArrays(mesh.material.settings["draw_mode"],0,mesh.geometry.get_vertex_count())
 
-
-    def update_window_size(self,window_width, window_height):
-            self.window_size = (window_width, window_height)
-    
-    @property
-    def shadow_object(self):
-        return self._shadow_object
-
-    def enable_shadows(self,shadow_light:Light,strenth:float = 0.5,resolution:list = [512,512]):
-        self.shadows_enabled = True
-        self._shadow_object = Shadow(light_source=shadow_light,resolution=resolution,strength=strenth)
+            # unbind the vertex array object
+            gl.glBindVertexArray(0)
+            # unbind the program
+            gl.glUseProgram(0)
 
 
-
-    def __create_shadow_map(self,viewable_meshes:list[Mesh]):
-
-
-        # need to create a shadow map for the light source of all viewable meshes
-        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER,self.shadow_object.render_target.frame_buffer)
-        gl.glViewport(0, 0, self.shadow_object.render_target.width, self.shadow_object.render_target.height)
-        gl.glClearColor(1.0, 1.0, 1.0, 1.0)
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-
-        # set up shadow map material for rendering
-        gl.glUseProgram(self.shadow_object.material.program)
-
-        self.shadow_object.update_internal()
-
-        # iterate through all the viewable meshes and render them to the shadow map
-        for mesh in viewable_meshes:
-            #skip the mesh if it is not a shadow caster
-            if mesh.material.settings["draw_style"] != gl.GL_TRIANGLES:
-                continue
-          
-            gl.glBindVertexArray(mesh.vao_ref)
-
-            self.shadow_object.material.uniforms["model_matrix"].data = mesh.get_world_matrix()
-
-            for var_name,uniform_obj in self.shadow_object.material.uniforms.items():
-                
-                uniform_obj.upload_data()
-
-            gl.glDrawArrays(gl.GL_TRIANGLES,0,mesh.geometry.get_vertex_count())
-
-
-class QtRenderer(object):
-    def __init__(self, clear_color: list = [0.0, 0.0, 0.0], window_width: int = SCREEN_WIDTH, window_height: int = SCREEN_HEIGHT, parent_widget=None) -> None:
-        """
-        Renderer class for rendering scenes.
-        :param clear_color: Background color for the renderer.
-        :param window_width: Width of the rendering window.
-        :param window_height: Height of the rendering window.
-        :param parent_widget: The parent QOpenGLWidget (TestWidget) to ensure context compatibility.
-        """
-        self.parent_widget = parent_widget  # Reference to the parent widget
-        self.window_size = (window_width, window_height)
-        self.shadows_enabled = False
-
-        # Ensure the OpenGL context is current
-        if self.parent_widget:
-            self.parent_widget.makeCurrent()
-
-        # Enable OpenGL features
-        gl.glEnable(gl.GL_DEPTH_TEST)
-        gl.glEnable(gl.GL_MULTISAMPLE)  # Anti-aliasing
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-
-        # Set the clear color
-        gl.glClearColor(clear_color[0], clear_color[1], clear_color[2], 1.0)
-
-    def render(self, scene: object, camera: object, clear_color: bool = True, clear_depth: bool = True, render_target: RenderTarget = None) -> None:
-        """
-        Render the scene using the specified camera.
-        :param scene: The scene to render.
-        :param camera: The camera to use for rendering.
-        :param clear_color: Whether to clear the color buffer.
-        :param clear_depth: Whether to clear the depth buffer.
-        :param render_target: Optional render target for offscreen rendering.
-        """
-        # Ensure the OpenGL context is current
-        if self.parent_widget:
-            self.parent_widget.makeCurrent()
-
-        # Filter descendants
-        descendant_list = scene.descendant_list
-        mesh_list = [x for x in descendant_list if isinstance(x, Mesh)]
-        light_list = [x for x in descendant_list if isinstance(x, Light)]
-
-        # Shadow pass
-        if self.shadows_enabled:
-            self._render_shadows(mesh_list)
-
-        # Update camera
-        camera.update_view_matrix()
-
-        # Bind the appropriate framebuffer
-        if render_target is None:
-            gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self.parent_widget.defaultFramebufferObject() if self.parent_widget else 0)
+    def _update_viewport(self,render_target:RenderTarget,clear_color:bool = True,clear_depth:bool = True):
+        # set the viewport to the size of the window
+        if (render_target  == None):
+            gl.glBindFramebuffer(gl.GL_FRAMEBUFFER,0)
             gl.glViewport(0, 0, self.window_size[0], self.window_size[1])
-        else:
-            gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, render_target.frame_buffer)
+        else: # set the viewport to the size of the render target
+            gl.glBindFramebuffer(gl.GL_FRAMEBUFFER,render_target.frame_buffer)
             gl.glViewport(0, 0, render_target.width, render_target.height)
 
-        # Clear buffers
         if clear_color:
+            # clear the color buffer
             gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
         if clear_depth:
+            # clear the depth buffer
             gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
 
-        # Render meshes
-        for mesh in mesh_list:
-            if not mesh.visible:
+
+    def _render_bboxes(self,viewable_meshes,camera,draw_wireframe:bool = True,draw_corners:bool = True):
+        print("bbox meshes:",self.bbox_dict)
+        # iterate through all viewable meshes
+        gl.glDisable(gl.GL_DEPTH_TEST)
+
+        gl.glEnable(gl.GL_POLYGON_OFFSET_LINE)
+        gl.glPolygonOffset(-1, -1)
+        
+        for obj in viewable_meshes:
+            if type(obj) == GridTool:
                 continue
 
-            # Use the mesh's shader program
-            gl.glUseProgram(mesh.material.program)
+            bounding_box = obj.geometry.AA_bounding_box()
 
-            # Bind the mesh's VAO
-            gl.glBindVertexArray(mesh.vao_ref)
+            center = [(bounding_box[0][0] + bounding_box[1][0]) / 2,
+                      (bounding_box[0][1] + bounding_box[1][1]) / 2,
+                      (bounding_box[0][2] + bounding_box[1][2]) / 2]
+            
+            
+            width = max(bounding_box[1][0] - bounding_box[0][0],1)
+            height = max(bounding_box[1][1] - bounding_box[0][1],1)
+            depth = max(bounding_box[1][2] - bounding_box[0][2],1)
 
-            # Update uniforms
-            self._update_uniforms(mesh, camera, light_list)
+            if type(obj) == Sphere:
+                width = 2 #obj.radius * 2
+                height = 2 #obj.radius * 2
+                depth = 2 #obj.radius * 2
+                center = obj.global_position
 
-            # Draw the mesh
-            gl.glDrawArrays(mesh.material.settings["draw_mode"], 0, mesh.geometry.get_vertex_count())
+            print("width:",width)
+            print("height:",height)
+            print("depth:",depth)
+
+            ############################## render BBOC CORNERS ##############################
+            if draw_corners:
+                point_material = PointMaterial(properties={"base_color": [1.0, 0.0, 0.0]})
+
+                point_geo = BoxGeometry(width, height, depth    )
+
+                point_mesh = Mesh(point_geo,point_material)
+                point_mesh.set_position(obj.global_position + center)
+                # install the program for the mesh
+                gl.glUseProgram(point_mesh.material.program)
+                
+                # bind vertex array object for the mesh
+                gl.glBindVertexArray(point_mesh.vao_ref)
+
+                # ================== update the uniforms for the mesh not stored in the material ==================
+                #update the model matrix based on the mesh's world matrix
+                point_mesh.material.uniforms["model_matrix"].data = point_mesh.global_matrix
+
+                # update the view matrix to match the camera
+                point_mesh.material.uniforms["view_matrix"].data = camera.view_matrix
+
+                # update the projection matrix to match the camera
+                point_mesh.material.uniforms["projection_matrix"].data = camera.projection_matrix
 
 
-    def _render_shadows(self, mesh_list):
-        """
-        Render shadow maps for the scene.
-        :param mesh_list: List of meshes to render shadows for.
-        """
-        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._shadow_object.render_target.frame_buffer)
-        gl.glViewport(0, 0, self._shadow_object.render_target.width, self._shadow_object.render_target.height)
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+                # ================== update the uniforms for the mesh stored in the material ==================
+                for var_name,uniform_obj in point_mesh.material.uniforms.items():
+                    if uniform_obj.data is not None:
+                        uniform_obj.upload_data()
 
-        # Use the shadow material
-        gl.glUseProgram(self._shadow_object.material.program)
-        self._shadow_object.update_internal()
 
-        for mesh in mesh_list:
-            if not mesh.visible or mesh.material.settings["draw_mode"] != gl.GL_TRIANGLES:
-                continue
+                #update the render settings for the material
+                point_mesh.material.update_render_settings()
 
-            gl.glBindVertexArray(mesh.vao_ref)
-            self._shadow_object.material.uniforms["model_matrix"].data = mesh.global_matrix
+                # draw the mesh
+                gl.glDrawArrays(point_mesh.material.settings["draw_mode"],0,point_mesh.geometry.get_vertex_count())
 
-            for var_name, uniform_obj in self._shadow_object.material.uniforms.items():
-                uniform_obj.upload_data()
 
-            gl.glDrawArrays(gl.GL_TRIANGLES, 0, mesh.geometry.get_vertex_count())
+                # unbind the vertex array object
+                gl.glBindVertexArray(0)
+                # unbind the program
+                gl.glUseProgram(0)
 
-    def _update_uniforms(self, mesh, camera, light_list):
-        """
-        Update the uniforms for a mesh.
-        :param mesh: The mesh to update uniforms for.
-        :param camera: The camera to use for view and projection matrices.
-        :param light_list: List of lights in the scene.
-        """
-        # Update transformation matrices
-        mesh.material.uniforms["model_matrix"].data = mesh.global_matrix
-        mesh.material.uniforms["view_matrix"].data = camera.view_matrix
-        mesh.material.uniforms["projection_matrix"].data = camera.projection_matrix
+            # ############################### render the bbox edges ##############################
+            if draw_wireframe:
+                edge_material = LineMaterial(properties={"base_color": [1.0, 0.0, 0.0]})
+                # edge_material.settings['line_width'] = 5
+                # edge_material.settings['double_sided'] = True
 
-        # Update light uniforms
-        for i, light in enumerate(light_list):
-            light_name = f"light_{i}"
-            if light_name in mesh.material.uniforms:
-                mesh.material.uniforms[light_name].data = light
+                edge_geo = BoxGeometry(width, height, depth)
 
-        # Update camera position for specular lighting
-        if "view_position" in mesh.material.uniforms:
-            mesh.material.uniforms["view_position"].data = camera.global_position
+                edge_mesh = Mesh(edge_geo,edge_material)
+                edge_mesh.set_position(obj.global_position + center)
+                
+                # install the program for the mesh
+                gl.glUseProgram(edge_mesh.material.program)
+                
+                # bind vertex array object for the mesh
+                gl.glBindVertexArray(edge_mesh.vao_ref)
 
-        # Update shadow uniforms
-        if self.shadows_enabled and "shadow_obj" in mesh.material.uniforms:
-            mesh.material.uniforms["shadow_obj"].data = self._shadow_object
+                # ================== update the uniforms for the mesh not stored in the material ==================
+                #update the model matrix based on the mesh's world matrix
+                edge_mesh.material.uniforms["model_matrix"].data = edge_mesh.global_matrix
 
-        # Upload all uniforms
-        for uniform_obj in mesh.material.uniforms.values():
-            uniform_obj.upload_data()
+                # update the view matrix to match the camera
+                edge_mesh.material.uniforms["view_matrix"].data = camera.view_matrix
 
-    def update_window_size(self, window_width, window_height):
-        """
-        Update the window size for the renderer.
-        :param window_width: New window width.
-        :param window_height: New window height.
-        """
-        self.window_size = (window_width, window_height)
+                # update the projection matrix to match the camera
+                edge_mesh.material.uniforms["projection_matrix"].data = camera.projection_matrix
 
-    def enable_shadows(self, shadow_light: Light, strength: float = 0.5, resolution: list = [512, 512]):
-        """
-        Enable shadow rendering.
-        :param shadow_light: The light source for shadows.
-        :param strength: Shadow strength.
-        :param resolution: Resolution of the shadow map.
-        """
-        self.shadows_enabled = True
-        self._shadow_object = Shadow(light_source=shadow_light, resolution=resolution, strength=strength)
+
+                # ================== update the uniforms for the mesh stored in the material ==================
+                for var_name,uniform_obj in edge_mesh.material.uniforms.items():
+                    if uniform_obj.data is not None:
+                        uniform_obj.upload_data()
+
+
+                #update the render settings for the material
+                edge_mesh.material.update_render_settings()
+
+                # draw the mesh
+                gl.glDrawArrays(edge_mesh.material.settings["draw_mode"],0,edge_mesh.geometry.get_vertex_count())
+                # unbind the vertex array object
+                gl.glBindVertexArray(0)
+                # unbind the program
+                gl.glUseProgram(0)
+            #     # install the program for the mesh
+            #     gl.glUseProgram(corner_mesh.material.program)
+                
+            #     # bind vertex array object for the mesh
+            #     gl.glBindVertexArray(corner_mesh.vao_ref)
+                
+            #     # ================== update the uniforms for the mesh not stored in the material ==================
+                
+            #     #update the model matrix based on the mesh's world matrix
+            #     corner_mesh.material.uniforms["model_matrix"].data = corner_mesh.global_matrix
+            #     # update the view matrix to match the camera
+            #     corner_mesh.material.uniforms["view_matrix"].data = camera.view_matrix
+            #     # update the projection matrix to match the camera
+            #     corner_mesh.material.uniforms["projection_matrix"].data = camera.projection_matrix      
+
+
+            #     # ================== update the uniforms for the mesh stored in the material ==================
+            #     for var_name,uniform_obj in corner_mesh.material.uniforms.items():
+            #         if uniform_obj.data is not None:
+            #             uniform_obj.upload_data()
+
+            #     #update the render settings for the material
+            #     corner_mesh.material.update_render_settings()
+                
+            #     # draw the mesh
+            #     gl.glDrawArrays(corner_mesh.material.settings["draw_mode"],0,corner_mesh.geometry.get_vertex_count())
+                
+            #     # unbind the vertex array object
+            #     gl.glBindVertexArray(0)
+
+        # enable depth testing again
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        gl.glDisable(gl.GL_POLYGON_OFFSET_LINE)
