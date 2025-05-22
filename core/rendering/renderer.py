@@ -208,12 +208,7 @@ class Renderer(object):
 
 
     def _render_bboxes(self,viewable_meshes,camera,draw_wireframe:bool = True,draw_corners:bool = True):
-        print("bbox meshes:",self.bbox_dict)
-        # iterate through all viewable meshes
         gl.glDisable(gl.GL_DEPTH_TEST)
-
-        gl.glEnable(gl.GL_POLYGON_OFFSET_LINE)
-        gl.glPolygonOffset(-1, -1)
         
         for obj in viewable_meshes:
             if type(obj) == GridTool:
@@ -236,15 +231,11 @@ class Renderer(object):
                 depth = 2 #obj.radius * 2
                 center = obj.global_position
 
-            print("width:",width)
-            print("height:",height)
-            print("depth:",depth)
-
-            ############################## render BBOC CORNERS ##############################
+            ############################## render BBOx CORNERS ##############################
             if draw_corners:
                 point_material = PointMaterial(properties={"base_color": [1.0, 0.0, 0.0]})
 
-                point_geo = BoxGeometry(width, height, depth    )
+                point_geo = BoxGeometry(width, height, depth)
 
                 point_mesh = Mesh(point_geo,point_material)
                 point_mesh.set_position(obj.global_position + center)
@@ -263,7 +254,6 @@ class Renderer(object):
 
                 # update the projection matrix to match the camera
                 point_mesh.material.uniforms["projection_matrix"].data = camera.projection_matrix
-
 
                 # ================== update the uniforms for the mesh stored in the material ==================
                 for var_name,uniform_obj in point_mesh.material.uniforms.items():
@@ -286,8 +276,7 @@ class Renderer(object):
             # ############################### render the bbox edges ##############################
             if draw_wireframe:
                 edge_material = LineMaterial(properties={"base_color": [1.0, 0.0, 0.0]})
-                # edge_material.settings['line_width'] = 5
-                # edge_material.settings['double_sided'] = True
+                edge_material.settings['use_vertex_colors'] = False
 
                 edge_geo = BoxGeometry(width, height, depth)
 
@@ -326,36 +315,6 @@ class Renderer(object):
                 gl.glBindVertexArray(0)
                 # unbind the program
                 gl.glUseProgram(0)
-            #     # install the program for the mesh
-            #     gl.glUseProgram(corner_mesh.material.program)
-                
-            #     # bind vertex array object for the mesh
-            #     gl.glBindVertexArray(corner_mesh.vao_ref)
-                
-            #     # ================== update the uniforms for the mesh not stored in the material ==================
-                
-            #     #update the model matrix based on the mesh's world matrix
-            #     corner_mesh.material.uniforms["model_matrix"].data = corner_mesh.global_matrix
-            #     # update the view matrix to match the camera
-            #     corner_mesh.material.uniforms["view_matrix"].data = camera.view_matrix
-            #     # update the projection matrix to match the camera
-            #     corner_mesh.material.uniforms["projection_matrix"].data = camera.projection_matrix      
-
-
-            #     # ================== update the uniforms for the mesh stored in the material ==================
-            #     for var_name,uniform_obj in corner_mesh.material.uniforms.items():
-            #         if uniform_obj.data is not None:
-            #             uniform_obj.upload_data()
-
-            #     #update the render settings for the material
-            #     corner_mesh.material.update_render_settings()
-                
-            #     # draw the mesh
-            #     gl.glDrawArrays(corner_mesh.material.settings["draw_mode"],0,corner_mesh.geometry.get_vertex_count())
-                
-            #     # unbind the vertex array object
-            #     gl.glBindVertexArray(0)
-
+    
         # enable depth testing again
         gl.glEnable(gl.GL_DEPTH_TEST)
-        gl.glDisable(gl.GL_POLYGON_OFFSET_LINE)
