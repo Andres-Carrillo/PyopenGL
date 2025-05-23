@@ -50,7 +50,9 @@ class Renderer(object):
         # handle rendering viewable meshes
         self._render_meshes(camera,viewable_meshes,light_list)
 
-        self._render_bboxes(viewable_meshes,camera)
+        # handle rendering the bounding boxes
+        if self.bound_box_enabled:
+            self._render_bboxes(viewable_meshes,camera)
 
     def update_window_size(self,window_width, window_height):
             self.window_size = (window_width, window_height)
@@ -66,6 +68,9 @@ class Renderer(object):
     def enable_bound_box(self):
         self.bbox_dict = {}
         self.bound_box_enabled = True
+
+    def disable_bound_box(self):
+        self.bound_box_enabled = False
 
     def _update_bound_box(self,mesh:Mesh):
         if not self.bound_box_enabled:
@@ -277,6 +282,7 @@ class Renderer(object):
             if draw_wireframe:
                 edge_material = LineMaterial(properties={"base_color": [1.0, 0.0, 0.0]})
                 edge_material.settings['use_vertex_colors'] = False
+                edge_material.settings['line_type'] = "segments"
 
                 edge_geo = BoxGeometry(width, height, depth)
 
