@@ -56,7 +56,7 @@ class Math:
         
 
         @staticmethod
-        def point_in_rectangle(point, rect):
+        def point_in_rectangle(point:list, rect:list)-> bool:
             """
             Check if a point is inside a rectangle defined by its top-left and bottom-right corners.
             :param point: Tuple (x, y) representing the point.
@@ -74,8 +74,9 @@ class Math:
             :param deadzones: List of deadzones, where each deadzone is defined by [x1, y1, x2, y2].
             :return: True if the point is inside any deadzone, False otherwise.
             """
-            for zone in deadzones:
-                if Math.point_in_rectangle(point, zone):
+
+    
+            if Math.point_in_rectangle(point, deadzones):
                     return True
                 
             return False
