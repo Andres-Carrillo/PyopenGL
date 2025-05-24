@@ -24,7 +24,7 @@ class LightMaterial(Material):
         Generates the light uniforms for the shader
         :return: str
         """
-        code = "\n   \t\t\t\t// Generated list of lights:\n"
+        code = "\n   \t\t\t\t// ##LIGHT_LIST##: \n \n"
 
         for i in range(number_of_lights):
             code += f"   \t\t\t\tuniform Light light_{i};\n"
