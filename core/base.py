@@ -13,7 +13,6 @@ from tools.movement_rig import MovementRig
 from math import pi
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
-from imgui.integrations.glfw import GlfwRenderer
 from tools.imgui_tools import MeshEditor
 from tools.imgui_tools import ObjectSpawner
 from tools.imgui_tools import LightSpawner
@@ -443,28 +442,30 @@ class SceneEditor(BaseApp):
     def update(self):
 
         imgui.begin("Scene Editor")
-        self.menu_deadzones = []
-        # Main tab bar for the window
+
+        # tab bar to hold the different tabs of the editor
         open_tab_bar = imgui.begin_tab_bar("MainTabBar")
         if open_tab_bar:
-            # Main tab
+            
+            ################### Main tab ###################
             if imgui.begin_tab_item("Meshes").selected:
-                # handle object creation
+                
+                # call object maker to allow the user to create objects
                 self.obj_maker.show()
-                self.menu_deadzones.append(self.obj_maker.get_menu_deadzones())
+                # check if the user has created an object
                 obj = self.obj_maker.get_object()
+                
+                # if the user has created an object, add it to the scene
                 if obj is not None:
                     self.scene.add(obj)
+                
                 # handle mesh editing
                 if self._is_targetting_object and self.selected_mesh is not None:
                     self.mesh_editor.show()
                     self.disable_camera_rig = True
-                    # store position of the menu to avoid mouse picking while interacting with the menu
-                    # mesh_bbox, shader_bbox = self.mesh_editor.get_menu_deadzones()
-                    # self.menu_deadzones.append(mesh_bbox)
-                    # self.menu_deadzones.append(shader_bbox)
+
+                # check if the use wants to display bounding boxes
                 if self.obj_maker.show_bbox:
-            
                     self.draw_bbox = True
                     self.renderer.enable_bound_box()
                 else:
@@ -472,27 +473,35 @@ class SceneEditor(BaseApp):
                     self.renderer.disable_bound_box()
                 imgui.end_tab_item()
 
-            # Lights tab
+            ################### Lights tab ###################
             if imgui.begin_tab_item("Lights").selected:
-                # imgui.text("Lights")
                 self.light_maker.show()
-                if self.light_maker._light is not None:
-                    self.scene.add(self.light_maker._light)
-                # light_obj = self.light_maker._light
-                # print(light_obj)
+
+                # if a new light is created, add it to the scene    
+                if self.light_maker.light is not None:
+                    self.scene.add(self.light_maker.light)
+                    #update the light count in the scene
+                    self.obj_maker.lights_in_scene = self.light_maker.count
+                    self._update_lighted_meshes()
 
                 imgui.end_tab_item()
 
             imgui.end_tab_bar()
 
-        # # there is only one deadzone now that we used the tab bar
-        #         mesh_spawn_location = imgui.get_window_position()
-        # mesh_spawn_size = imgui.get_window_size()
-    
+        # update the renderer so it knows whether to use the lights in the scene or not
+        if self.light_maker.use_lights_in_scene:
+            self.renderer.enable_lights = True
+            print("Using lights in scene")
+        else:
+            print("Not using lights in scene")
+            self.renderer.enable_lights = False
+
+        # calculate the bbox of the imgui menu
         widgect_pos = imgui.get_window_position()
         widgect_size = imgui.get_window_size()
         menu_deadzones = [widgect_pos[0], widgect_pos[1], widgect_size[0], widgect_size[1]]
-        self.menu_deadzones.append(menu_deadzones)
+        self.menu_deadzones = menu_deadzones
+
         imgui.end()
  
 
@@ -509,15 +518,19 @@ class SceneEditor(BaseApp):
         # update the camera aspect ratio to avoid distortion
         self.camera.update_aspect_ratio(self.window_width / self.window_height)
 
+             # handle mouse input
         if not Math.point_in_regions(self.input_handler.mouse_position, self.menu_deadzones):
-        # handle mouse input
-            # print("chekcing mouse input")
             self._handle_mouse_input()
        
+
         #render the scene
         self.renderer.render(self.scene, self.camera)
 
+    def _update_lighted_meshes(self):
+        pass
 
+
+    
     def _handle_mouse_input(self):
          if self.input_handler.left_click() or self.input_handler.right_click():
         
