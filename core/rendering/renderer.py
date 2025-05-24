@@ -29,6 +29,7 @@ class Renderer(object):
 
         self.shadows_enabled = False
         self.bound_box_enabled = False
+        self._use_lights = False
 
         
 
@@ -60,6 +61,16 @@ class Renderer(object):
     @property
     def shadow_object(self):
         return self._shadow_object
+    
+    @property
+    def enable_lights(self):
+        return self._use_lights
+
+    @enable_lights.setter
+    def enable_lights(self,enable:bool):
+        self._use_lights = enable
+
+    
 
     def enable_shadows(self,shadow_light:Light,strenth:float = 0.5,resolution:list = [512,512]):
         self.shadows_enabled = True
@@ -156,16 +167,19 @@ class Renderer(object):
             mesh.material.uniforms["projection_matrix"].data = camera.projection_matrix
 
             # =========== Handle lights if any exist ==============
-            # if the current mesh has a light material, update the light uniforms
-            if "light_0" in mesh.material.uniforms.keys():
-                number_of_lights = len(light_list) # number of lights in the scene
-                for light_n in range(number_of_lights):
-                    # check if the light exists in the material
-                    light_name = "light_" + str(light_n) # figure out the name of the light
-                    light_inst = light_list[light_n] # get the light instance from the list
-            
-                    #update the light uniforms in the material incase the light has changed
-                    mesh.material.uniforms[light_name].data = light_inst
+            if self._use_lights:
+                print("the renderer is using lights")
+                # if the current mesh has a light material, update the light uniforms
+                if "light_0" in mesh.material.uniforms.keys():
+                    number_of_lights = len(light_list) # number of lights in the scene
+                    print("number of lights in the scene: ",number_of_lights)
+                    for light_n in range(number_of_lights):
+                        # check if the light exists in the material
+                        light_name = "light_" + str(light_n) # figure out the name of the light
+                        light_inst = light_list[light_n] # get the light instance from the list
+                
+                        #update the light uniforms in the material incase the light has changed
+                        mesh.material.uniforms[light_name].data = light_inst
 
             # check if the mesh uses specular lighting
             if "view_position" in mesh.material.uniforms.keys():
