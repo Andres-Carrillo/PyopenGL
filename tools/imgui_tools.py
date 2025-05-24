@@ -39,15 +39,13 @@ from core.light.directional import DirectionalLight
 from core.light.point import PointLight
 from core.light.ambient import AmbientLight
 from core.light.light import LIGHT_TYPE
-
+from tools.point_light_tool import PointLightTool
+from tools.directional_light_tool import DirectionalLightTool
 
 # import shadows
 from core.light.shadow import Shadow
 
-
-
 import random
-
 
 def draw_mesh_uniform_editor(mesh):
     # display the mesh's current uniforms and allow the user to edit them
@@ -167,9 +165,7 @@ class ShaderEditor:
 
     def show(self):
         open_header, _ = imgui.collapsing_header("Shader Editor")
-        if open_header:
-        # if self.show_editor:
-            
+        if open_header: 
             imgui.separator()
             if self.edit_uniforms:
                 imgui.text("Edit Uniforms:")
@@ -197,7 +193,7 @@ class ShaderEditor:
                         self.temp_uniform_type = 0
 
                 imgui.separator()
-                # imgui.same_line()
+               
                 if imgui.button("Done"):
                     self.edit_uniforms = False
 
@@ -206,7 +202,7 @@ class ShaderEditor:
             if open_vertex_shader:
                 imgui.text("Vertex Shader Editor:")
                 imgui.separator()
-                _, self.vertex_shader = imgui.input_text_multiline("", self.vertex_shader, 1024 * 16, self.window_width, self.window_height)
+                _, self.vertex_shader = imgui.input_text_multiline("##vertex shader", self.vertex_shader, 1024 * 16, self.window_width, self.window_height)
                 
             imgui.separator()
 
@@ -214,8 +210,8 @@ class ShaderEditor:
             if open_fragment_shader:
                 imgui.text("Fragment Shader Editor:")
                 imgui.separator()
-                _, self.fragment_shader = imgui.input_text_multiline(" ", self.fragment_shader, 1024 * 16, self.window_width, self.window_height)
-            
+                _, self.fragment_shader = imgui.input_text_multiline("##fragment shader", self.fragment_shader, 1024 * 16, self.window_width, self.window_height)
+
             imgui.separator()
             
             if self.compile_error:
@@ -234,13 +230,7 @@ class ShaderEditor:
             imgui.same_line()   
             if(imgui.button("Edit Uniforms")):
                 self.edit_uniforms = not self.edit_uniforms
-                # print("Edit Uniforms")
-
-            window_pos = imgui.get_window_position()
-            window_size = imgui.get_window_size()
-            self.menu_bbox = [window_pos[0], window_pos[1], window_pos[0] + window_size[0], window_pos[1] + window_size[1]]
-    
-    
+               
     def compile_shaders(self):
         try:
             self.mesh.material.compile_shaders(self.vertex_shader, self.fragment_shader)
@@ -268,7 +258,6 @@ class MeshEditor:
         print("Mesh changed to: ", mesh)
 
     def show(self):
-        # imgui.begin("Mesh Editor")  # Start a new ImGui window for the mesh editor
         imgui.text("{}".format(self.mesh.geometry.object_type))
 
         # Display the mesh's current position and allow the user to edit it
@@ -282,14 +271,9 @@ class MeshEditor:
         draw_material_settings(self.mesh)
 
         imgui.separator()
+
         if imgui.button("Edit Shaders"):
             self.shader_editor.show_editor = not self.shader_editor.show_editor
-
-        window_pos = imgui.get_window_position()
-        window_size = imgui.get_window_size()
-        self.menu_bbox = [window_pos[0], window_pos[1], window_pos[0] + window_size[0], window_pos[1] + window_size[1]]
-
-        # imgui.end()  # End the mesh editor window
 
         if self.shader_editor.show_editor:
             # Open the shader editor window
@@ -309,8 +293,8 @@ class ObjectSpawner:
         self._location = None
         self._material_type = MATERIAL_TYPE.SURFACE.value
         self._geometry_type = GEOMETRY_TYPE.BOX.value
-        self.menu_deadzones = []
         self.show_bbox = False
+        self.lights_in_scene = 0
 
     def set_range(self, range:list = [-2,2]):
         self._range = range
@@ -334,35 +318,19 @@ class ObjectSpawner:
             "bbox": self.get_bbox()
         }
 
-    def get_menu_deadzones(self):
-        return self.menu_deadzones
 
     def show(self):
-        self.menu_deadzones = []
-
-                  # self._geometry_type = GEOMETRY_TYPE.BOX.value
-        # imgui.begin("Object Menu")
         imgui.text("Geometry Type:")
         imgui.same_line()
         imgui.text(" Material Type:")
-        
         imgui.set_next_item_width(100)
-        _,self._geometry_type = imgui.combo("", self._geometry_type, [str(geo_type) for geo_type in GEOMETRY_TYPE])
+        _,self._geometry_type = imgui.combo("##Geometry Type", self._geometry_type, [str(geo_type) for geo_type in GEOMETRY_TYPE])
         imgui.same_line()
         imgui.set_next_item_width(100)
 
-        _,self._material_type = imgui.combo(" ", self._material_type, ["Point", "Line", "Surface", "Flat", "Lambert", "Phong"])
+        print("Material Type: ", self._material_type)
 
-        # store position of the menu to avoid mouse picking on objects while interacting with the menu
-        mesh_spawn_location = imgui.get_window_position()
-        mesh_spawn_size = imgui.get_window_size()
-    
-        self.menu_deadzones = [mesh_spawn_location[0], mesh_spawn_location[1],
-                                  mesh_spawn_location[0] + mesh_spawn_size[0], 
-                                  mesh_spawn_location[1] + mesh_spawn_size[1]]
-        
-
- 
+        _,self._material_type = imgui.combo("##Material Type", self._material_type, ["Point", "Line", "Surface", "Flat", "Lambert", "Phong"])
 
         if imgui.button("Generate Mesh"):
             geo = self.get_geometry(self._geometry_type)
@@ -381,8 +349,6 @@ class ObjectSpawner:
 
         imgui.same_line()
         _,self.show_bbox = imgui.checkbox("show BBox", self.show_bbox)
-
-        # imgui.end()
 
 
     def get_geometry(self,geometry_type):
@@ -418,7 +384,6 @@ class ObjectSpawner:
             return Quad()
         elif geometry_type == GEOMETRY_TYPE.TRIANGLE.value:
             return Triangle()
-
         
     def get_material(self,material_type):
         if material_type == 0:
@@ -428,57 +393,83 @@ class ObjectSpawner:
         elif material_type == 2:
             return SurfaceMaterial()
         elif material_type == 3:
-            return FlatMaterial()
+            return FlatMaterial(number_of_lights=self.lights_in_scene)
         elif material_type == 4:
-            return LambertMaterial()
+            return LambertMaterial(number_of_lights=self.lights_in_scene)
         elif material_type == 5:
-            return PhongMaterial()
+            return PhongMaterial(number_of_lights=self.lights_in_scene)
         else:
             raise ValueError(f"Unknown material type: {material_type}")
         
-
-
-
 class LightSpawner:
     def __init__(self):
-        self.deadzones = []
         self._location = None
-        self.display_light_tools = False
+        self.display_light_tools = True
         self.use_lights_in_scene = False
         self._light = None
         self._light_type = 0
+        self._light_color = [1, 1, 1, 1] # default white light
+        self._light_counter = 0
+
+    @property
+    def light(self):
+        return self._light
+    
+    @property
+    def color(self):
+        return self._light_color
+    
+    @property
+    def count(self):
+        return self._light_counter
 
     def show(self):
         imgui.text("Light Type:")
         imgui.set_next_item_width(100)
-        _,self._light_type = imgui.combo("  ", self._light_type, ["Point", "Directional", "Ambient"])
-        if imgui.button("Generate Light"):
-            light = self.get_light(self._light_type)
-            self._light = light
-            print("Light Spawned: ", light)
-        else:
-            self._light = None
+        _,self._light_type = imgui.combo("##Light Type", self._light_type, ["Point", "Directional", "Ambient"])
+
+        # add color picker for light color
+        imgui.text("Light Color:")
+        imgui.same_line()
+
+        _,self._light_color = imgui.color_edit4("Light Color", *self._light_color)
+
+        # if the generate light button is pressed, create a new light of the selected type otherwise set the light to None
+        self._light = self._make_light(self._light_type) if imgui.button("Generate Light") else None
+
+        if self._light is not None:
+            self._light_counter += 1
+
+        # Create checkboxes for light options
         imgui.same_line()
         _,self.display_light_tools = imgui.checkbox("show Light Tools", self.display_light_tools)
         imgui.same_line()
         _,self.use_lights_in_scene = imgui.checkbox("Use Lights in Scene", self.use_lights_in_scene)
         
-        # store position of the menu to avoid mouse picking on objects while interacting with the menu
-        light_spawn_location = imgui.get_window_position()
-        light_spawn_size = imgui.get_window_size()
+    def _make_light(self,light_type):
+        # current no tool for ambient light so always simply return the light
+        if light_type == 2:
+            return AmbientLight(color=self._light_color[:3])
 
-        self.deadzones = [light_spawn_location[0], light_spawn_location[1],
-                                  light_spawn_location[0] + light_spawn_size[0], 
-                                  light_spawn_location[1] + light_spawn_size[1]]
-        
+        # if not showing light tools, return the light without the tool
+        if not self.display_light_tools:
+            if light_type == 0:
+                return PointLight(color=self._light_color[:3])
+            elif light_type == 1:
+                return DirectionalLight(color=self._light_color[:3])
+        else: # if showing light tools, return the light with the tool
+            if light_type == 0:
+                light = PointLight(color=self._light_color[:3])
+                light_tool = PointLightTool(light)
+                light.add(light_tool)
+                return light
 
+            elif light_type == 1:
+                light = DirectionalLight(color=self._light_color[:3])
+                light_tool = DirectionalLightTool(light)
+                light_tool.set_position([3, 4, 0])
+                light.add(light_tool)
+                return light
 
-    def get_light(self,light_type):
-        if light_type == 0:
-            return PointLight()
-        elif light_type == 1:
-            return DirectionalLight()
-        elif light_type == 2:
-            return AmbientLight()
-        else:
-            raise ValueError(f"Unknown light type: {light_type}")
+        # if the light type is not recognized, return None
+        return None
