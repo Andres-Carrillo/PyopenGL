@@ -31,13 +31,12 @@ class Renderer(object):
         self.bound_box_enabled = False
         self._use_lights = False
 
-        
 
     def render(self,scene:object,camera:object,clear_color:bool = True,clear_depth:bool = True,render_target:RenderTarget=None) -> None:
         # filter out only the visible meshes in the scene
         obj_list = scene.descendant_list
-        viewable_filter = lambda x: isinstance(x,Mesh) and x.visible
-        viewable_meshes = list(filter(viewable_filter,obj_list))
+
+        viewable_meshes = scene.get_visible_objects()
 
         # filter out only the lights in the scene
         light_filter = lambda x: isinstance(x,Light)
@@ -70,7 +69,6 @@ class Renderer(object):
     def enable_lights(self,enable:bool):
         self._use_lights = enable
 
-    
 
     def enable_shadows(self,shadow_light:Light,strenth:float = 0.5,resolution:list = [512,512]):
         self.shadows_enabled = True
@@ -98,7 +96,7 @@ class Renderer(object):
         else:
             bbox = self.bbox_dict[mesh_id]
             bbox._update()
-            print("bbox updated")
+            
 
 
     def _shadow_pass(self,mesh_list):
@@ -147,9 +145,6 @@ class Renderer(object):
         camera.update_view_matrix()
 
         for mesh in viewable_meshes:
-            # if bounding boxes are enabled, update the bounding box for each mesh
-            # if self.bound_box_enabled:
-            
 
             # install the program for the mesh
             gl.glUseProgram(mesh.material.program)
@@ -168,11 +163,11 @@ class Renderer(object):
 
             # =========== Handle lights if any exist ==============
             if self._use_lights:
-                print("the renderer is using lights")
                 # if the current mesh has a light material, update the light uniforms
                 if "light_0" in mesh.material.uniforms.keys():
+                
                     number_of_lights = len(light_list) # number of lights in the scene
-                    print("number of lights in the scene: ",number_of_lights)
+                  
                     for light_n in range(number_of_lights):
                         # check if the light exists in the material
                         light_name = "light_" + str(light_n) # figure out the name of the light
