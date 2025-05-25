@@ -2,6 +2,7 @@ from material.lighted.light import LightMaterial
 from core.textures.texture import Texture
 import OpenGL.GL as gl
 from shaders.shaders import Shader
+from core.glsl.utils import generate_light_sum,generate_light_uniform_list
 
 class PhongMaterial(LightMaterial):
     def __init__(self,texture:Texture=None,noise:Texture = None,bump_texture:Texture = None,
@@ -57,7 +58,7 @@ class PhongMaterial(LightMaterial):
 
                                     return light.color * (ambient + diffuse + specular);
                                 }
-                             """ + LightMaterial.generate_light_uniform_list(number_of_lights) + """ \n """ + """
+                             """ + generate_light_uniform_list(number_of_lights) + """ \n """ + """
                                 uniform vec3 base_color;
                                 uniform bool use_texture;
                                 uniform bool use_bump_texture;
@@ -101,7 +102,7 @@ class PhongMaterial(LightMaterial):
                                     {
                                         // calculate the lighting effect
                                         vec3 light = vec3(0.0,0.0,0.0);
-                                        """ + LightMaterial.generate_light_sum(number_of_lights) + """ \n """ + """
+                                        """ + generate_light_sum(number_of_lights) + """ \n """ + """
 
                                         // apply lighting to color
                                         color *= vec4(light,1.0);

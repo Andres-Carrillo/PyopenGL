@@ -2,10 +2,11 @@ from material.lighted.light import LightMaterial
 from core.textures.texture import Texture
 import OpenGL.GL as gl
 from shaders.shaders import Shader
+from core.glsl.utils import generate_light_sum,generate_light_uniform_list
 
 class FlatMaterial(LightMaterial):
     def __init__(self,texture:Texture=None,noise:Texture = None, properties:dict={},number_of_lights:int = 0) -> None:
-        vertex_shader_code = Shader.light_struct() + LightMaterial.generate_light_uniform_list(number_of_lights) + """ \n """ + """ 
+        vertex_shader_code = Shader.light_struct() + generate_light_uniform_list(number_of_lights) + """ \n """ + """ 
 
                                 vec3 calculate_light(Light light, vec3 point_pos,vec3 point_normal){
                                     float ambient = 0.0;
@@ -60,7 +61,7 @@ class FlatMaterial(LightMaterial):
                                         vec3 position = vec3(model_matrix * vec4(vertex_position,1)); 
                                         vec3 calculated_normal = normalize(mat3(model_matrix) * face_normal);
                                         light = vec3(0.0,0.0,0.0); 
-                                        """ + LightMaterial.generate_light_sum(number_of_lights) + """ \n """ + """
+                                        """ + generate_light_sum(number_of_lights) + """ \n """ + """
 
                                     }
 

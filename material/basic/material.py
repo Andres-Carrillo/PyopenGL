@@ -2,19 +2,27 @@ from core.utils.openGLUtils import GlUtils
 from core.glsl.uniform import Uniform
 import OpenGL.GL as gl
 from enum import Enum
+from core.glsl.utils import ShaderType
 
 class MATERIAL_TYPE(Enum):
+    # basic types:
     POINT = 0
     LINE = 1
     SURFACE = 2
+
+    # speciality types:
     SPRITE = 3
     TEXTURE = 4
-    DEPTH = 5
-    FLAT = 6
-    LAMBERT = 7
-    PHONG = 8
-    LIGHT = 9
 
+    # utility types:
+    DEPTH = 5
+    LIGHT = 6
+
+    # shading types:
+    FLAT = 7
+    LAMBERT = 8
+    PHONG = 9
+    
     def __str__(self):
         if self == MATERIAL_TYPE.POINT:
             return "point"
@@ -28,14 +36,15 @@ class MATERIAL_TYPE(Enum):
             return "texture"
         elif self == MATERIAL_TYPE.DEPTH:
             return "depth"
+        elif self == MATERIAL_TYPE.LIGHT:
+            return "light"
         elif self == MATERIAL_TYPE.FLAT:
             return "flat"
         elif self == MATERIAL_TYPE.LAMBERT:
             return "lambert"
         elif self == MATERIAL_TYPE.PHONG:
             return "phong"
-        elif self == MATERIAL_TYPE.LIGHT:
-            return "light"
+  
 
 class Material(object):
 
@@ -60,8 +69,6 @@ class Material(object):
 
         self.material_type = type(self).__name__
         self.material_type = self.material_type.replace("Material","")
-        
-        
 
     def _init_uniforms(self) -> None:
         self.uniforms["model_matrix"] = Uniform("mat4", None)
@@ -118,3 +125,6 @@ class Material(object):
         # compile the shaders and link them to the program then store the program reference
         self.program = GlUtils.InitializeProgram(vertex_shader, fragment_shader)
         self.locate_uniforms()
+
+
+  

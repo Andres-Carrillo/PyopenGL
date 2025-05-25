@@ -1,6 +1,7 @@
 from material.lighted.light import LightMaterial
 from core.textures.texture import Texture
 from shaders.shaders import Shader
+from core.glsl.utils import generate_light_uniform_list,generate_light_sum
 import OpenGL.GL as gl
 
 class LambertMaterial(LightMaterial):
@@ -86,7 +87,7 @@ class LambertMaterial(LightMaterial):
                                                 return light.color * (ambient + diffuse + specular);
                                             }
 
-                             """ + LightMaterial.generate_light_uniform_list(number_of_lights)  + """
+                             """ + generate_light_uniform_list(number_of_lights)  + """
                                 uniform bool use_shadow;
                                 uniform Shadow shadow_obj;
                                 uniform vec3 base_color;
@@ -132,7 +133,7 @@ class LambertMaterial(LightMaterial):
                                     {
                                         // calculate the lighting effect
                                         vec3 light = vec3(0.0,0.0,0.0);
-                                        """ + LightMaterial.generate_light_sum(number_of_lights) + """ \n """ + """
+                                        """ + generate_light_sum(number_of_lights) + """ \n """ + """
 
                                     
                                         // apply lighting to color
