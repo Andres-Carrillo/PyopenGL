@@ -17,10 +17,8 @@ class Scene(Object3D):
         normalized_ray = Math.ray_cast(mouse_position, camera, width, height)    
         # Now we have a ray in world coordinates
         # print(f"Ray in world coordinates: {normalized_ray}")
-        descendant_list = self.descendant_list
-        mesh_filter = lambda x: isinstance(x, Mesh)
-        mesh_list = list(filter(mesh_filter, descendant_list))
 
+        mesh_list = self.get_visible_objects()
         for mesh in mesh_list:
             
             if not mesh.visible or isinstance(mesh,GridTool):
@@ -28,12 +26,21 @@ class Scene(Object3D):
                 if not isinstance(mesh,DirectionalLightTool) :
                     continue
                 
-            
-            
             if mesh.geometry.intersection_test(normalized_ray,camera.global_position,mesh.global_matrix):
                 return mesh
             
         return None
+    
+    def get_visible_objects(self):
+        """
+        Get all visible objects in the scene.
+        :return: List of visible objects.
+        """
+        obj_list = self.descendant_list
+        viewable_filter = lambda x: isinstance(x,Mesh) and x.visible
+        viewable_meshes = list(filter(viewable_filter,obj_list))
+
+        return viewable_meshes
 
            
             
