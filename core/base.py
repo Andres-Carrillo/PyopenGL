@@ -19,6 +19,13 @@ from tools.imgui_tools import LightSpawner
 from core.rendering.utils import drag_object
 from core.utils.math import Math
 
+from core.light.light import Light
+from material.lighted.flat import FlatMaterial
+from material.lighted.phong import PhongMaterial
+from material.lighted.lambert import LambertMaterial
+from core.glsl.utils import ShaderType
+from core.glsl.utils import edit_light_list,edit_light_summation
+
 """ 
         Base class for all glfw only applications.
         This class handles the initialization of GLFW,
@@ -419,7 +426,6 @@ class BaseApp(ImGuiBase):
     def add_to_scene(self,mesh):
         self.scene.add(mesh)
 
-
 """
     SceneEditor class for creating and editing 3D objects in a scene.
     Inherits from the BaseApp class.
@@ -491,9 +497,7 @@ class SceneEditor(BaseApp):
         # update the renderer so it knows whether to use the lights in the scene or not
         if self.light_maker.use_lights_in_scene:
             self.renderer.enable_lights = True
-            print("Using lights in scene")
         else:
-            print("Not using lights in scene")
             self.renderer.enable_lights = False
 
         # calculate the bbox of the imgui menu
@@ -527,9 +531,23 @@ class SceneEditor(BaseApp):
         self.renderer.render(self.scene, self.camera)
 
     def _update_lighted_meshes(self):
-        pass
+        visible_meshes = self.scene.get_visible_objects()
 
+        for mesh in visible_meshes:
+            if isinstance(mesh.material, FlatMaterial):
+               edit_light_list(mesh.material, self.light_maker.count,ShaderType.VERTEX)
+               edit_light_summation(mesh.material, self.light_maker.count,ShaderType.VERTEX)
 
+            if isinstance(mesh.material, LambertMaterial) or isinstance(mesh.material, PhongMaterial):
+               edit_light_list(mesh.material, self.light_maker.count,ShaderType.FRAGMENT)
+               edit_light_summation(mesh.material, self.light_maker.count,ShaderType.FRAGMENT)
+
+            else:
+                continue
+
+            mesh.material.add_light_souces(self.light_maker.count)
+            mesh.material.locate_uniforms()
+            mesh.material.compile_shaders(mesh.material.vertex_shader, mesh.material.fragment_shader)
     
     def _handle_mouse_input(self):
          if self.input_handler.left_click() or self.input_handler.right_click():

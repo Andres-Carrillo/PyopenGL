@@ -238,7 +238,6 @@ class ShaderEditor:
             self.error_message = ""
         except Exception as e:
             self.error_message = str(e)
-            print("Error compiling shaders:", e)
             self.compile_error = True
 
 
@@ -255,7 +254,6 @@ class MeshEditor:
     def change_mesh(self, mesh: Mesh = None):
         self.mesh = mesh
         self.shader_editor.change_mesh(mesh)
-        print("Mesh changed to: ", mesh)
 
     def show(self):
         imgui.text("{}".format(self.mesh.geometry.object_type))
@@ -327,8 +325,6 @@ class ObjectSpawner:
         _,self._geometry_type = imgui.combo("##Geometry Type", self._geometry_type, [str(geo_type) for geo_type in GEOMETRY_TYPE])
         imgui.same_line()
         imgui.set_next_item_width(100)
-
-        print("Material Type: ", self._material_type)
 
         _,self._material_type = imgui.combo("##Material Type", self._material_type, ["Point", "Line", "Surface", "Flat", "Lambert", "Phong"])
 
@@ -438,6 +434,7 @@ class LightSpawner:
         self._light = self._make_light(self._light_type) if imgui.button("Generate Light") else None
 
         if self._light is not None:
+            print(f"Light {self._light_counter} created with type {self._light_type} and color {self._light_color}")
             self._light_counter += 1
 
         # Create checkboxes for light options
