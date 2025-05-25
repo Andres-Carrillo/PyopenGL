@@ -5,6 +5,7 @@ from core.light.point import PointLight
 
 class PointLightTool(Mesh):
     def __init__(self,point_light:PointLight,size:float=0.1,line_width:int=1):
+        self.light_reference = point_light
         color = point_light.color
         geometry = Sphere(radius=size,seg_radius=2,seg_height=4)
 
