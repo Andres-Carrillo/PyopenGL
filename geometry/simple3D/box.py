@@ -3,6 +3,9 @@ from geometry.geometry import Geometry
 class BoxGeometry(Geometry):
     def __init__(self, width=1, height=1, depth=1):
         super().__init__()
+        self.width = width
+        self.height = height
+        self.depth = depth
         # vertices
         p0 = [-width / 2, -height / 2, -depth / 2]
         p1 = [width / 2, -height / 2, -depth / 2]
