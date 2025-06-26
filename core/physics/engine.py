@@ -1,18 +1,20 @@
-
+from core.object3D import Object3D
 class PhysicsEngine:
-    def __init__(self,forces:list = [[0, -9.81, 0]]):
+    def __init__(self,forces:list = [[0, -9.81, 0]],objects:list = []):
         self.forces = forces
-        self.objects = []
+        self.objects = objects
 
-    def add_object(self, obj):
+    def add_object(self, obj:Object3D):
         self.objects.append(obj)
 
-    def remove_object(self, obj):
+    def remove_object(self, obj:Object3D):
         self.objects.remove(obj)
 
     def update(self, delta_time):
         for obj in self.objects:
-            obj.update(delta_time, self.gravity)
+            for force in self.forces:
+                obj.apply_matrix(force)
+            # obj.update(delta_time, self.gravity)
 
 
     def handle_collisions(self):
