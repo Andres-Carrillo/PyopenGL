@@ -13,8 +13,8 @@ if package_dir not in sys.path:
 # from core.base import ImGuiBase
 
 from meshes.mesh import Mesh
-from geometry.box import BoxGeometry
-from material.surface import SurfaceMaterial
+from geometry.simple3D.box import BoxGeometry
+from material.basic.surface import SurfaceMaterial
 # from core.input import Input
 
 # import imgui
