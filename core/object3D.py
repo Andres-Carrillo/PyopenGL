@@ -165,10 +165,10 @@ class Object3D:
         m_y = Matrix.mat4_rotate_y(angles[1])
         m_z = Matrix.mat4_rotate_z(angles[2])
 
-        print(f"X: {angles[0]}, Y: {angles[1]}, Z: {angles[2]}")
-        print(f"m_x: {m_x}")
-        print(f"m_y: {m_y}")
-        print(f"m_z: {m_z}")
+        # print(f"X: {angles[0]}, Y: {angles[1]}, Z: {angles[2]}")
+        # print(f"m_x: {m_x}")
+        # print(f"m_y: {m_y}")
+        # print(f"m_z: {m_z}")
         # Combine rotations: X, then Y, then Z (order can be changed as needed)
         rotation_matrix =  m_x @ m_y @ m_z
         self.apply_matrix(rotation_matrix, local)
