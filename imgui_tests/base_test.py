@@ -4,6 +4,7 @@ import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygame")
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[1])
+print("Package directory:", package_dir)
 
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
@@ -17,10 +18,10 @@ from core.base import ImGuiBase
 import numpy as np
 
 from core.utils.openGLUtils import GlUtils
-from core.attribute import Attribute
-from core.uniform import Uniform
+from core.glsl.attribute import Attribute
+from core.glsl.uniform import Uniform
 import math
-from material.phong import PhongMaterial
+from material.lighted.phong import PhongMaterial
 
 class MyApp(ImGuiBase):
 
