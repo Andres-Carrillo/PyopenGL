@@ -1,12 +1,6 @@
 from geometry.geometry import Geometry
 
-class BoxGeometry(Geometry):
-    def __init__(self, width=1, height=1, depth=1):
-        super().__init__()
-        self.width = width
-        self.height = height
-        self.depth = depth
-        # vertices
+def generate_box_vertices(width=1, height=1, depth=1):
         p0 = [-width / 2, -height / 2, -depth / 2]
         p1 = [width / 2, -height / 2, -depth / 2]
         p2 = [-width / 2, height / 2, -depth / 2]
@@ -15,6 +9,26 @@ class BoxGeometry(Geometry):
         p5 = [width / 2, -height / 2, depth / 2]
         p6 = [-width / 2, height / 2, depth / 2]
         p7 = [width / 2, height / 2, depth / 2]
+
+
+        position_data = [p5, p1, p3, p5, p3, p7,
+                         p0, p4, p6, p0, p6, p2,
+                         p6, p7, p3, p6, p3, p2,
+                         p0, p1, p5, p0, p5, p4,
+                         p4, p5, p7, p4, p7, p6,
+                         p1, p0, p2, p1, p2, p3]
+        
+        print("position_data:", position_data)
+
+        return position_data
+
+class BoxGeometry(Geometry):
+    def __init__(self, width=2, height=2, depth=1):
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.depth = depth
+
         # colors for faces in order:
         c1, c2 = [1, 0.5, 0.5], [0.5, 0, 0]
         c3, c4 = [0.5, 1, 0.5], [0, 0.5, 0]
@@ -25,14 +39,10 @@ class BoxGeometry(Geometry):
         # aligning the texture coordinates to the faces
         uv_data = [t0,t1,t3  , t0,t3,t2] * 6 #
 
-        # Each side consists of two triangles
-        position_data = [p5, p1, p3, p5, p3, p7,
-                         p0, p4, p6, p0, p6, p2,
-                         p6, p7, p3, p6, p3, p2,
-                         p0, p1, p5, p0, p5, p4,
-                         p4, p5, p7, p4, p7, p6,
-                         p1, p0, p2, p1, p2, p3]
-        
+        print("uv_data:", uv_data)
+
+        position_data = generate_box_vertices(width,height,depth)
+
         # colors for each vertex
         # each face has 6 vertices, so we need to repeat the colors
         color_data = [c1] * 6 + [c2] * 6 + [c3] * 6 + [c4] * 6 + [c5] * 6 + [c6] * 6
