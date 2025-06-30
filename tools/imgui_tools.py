@@ -335,7 +335,7 @@ class ObjectSpawner:
 
             if self._location is not None:
                 self._obj.set_position(self._location)
-            if self._range is not None:
+            else:
                 x_pos = random.uniform(-2, 2)
                 y_pos = random.uniform(-2, 2)
                 z_pos = random.uniform(-2, 2)
