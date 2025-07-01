@@ -10,6 +10,7 @@ from material.basic.point import PointMaterial
 from material.basic.line import LineMaterial
 from geometry.simple3D.box import BoxGeometry
 from geometry.simple3D.sphere import Sphere
+from meshes.terrain import InfiniteTerrainManager
 
 class Renderer(object):
     def __init__(self,clear_color:list = [0.0, 0.0, 0.],window_width:int=SCREEN_WIDTH,window_height:int = SCREEN_HEIGHT) -> None:
@@ -32,7 +33,9 @@ class Renderer(object):
         self._use_lights = False
 
 
-    def render(self,scene:object,camera:object,clear_color:bool = True,clear_depth:bool = True,render_target:RenderTarget=None) -> None:
+    def render(self,scene:object,camera:object,clear_color:bool = True,clear_depth:bool = True,
+               render_target:RenderTarget=None,terrain_manager:InfiniteTerrainManager=None) -> None:
+        
         # filter out only the visible meshes in the scene
         obj_list = scene.descendant_list
 
@@ -48,7 +51,7 @@ class Renderer(object):
         self._shadow_pass(viewable_meshes)
 
         # handle rendering viewable meshes
-        self._render_meshes(camera,viewable_meshes,light_list)
+        self._render_meshes(camera,viewable_meshes,light_list,terrain_manager=terrain_manager)
 
         # handle rendering the bounding boxes
         if self.bound_box_enabled:
@@ -140,12 +143,28 @@ class Renderer(object):
 
 
 
-    def _render_meshes(self,camera,viewable_meshes,light_list):
+    def _render_meshes(self,camera,viewable_meshes,light_list,terrain_manager:InfiniteTerrainManager=None):
+        # print("terrain manager:", terrain_manager)
+        # if terrain manager is provided, update the terrain chunks
+        if terrain_manager is not None:
+            terrain_manager.update(camera.global_position)
+
+        # if the terrain manager is provided, get the terrain meshes
+        if terrain_manager is not None:
+            terrain_chunks = terrain_manager.chunks.values()
+            # iterate through the chunks and render them before the other meshes
+            for chunk in terrain_chunks:
+                self._render_mesh(chunk,camera,light_list)
+
         # update camera
         camera.update_view_matrix()
 
         for mesh in viewable_meshes:
+            self._render_mesh(mesh,camera,light_list)
 
+
+
+    def _render_mesh(self,mesh:Mesh,camera,light_list):
             # install the program for the mesh
             gl.glUseProgram(mesh.material.program)
             # bind vertex array object for the mesh
@@ -201,7 +220,6 @@ class Renderer(object):
             gl.glBindVertexArray(0)
             # unbind the program
             gl.glUseProgram(0)
-
 
     def _update_viewport(self,render_target:RenderTarget,clear_color:bool = True,clear_depth:bool = True):
         # set the viewport to the size of the window
