@@ -18,7 +18,6 @@ def generate_box_vertices(width=1, height=1, depth=1):
                          p4, p5, p7, p4, p7, p6,
                          p1, p0, p2, p1, p2, p3]
         
-        print("position_data:", position_data)
 
         return position_data
 
@@ -38,8 +37,6 @@ class BoxGeometry(Geometry):
         t0, t1, t2, t3 = [0, 0], [1, 0], [0, 1], [1, 1]
         # aligning the texture coordinates to the faces
         uv_data = [t0,t1,t3  , t0,t3,t2] * 6 #
-
-        print("uv_data:", uv_data)
 
         position_data = generate_box_vertices(width,height,depth)
 
