@@ -32,7 +32,7 @@ class GlUtils(object):
     @staticmethod
     def InitializeShader(code:str, shader_type:int) -> int:
         # add header to shader code
-        shader_code = '#version 330 core' + code
+        shader_code = '#version 420 core' + code
 
         # if shader_type is QOpenGLShader.ShaderTypeBit:
         if isinstance(shader_type, QOpenGLShader.ShaderTypeBit):
