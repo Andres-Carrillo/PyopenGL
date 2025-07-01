@@ -25,6 +25,7 @@ from material.lighted.phong import PhongMaterial
 from material.lighted.lambert import LambertMaterial
 from core.glsl.utils import ShaderType
 from core.glsl.utils import edit_light_list,edit_light_summation
+from meshes.terrain import InfiniteTerrainManager
 
 """ 
         Base class for all glfw only applications.
@@ -434,8 +435,8 @@ class BaseApp(ImGuiBase):
     It uses ImGui for the user interface and GLFW for window management.
 """
 class SceneEditor(BaseApp):
-    def __init__(self, width=800, height=600):
-        super().__init__(title="SceneEditor", display_grid=True,static_camera=False, width=width, height=height)
+    def __init__(self, width=800, height=600,display_grid=True, static_camera=True):
+        super().__init__(title="SceneEditor", display_grid=display_grid, static_camera=static_camera, width=width, height=height)
         self._is_targetting_object = False
         self.disable_camera_rig = False
         self.draw_bbox = False
@@ -444,6 +445,7 @@ class SceneEditor(BaseApp):
         self.mesh_editor = MeshEditor()
         self.obj_maker = ObjectSpawner()
         self.light_maker = LightSpawner()
+        self.terrain_manager = InfiniteTerrainManager(chunk_size=100, view_distance=3, u_resolution=30, v_resolution=30)
 
     def update(self):
 
@@ -528,7 +530,8 @@ class SceneEditor(BaseApp):
        
 
         #render the scene
-        self.renderer.render(self.scene, self.camera)
+        print("self.terrain_manager:", self.terrain_manager)
+        self.renderer.render(self.scene, self.camera,terrain_manager=self.terrain_manager)
 
     def _update_lighted_meshes(self):
         visible_meshes = self.scene.get_visible_objects()
@@ -575,3 +578,15 @@ class SceneEditor(BaseApp):
             if self.input_handler.left_click() and self.input_handler.mouse_held and mesh_picked:
                 drag_object(mouse_position=self.input_handler.mouse_position, mesh=self.selected_mesh, camera=self.camera, 
                             width=self.window_width, height=self.window_height, input_handler=self.input_handler)
+                
+    def  set_terrain_manager(self, terrain_manager):
+        """
+        Set the terrain manager for the scene editor.
+        This allows the scene editor to render terrain chunks.
+        Args:
+            terrain_manager (InfiniteTerrainManager): The terrain manager to set.
+        """
+
+        self.terrain_manager = terrain_manager
+        print("Terrain manager set:", self.terrain_manager)
+        # self.scene.add(self.terrain_manager)
