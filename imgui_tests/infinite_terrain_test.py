@@ -31,14 +31,9 @@ if __name__ == "__main__":
     # landscape = Terrain()
     # adding objects to the scene before the app is run
     box_geo = BoxGeometry()
-    terrian_manager = InfiniteTerrainManager(chunk_size=100, view_distance=3, u_resolution=10, v_resolution=10)
     surface_material = SurfaceMaterial()
     box = Mesh(geometry=box_geo, material=surface_material)
     box.set_position([0, 0, 0])
-    # app.set_terrain_manager(terrian_manager)
-    # app.add_to_scene(box)
-
-    # app.add_to_scene(landscape)
 
 
     app.run()
