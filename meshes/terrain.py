@@ -52,12 +52,13 @@ class Terrain(Mesh):
 
 
 class InfiniteTerrainManager:
-    def __init__(self,chunk_size:int =100, view_distance:int = 3,u_resolution:int = 100, v_resolution:int = 100):
+    def __init__(self,chunk_size:int =100, view_distance:int = 3,u_resolution:int = 100, v_resolution:int = 100,surface_functions=None):
         self.chunk_size = chunk_size
         self.view_distance = view_distance
         self.u_resolution = u_resolution
         self.v_resolution = v_resolution
         self.chunks = {}
+        self.surface_functions = surface_functions
 
 
     def update(self,camera_position):
@@ -107,7 +108,8 @@ class InfiniteTerrainManager:
 
         # set u and v resoltion based on chunk distance from the camera
         geometry = Terrain_Geometry(u_start=u_start, u_end=u_end, u_resolution=self.u_resolution,
-                                    v_start=v_start, v_end=v_end, v_resolution=self.v_resolution)
+                                    v_start=v_start, v_end=v_end, v_resolution=self.v_resolution,
+                                    surface_functions=self.surface_functions)
 
         terrain = Terrain(geometry=geometry)
         self.chunks[chunk_key] = terrain
