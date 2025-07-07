@@ -26,6 +26,7 @@ from material.lighted.lambert import LambertMaterial
 from core.glsl.utils import ShaderType
 from core.glsl.utils import edit_light_list,edit_light_summation
 from meshes.terrain import InfiniteTerrainManager
+from tools.imgui_tools import TerrainHandler
 
 """ 
         Base class for all glfw only applications.
@@ -445,7 +446,12 @@ class SceneEditor(BaseApp):
         self.mesh_editor = MeshEditor()
         self.obj_maker = ObjectSpawner()
         self.light_maker = LightSpawner()
-        self.terrain_manager = InfiniteTerrainManager(chunk_size=100, view_distance=3, u_resolution=30, v_resolution=30)
+        # self.terrain_manager = InfiniteTerrainManager(chunk_size=100, view_distance=12, u_resolution=5, v_resolution=5)
+        self.terrain_maker = TerrainHandler(chunk_size=100, view_distance=12, u_resolution=5, v_resolution=5)
+        self.terrain_manager = self.terrain_maker.terrain_manager
+
+
+    
 
     def update(self):
 
@@ -494,6 +500,25 @@ class SceneEditor(BaseApp):
 
                 imgui.end_tab_item()
 
+            ################### Terrain tab ###################
+            if imgui.begin_tab_item("Terrain").selected:
+                # show the terrain manager
+                # self.terrain_manager.update(self.camera.get_position())
+                # self.terrain_manager.render(self.camera)
+                # self.terrain_manager.show()
+                
+                # check if the user has set a terrain manager
+                if self.terrain_manager is not None:
+                    self.terrain_maker.show()
+                    print("terrain manager settings:", self.terrain_manager.chunk_size, self.terrain_manager.view_distance, self.terrain_manager.u_resolution, self.terrain_manager.v_resolution)
+                    if self.terrain_maker.update_terrain:
+                    # if the user has updated the terrain manager, set it in the scene
+                        self.terrain_manager = self.terrain_maker.terrain_manager
+                        self.update_terrain = False
+                    # self.set_terrain_manager(self.terrain_manager)
+
+                imgui.end_tab_item()
+
             imgui.end_tab_bar()
 
         # update the renderer so it knows whether to use the lights in the scene or not
@@ -530,7 +555,6 @@ class SceneEditor(BaseApp):
        
 
         #render the scene
-        print("self.terrain_manager:", self.terrain_manager)
         self.renderer.render(self.scene, self.camera,terrain_manager=self.terrain_manager)
 
     def _update_lighted_meshes(self):
