@@ -3,7 +3,7 @@ from math import pi
 import glfw.GLFW as GLFW_CONSTANTS
 
 class MovementRig(Object3D):
-    def __init__(self, units_per_second:int = 1,degrees_per_second:int = 45):
+    def __init__(self, units_per_second:int = 16,degrees_per_second:int = 45):
         super().__init__()
 
         # child for handling looking up and down
