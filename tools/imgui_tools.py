@@ -434,7 +434,6 @@ class LightSpawner:
         self._light = self._make_light(self._light_type) if imgui.button("Generate Light") else None
 
         if self._light is not None:
-            print(f"Light {self._light_counter} created with type {self._light_type} and color {self._light_color}")
             self._light_counter += 1
 
         # Create checkboxes for light options
@@ -470,3 +469,95 @@ class LightSpawner:
 
         # if the light type is not recognized, return None
         return None
+
+from meshes.terrain import InfiniteTerrainManager, Terrain_Geometry, Terrain
+
+class TerrainHandler:
+    noise_functions = ["Perlin", "Simplex", "Value"]
+
+    def __init__(self,chunk_size:int = 100, view_distance:int = 3, u_resolution:int = 100, v_resolution:int = 100):
+        self.chunk_size = chunk_size
+        self.view_distance = view_distance
+        self.u_resolution = u_resolution
+        self.v_resolution = v_resolution
+        self._terrain_manager = InfiniteTerrainManager(chunk_size=chunk_size, view_distance=view_distance, u_resolution=u_resolution, v_resolution=v_resolution)
+        self.update_terrain = False
+        self.noise_function_type = 0  # Default to Perlin noise
+
+    @property
+    def terrain_manager(self):
+        return self._terrain_manager
+    
+    @terrain_manager.setter
+    def terrain_manager(self, terrain_manager: InfiniteTerrainManager):
+        self._terrain_manager = terrain_manager
+    
+    def show(self):
+        imgui.text("Terrain Manager:")
+        imgui.separator()
+        imgui.text("Chunk Size:")
+        imgui.set_next_item_width(100)
+        changed, chunk_size = imgui.input_int("##Chunk Size", self.chunk_size)
+        if changed:
+            self.chunk_size = chunk_size
+   
+        imgui.text("View Distance:")
+        imgui.set_next_item_width(100)
+        changed, view_distance = imgui.input_int("##View Distance", self.view_distance)
+        if changed:
+            self.view_distance = view_distance
+
+
+        imgui.text("U Resolution:")
+        imgui.set_next_item_width(100)
+        changed, u_resolution = imgui.input_int("##U Resolution", self.u_resolution)
+        if changed:
+            self.u_resolution = u_resolution
+
+        imgui.text("V Resolution:")
+        imgui.set_next_item_width(100)
+        changed, v_resolution = imgui.input_int("##V Resolution", self.v_resolution)
+        if changed:
+            self.v_resolution = v_resolution
+
+        imgui.separator()
+        imgui.text("Terrain Geometry:")
+        imgui.separator()
+        imgui.text("Noise function type:")
+       
+        imgui.set_next_item_width(100)
+        changed, noise_function_type = imgui.combo("##Noise Function Type", self.noise_function_type, ["Perlin", "Simplex", "Value"])
+        if changed:
+            print("Noise function type changed to: ", noise_function_type)
+            # self.noise_function_type = noise_function_type
+            # if self.noise_function_type == 0:
+
+        imgui.text("Surface Function (u,v):")
+        imgui.set_next_item_width(300)
+        imgui.text("X(u,v) = ")
+        imgui.same_line()
+        changed, x_function = imgui.input_text("##xfunction", "u + noise([u,v]) * 0.3")
+        if changed:
+            print("X function changed to: ", x_function)
+
+        imgui.set_next_item_width(300)
+        imgui.text("Y(u,v) = ")
+        imgui.same_line()
+        changed, y_function = imgui.input_text("##yfunction", "sin(u*v)")
+        if changed:
+            print("Y function changed to: ", y_function)
+        
+        imgui.set_next_item_width(300)
+        imgui.text("Z(u,v) = ")
+        imgui.same_line()
+        changed, z_function = imgui.input_text("##Z(u,v) = ", "v + noise([u,v]) * 0.1")
+        if changed:
+            print("Z function changed to: ", z_function)
+
+        imgui.separator()
+
+        if imgui.button("Update Terrain"):
+            self.terrain_manager = InfiniteTerrainManager(chunk_size=self.chunk_size, view_distance=self.view_distance, u_resolution=self.u_resolution, v_resolution=self.v_resolution)
+            self.update_terrain = True
+        else:
+            self.update_terrain = False
