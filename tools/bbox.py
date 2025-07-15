@@ -1,6 +1,6 @@
 from material.basic.point import PointMaterial
 from material.basic.surface import SurfaceMaterial
-from geometry.simple3D.box import BoxGeometry
+from core.geometry.simple3D.box import BoxGeometry
 from material.basic.line import LineMaterial
 from meshes.mesh import Mesh
 import numpy as np

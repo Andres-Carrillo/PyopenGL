@@ -1,5 +1,5 @@
-from geometry.parametric import Parametric
-from geometry.simple2D.polygon import Polygon
+from core.geometry.parametric import Parametric
+from core.geometry.simple2D.polygon import Polygon
 from core.utils.matrix import Matrix
 from math import pi, sin, cos
 

@@ -1,4 +1,4 @@
-from geometry.parametric import Parametric
+from core.geometry.parametric import Parametric
 
 class Plane(Parametric):
 

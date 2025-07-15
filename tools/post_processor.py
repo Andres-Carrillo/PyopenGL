@@ -3,7 +3,7 @@ from core.rendering.scene import Scene
 from core.rendering.camera import Camera
 from meshes.mesh import Mesh
 from core.rendering.render_target import RenderTarget
-from geometry.geometry import Geometry
+from core.geometry.geometry import Geometry
 
 
 class Postprocessor(object):

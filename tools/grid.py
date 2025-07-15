@@ -1,5 +1,5 @@
 from meshes.mesh import Mesh
-from geometry.geometry import Geometry
+from core.geometry.geometry import Geometry
 from material.basic.line import LineMaterial
 from material.basic.surface import SurfaceMaterial
 

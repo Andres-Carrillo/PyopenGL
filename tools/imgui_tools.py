@@ -5,23 +5,23 @@ from core.glsl.uniform import UNIFORM_TYPE
 from meshes.mesh import Mesh
 
 # Geometry imports
-from geometry.geometry import GEOMETRY_TYPE
-from geometry.simple3D.box import BoxGeometry
-from geometry.simple3D.sphere import Sphere
-from geometry.simple3D.cylinder import Cylinder
-from geometry.simple3D.plane import Plane
-from geometry.simple2D.rectangle import Rectangle
-from geometry.simple2D.circle import Circle
-from geometry.simple2D.triangle import Triangle
-from geometry.simple2D.polygon import Polygon
-from geometry.simple2D.pentagon import Pentagon
-from geometry.simple2D.hexagon import Hexagon
-from geometry.simple2D.octagon import Octagon
-from geometry.simple2D.heptagon import Heptagon
-from geometry.simple2D.quad import Quad
-from geometry.simple3D.cone import Cone
-from geometry.simple3D.prism import Prism
-from geometry.simple3D.pyramid import Pyramid
+from core.geometry.geometry import GEOMETRY_TYPE
+from core.geometry.simple3D.box import BoxGeometry
+from core.geometry.simple3D.sphere import Sphere
+from core.geometry.simple3D.cylinder import Cylinder
+from core.geometry.simple3D.plane import Plane
+from core.geometry.simple2D.rectangle import Rectangle
+from core.geometry.simple2D.circle import Circle
+from core.geometry.simple2D.triangle import Triangle
+from core.geometry.simple2D.polygon import Polygon
+from core.geometry.simple2D.pentagon import Pentagon
+from core.geometry.simple2D.hexagon import Hexagon
+from core.geometry.simple2D.octagon import Octagon
+from core.geometry.simple2D.heptagon import Heptagon
+from core.geometry.simple2D.quad import Quad
+from core.geometry.simple3D.cone import Cone
+from core.geometry.simple3D.prism import Prism
+from core.geometry.simple3D.pyramid import Pyramid
 
 # Material imports
 from material.basic.material import MATERIAL_TYPE

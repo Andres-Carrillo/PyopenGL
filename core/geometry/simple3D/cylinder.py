@@ -1,4 +1,4 @@
-from geometry.simple3D.cylindrical import Cylindrical
+from core.geometry.simple3D.cylindrical import Cylindrical
 
 
 class Cylinder(Cylindrical):

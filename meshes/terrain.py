@@ -1,14 +1,9 @@
 from meshes.mesh import Mesh
-from geometry.geometry import Geometry
-from material.basic.line import LineMaterial
 from material.basic.surface import SurfaceMaterial
-from geometry.simple3D.box import generate_box_vertices
-import cv2 as cv
-from geometry.parametric import Parametric
-from math import sin, cos
+from core.geometry.parametric import Parametric
+from math import sin
 from perlin_noise import PerlinNoise
-
-# will gernerate terrain as a parametric surface
+import cv2 as cv
 
 class Terrain_Geometry(Parametric):
     def __init__(self, u_start: float = -100, u_end: float = 100, u_resolution: int = 50,

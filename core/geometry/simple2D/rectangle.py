@@ -1,4 +1,4 @@
-from geometry.geometry import Geometry
+from core.geometry.geometry import Geometry
 
 class Rectangle(Geometry):
     def __init__(self, width: float = 1.0, height: float = 1.0,position:list = [0,0],alignment:list = [0.5,0.5]) -> None:

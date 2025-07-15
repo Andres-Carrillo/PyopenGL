@@ -1,4 +1,4 @@
-from geometry.geometry import Geometry
+from core.geometry.geometry import Geometry
 from math import sin,cos,pi
 
 class Polygon(Geometry):

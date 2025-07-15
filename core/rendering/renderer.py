@@ -8,8 +8,8 @@ from tools.bbox import BBoxMesh
 from tools.grid import GridTool
 from material.basic.point import PointMaterial
 from material.basic.line import LineMaterial
-from geometry.simple3D.box import BoxGeometry
-from geometry.simple3D.sphere import Sphere
+from core.geometry.simple3D.box import BoxGeometry
+from core.geometry.simple3D.sphere import Sphere
 from meshes.terrain import InfiniteTerrainManager
 
 class Renderer(object):

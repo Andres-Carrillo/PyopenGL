@@ -1,7 +1,5 @@
-from geometry.geometry import Geometry
-import numpy as np
+from core.geometry.geometry import Geometry
 from core.utils.math import Math
-
 
 class Parametric(Geometry):
     """

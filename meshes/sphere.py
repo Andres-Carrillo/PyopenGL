@@ -1,8 +1,8 @@
 from meshes.mesh import Mesh
-from geometry.simple3D.sphere import Sphere
+from core.geometry.simple3D.sphere import Sphere
 from material.basic.basic import BasicMaterial
 from material.lighted.flat import FlatMaterial
-from geometry.geometry import Geometry
+from core.geometry.geometry import Geometry
 
 """ SphereMesh class
 This class creates a sphere mesh with a specified radius, number of segments, and rings.

@@ -1,4 +1,4 @@
-from geometry.parametric import Parametric
+from core.geometry.parametric import Parametric
 from math import pi, sin, cos
 from core.utils.matrix import Matrix
 

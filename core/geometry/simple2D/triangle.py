@@ -1,4 +1,4 @@
-from geometry.simple2D.polygon import Polygon
+from core.geometry.simple2D.polygon import Polygon
 
 class Triangle(Polygon):
     def __init__(self, radius: float = 1) -> None:

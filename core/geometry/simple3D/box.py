@@ -1,4 +1,4 @@
-from geometry.geometry import Geometry
+from core.geometry.geometry import Geometry
 
 def generate_box_vertices(width=1, height=1, depth=1):
         p0 = [-width / 2, -height / 2, -depth / 2]
