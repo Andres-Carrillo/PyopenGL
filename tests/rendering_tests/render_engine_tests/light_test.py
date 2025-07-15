@@ -16,9 +16,9 @@ from rendering_tests.template import Test
 from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
 from core.light.point import PointLight
-from material.lighted.phong import PhongMaterial
-from material.lighted.lambert import LambertMaterial
-from material.lighted.flat import FlatMaterial
+from core.material.lighted.phong import PhongMaterial
+from core.material.lighted.lambert import LambertMaterial
+from core.material.lighted.flat import FlatMaterial
 from core.textures.texture import Texture
 from meshes.mesh import Mesh
 from math import sin,cos

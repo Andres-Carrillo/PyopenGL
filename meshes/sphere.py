@@ -1,7 +1,7 @@
 from meshes.mesh import Mesh
 from core.geometry.simple3D.sphere import Sphere
-from material.basic.basic import BasicMaterial
-from material.lighted.flat import FlatMaterial
+from core.material.basic.basic import BasicMaterial
+from core.material.lighted.flat import FlatMaterial
 from core.geometry.geometry import Geometry
 
 """ SphereMesh class

@@ -17,7 +17,7 @@ from core.geometry.simple2D.rectangle import Rectangle
 from meshes.mesh import Mesh
 from core.textures.text import TextTexture
 from core.textures.texture import Texture
-from material.basic.texture import TextureMaterial
+from core.material.basic.texture import TextureMaterial
 from core.utils.matrix import Matrix
 
 

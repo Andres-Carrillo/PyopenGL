@@ -1,7 +1,7 @@
 from core.rendering.camera import Camera
 from core.light.light import Light
 from core.rendering.render_target import RenderTarget
-from material.lighted.depth import DepthMaterial
+from core.material.lighted.depth import DepthMaterial
 import OpenGL.GL as gl
 
 class Shadow(object):

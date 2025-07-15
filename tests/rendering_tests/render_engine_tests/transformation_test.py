@@ -18,7 +18,6 @@ from core.utils.timer import Timer
 import glfw.GLFW as GLFW_CONSTANTS
 import OpenGL.GL as gl
 from math import pi
-import glfw
 
 class TransformationTest(Base):
     def __init__(self, title = "Transformation Test"):

@@ -2,7 +2,6 @@ from core.utils.openGLUtils import GlUtils
 from core.glsl.uniform import Uniform
 import OpenGL.GL as gl
 from enum import Enum
-from core.glsl.utils import ShaderType
 
 class MATERIAL_TYPE(Enum):
     # basic types:

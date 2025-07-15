@@ -6,8 +6,8 @@ from config import SCREEN_WIDTH, SCREEN_HEIGHT
 from core.light.shadow import Shadow
 from tools.bbox import BBoxMesh
 from tools.grid import GridTool
-from material.basic.point import PointMaterial
-from material.basic.line import LineMaterial
+from core.material.basic.point import PointMaterial
+from core.material.basic.line import LineMaterial
 from core.geometry.simple3D.box import BoxGeometry
 from core.geometry.simple3D.sphere import Sphere
 from meshes.terrain import InfiniteTerrainManager

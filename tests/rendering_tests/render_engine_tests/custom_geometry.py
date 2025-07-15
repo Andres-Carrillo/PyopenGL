@@ -13,7 +13,7 @@ if package_dir not in sys.path:
 
 from meshes.mesh import Mesh
 from core.geometry.geometry import Geometry
-from material.basic.surface import SurfaceMaterial
+from core.material.basic.surface import SurfaceMaterial
 from rendering_tests.template import Test
 
 

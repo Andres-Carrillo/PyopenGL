@@ -1,4 +1,4 @@
-from material.basic.material import Material
+from core.material.basic.material import Material
 
 class DepthMaterial(Material):
 

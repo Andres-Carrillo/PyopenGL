@@ -24,15 +24,15 @@ from core.geometry.simple3D.prism import Prism
 from core.geometry.simple3D.pyramid import Pyramid
 
 # Material imports
-from material.basic.material import MATERIAL_TYPE
-from material.basic.surface import SurfaceMaterial
-from material.lighted.lambert import LambertMaterial
-from material.lighted.phong import PhongMaterial
-from material.lighted.flat import FlatMaterial
-from material.basic.line import LineMaterial
-from material.basic.point import PointMaterial
-from material.basic.sprite import Sprite
-from material.basic.texture import TextureMaterial
+from core.material.basic.material import MATERIAL_TYPE
+from core.material.basic.surface import SurfaceMaterial
+from core.material.lighted.lambert import LambertMaterial
+from core.material.lighted.phong import PhongMaterial
+from core.material.lighted.flat import FlatMaterial
+from core.material.basic.line import LineMaterial
+from core.material.basic.point import PointMaterial
+from core.material.basic.sprite import Sprite
+from core.material.basic.texture import TextureMaterial
 
 # Light imports
 from core.light.directional import DirectionalLight

@@ -13,7 +13,7 @@ from rendering_tests.template import Test
 from core.geometry.simple3D.sphere import Sphere
 from rendering_tests.template import Test
 from meshes.mesh import Mesh
-from material.basic.material import Material
+from core.material.basic.material import Material
 
 
 class ProceduralTextureTest(Test):

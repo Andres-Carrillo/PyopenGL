@@ -10,7 +10,7 @@ if package_dir not in sys.path:
 
 from meshes.mesh import Mesh
 from core.geometry.simple3D.box import BoxGeometry
-from material.basic.surface import SurfaceMaterial
+from core.material.basic.surface import SurfaceMaterial
 from rendering_tests.template import Test
 
 class FrameworkTest(Test):

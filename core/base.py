@@ -20,9 +20,9 @@ from core.rendering.utils import drag_object
 from core.utils.math import Math
 
 from core.light.light import Light
-from material.lighted.flat import FlatMaterial
-from material.lighted.phong import PhongMaterial
-from material.lighted.lambert import LambertMaterial
+from core.material.lighted.flat import FlatMaterial
+from core.material.lighted.phong import PhongMaterial
+from core.material.lighted.lambert import LambertMaterial
 from core.glsl.utils import ShaderType
 from core.glsl.utils import edit_light_list,edit_light_summation
 from meshes.terrain import InfiniteTerrainManager

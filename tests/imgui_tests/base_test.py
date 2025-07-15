@@ -21,7 +21,7 @@ from core.utils.openGLUtils import GlUtils
 from core.glsl.attribute import Attribute
 from core.glsl.uniform import Uniform
 import math
-from material.lighted.phong import PhongMaterial
+from core.material.lighted.phong import PhongMaterial
 
 class MyApp(ImGuiBase):
 

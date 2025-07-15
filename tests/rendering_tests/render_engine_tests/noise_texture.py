@@ -12,7 +12,7 @@ from rendering_tests.template import Test
 from core.textures.texture import Texture
 from core.geometry.simple3D.sphere import Sphere
 from meshes.mesh import Mesh
-from material.basic.material import Material
+from core.material.basic.material import Material
 
 
 class AnimatedTextureTest(Test):

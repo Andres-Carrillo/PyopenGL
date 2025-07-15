@@ -14,7 +14,7 @@ from core.geometry.simple3D.box import BoxGeometry
 from rendering_tests.template import Test
 from meshes.mesh import Mesh
 from core.textures.text import TextTexture
-from material.basic.texture import TextureMaterial
+from core.material.basic.texture import TextureMaterial
 
 class TextureTest(Test):
     def __init__(self):

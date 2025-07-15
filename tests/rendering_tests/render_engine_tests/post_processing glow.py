@@ -11,19 +11,16 @@ if package_dir not in sys.path:
 
 from rendering_tests.template import Test
 from core.textures.texture import Texture
-from material.basic.texture import TextureMaterial
+from core.material.basic.texture import TextureMaterial
 from core.geometry.simple2D.rectangle import  Rectangle
 from core.geometry.simple3D.sphere import Sphere
 from meshes.mesh import Mesh  
-
 from tools.post_processor import Postprocessor
-from core.effects.tint import TintEffect
-from core.effects.bright_filter import BrightFilterEffect
 from core.effects.blur_horizontal import HBlurEffect
 from core.effects.blur_vertical import VBlurEffect
 from core.effects.additive_blend import AdditiveBlendEffect
 from core.rendering.scene import Scene
-from material.basic.surface import SurfaceMaterial
+from core.material.basic.surface import SurfaceMaterial
 from core.rendering.render_target import RenderTarget
 from math import sin,cos
 

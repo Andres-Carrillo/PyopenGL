@@ -1,7 +1,7 @@
-from material.basic.point import PointMaterial
-from material.basic.surface import SurfaceMaterial
+from core.material.basic.point import PointMaterial
+from core.material.basic.surface import SurfaceMaterial
 from core.geometry.simple3D.box import BoxGeometry
-from material.basic.line import LineMaterial
+from core.material.basic.line import LineMaterial
 from meshes.mesh import Mesh
 import numpy as np
 from OpenGL import GL as gl

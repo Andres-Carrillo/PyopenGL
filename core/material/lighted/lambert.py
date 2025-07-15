@@ -1,4 +1,4 @@
-from material.lighted.light import LightMaterial
+from core.material.lighted.light import LightMaterial
 from core.textures.texture import Texture
 from shaders.shaders import Shader
 from core.glsl.utils import generate_light_uniform_list,generate_light_sum

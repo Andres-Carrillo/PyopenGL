@@ -1,5 +1,5 @@
 from meshes.mesh import Mesh
-from material.basic.surface import SurfaceMaterial
+from core.material.basic.surface import SurfaceMaterial
 from core.geometry.parametric import Parametric
 from math import sin
 from perlin_noise import PerlinNoise

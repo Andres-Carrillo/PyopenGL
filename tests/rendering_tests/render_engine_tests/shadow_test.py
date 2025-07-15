@@ -14,7 +14,7 @@ from core.geometry.simple3D.sphere import Sphere
 from core.geometry.simple2D.rectangle import Rectangle
 from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
-from material.lighted.phong import PhongMaterial
+from core.material.lighted.phong import PhongMaterial
 from tools.directional_light_tool import DirectionalLightTool
 from meshes.mesh import Mesh
 from math import pi

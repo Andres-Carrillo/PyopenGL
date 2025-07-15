@@ -10,7 +10,7 @@ if package_dir not in sys.path:
 
 from rendering_tests.template import Test
 from core.textures.texture import Texture
-from material.basic.texture import TextureMaterial
+from core.material.basic.texture import TextureMaterial
 from core.geometry.simple2D.rectangle import  Rectangle
 from core.geometry.simple3D.box import BoxGeometry
 from core.geometry.simple3D.sphere import Sphere

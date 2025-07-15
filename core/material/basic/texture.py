@@ -1,4 +1,4 @@
-from material.basic.material import Material
+from core.material.basic.material import Material
 import OpenGL.GL as gl
 from core.textures.texture import Texture
 class TextureMaterial(Material):

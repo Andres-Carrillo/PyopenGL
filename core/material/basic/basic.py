@@ -1,4 +1,5 @@
-from material.basic.material import Material
+from core.material.basic.material import Material
+
 class BasicMaterial(Material):
 
     def __init__(self,vertex_shader_code = None, fragment_shader_code = None,

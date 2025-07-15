@@ -16,15 +16,15 @@ from rendering_tests.template import Test
 from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
 from core.light.point import PointLight
-from material.lighted.phong import PhongMaterial
-from material.lighted.lambert import LambertMaterial
-from material.lighted.flat import FlatMaterial
+from core.material.lighted.phong import PhongMaterial
+from core.material.lighted.lambert import LambertMaterial
+from core.material.lighted.flat import FlatMaterial
 from core.textures.texture import Texture
 from meshes.mesh import Mesh
 from tools.directional_light_tool import DirectionalLightTool
 from tools.point_light_tool import PointLightTool
 from math import sin,cos,pi
-from material.basic.material import Material
+from core.material.basic.material import Material
 from core.geometry.simple2D.rectangle import Rectangle
 
 class LightTest(Test):

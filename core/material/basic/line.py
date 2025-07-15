@@ -1,4 +1,4 @@
-from material.basic.basic import BasicMaterial
+from core.material.basic.basic import BasicMaterial
 import OpenGL.GL as gl
 
 class LineMaterial(BasicMaterial):

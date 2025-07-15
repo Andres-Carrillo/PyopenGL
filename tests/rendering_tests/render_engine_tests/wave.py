@@ -11,8 +11,8 @@ if package_dir not in sys.path:
 
 from meshes.mesh import Mesh
 from core.geometry.geometry import Geometry
-from material.basic.point import PointMaterial
-from material.basic.line import LineMaterial
+from core.material.basic.point import PointMaterial
+from core.material.basic.line import LineMaterial
 from math import sin
 from numpy import arange
 from rendering_tests.template import Test
