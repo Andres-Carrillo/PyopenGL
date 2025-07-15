@@ -12,8 +12,8 @@ from core.rendering.camera import Camera
 from meshes.mesh import Mesh
 from core.rendering.scene import Scene
 from core.textures.texture import Texture
-from geometry.simple3D.box import BoxGeometry
-from geometry.simple2D.rectangle import Rectangle
+from core.geometry.simple3D.box import BoxGeometry
+from core.geometry.simple2D.rectangle import Rectangle
 from material.basic.texture import TextureMaterial
 from core.textures.text import TextTexture
 from rendering_tests.template import Test

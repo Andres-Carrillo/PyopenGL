@@ -17,7 +17,7 @@ from core.textures.texture import Texture
 from meshes.mesh import Mesh
 from tools.point_light_tool import PointLightTool
 from math import sin,cos
-from geometry.simple2D.rectangle import Rectangle
+from core.geometry.simple2D.rectangle import Rectangle
 
 class LightTest(Test):
     def __init__(self):
@@ -27,6 +27,7 @@ class LightTest(Test):
         normal_map = Texture("images/brick-wall-normal-map.jpg") 
         brick_wall_geo = Rectangle(width=2,height=2)
 
+        self.renderer.toggle_lights()
 
 
         self.camera.set_position([0, 0, 6])

@@ -10,7 +10,7 @@ if package_dir not in sys.path:
 
 
 from meshes.mesh import Mesh
-from geometry.geometry import Geometry
+from core.geometry.geometry import Geometry
 from material.basic.point import PointMaterial
 from material.basic.line import LineMaterial
 from math import sin
@@ -24,7 +24,7 @@ class WaveTest(Test):
         self.camera.set_position([0, 0, 5])
         geometry = Geometry()
         point_material = PointMaterial(
-            {"base_color": [1, 1, 1],
+            properties={"base_color": [1, 1, 1],
              "point_size":10}
         )
         
@@ -38,7 +38,7 @@ class WaveTest(Test):
         point_mesh = Mesh(geometry, point_material)
 
         line_material = LineMaterial(
-            {"base_color": [1, 1, 1],
+            properties={"base_color": [1, 1, 1],
              "line_width": 2}
         )
 

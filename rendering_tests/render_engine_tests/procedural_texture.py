@@ -10,7 +10,7 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from rendering_tests.template import Test
-from geometry.simple3D.sphere import Sphere
+from core.geometry.simple3D.sphere import Sphere
 from rendering_tests.template import Test
 from meshes.mesh import Mesh
 from material.basic.material import Material

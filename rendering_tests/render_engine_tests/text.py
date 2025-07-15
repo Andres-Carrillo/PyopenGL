@@ -9,12 +9,9 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-
 from rendering_tests.template import Test
-from geometry.simple3D.box import BoxGeometry
+from core.geometry.simple3D.box import BoxGeometry
 from rendering_tests.template import Test
-# from geometry.simple3D import BoxGeometryas
-# >>>>>>>> dear_py_gui_test:rendering_tests/text.py
 from meshes.mesh import Mesh
 from core.textures.text import TextTexture
 from material.basic.texture import TextureMaterial

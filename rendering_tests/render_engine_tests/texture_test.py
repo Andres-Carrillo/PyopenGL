@@ -11,9 +11,9 @@ if package_dir not in sys.path:
 from rendering_tests.template import Test
 from core.textures.texture import Texture
 from material.basic.texture import TextureMaterial
-from geometry.simple2D.rectangle import  Rectangle
-from geometry.simple3D.box import BoxGeometry
-from geometry.simple3D.sphere import Sphere
+from core.geometry.simple2D.rectangle import  Rectangle
+from core.geometry.simple3D.box import BoxGeometry
+from core.geometry.simple3D.sphere import Sphere
 from meshes.mesh import Mesh  
 
 class TextureTest(Test):

@@ -12,11 +12,11 @@ if package_dir not in sys.path:
 from rendering_tests.template import Test
 from core.textures.texture import Texture
 from material.basic.texture import TextureMaterial
-from geometry.simple2D.rectangle import  Rectangle
-from geometry.simple3D.sphere import Sphere
+from core.geometry.simple2D.rectangle import  Rectangle
+from core.geometry.simple3D.sphere import Sphere
 from meshes.mesh import Mesh  
 from core.rendering.render_target import RenderTarget
-from geometry.simple3D.box import BoxGeometry
+from core.geometry.simple3D.box import BoxGeometry
 from material.basic.surface import SurfaceMaterial
 from core.rendering.camera import Camera
 
@@ -42,7 +42,7 @@ class SkyboxTest(Test):
         self.scene.add(self.sphere_mesh)
 
         box_geo = BoxGeometry(width=2,height=2,depth=0.2)
-        box_mat = SurfaceMaterial({"base_color": [0, 0, 0]})
+        box_mat = SurfaceMaterial(properties={"base_color": [0, 0, 0]})
         box = Mesh(box_geo, box_mat)
         box.set_position([1.2, 1, 0])
         self.scene.add(box)

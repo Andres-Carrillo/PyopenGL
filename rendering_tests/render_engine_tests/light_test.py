@@ -10,7 +10,7 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from rendering_tests.template import Test
-from geometry.simple3D.sphere import Sphere
+from core.geometry.simple3D.sphere import Sphere
 from rendering_tests.template import Test
 
 from core.light.ambient import AmbientLight
@@ -27,6 +27,7 @@ class LightTest(Test):
     def __init__(self):
         super().__init__(title="Light Test", display_grid=False)
         self.camera.set_position([0, 0, 6])
+        self.renderer.toggle_lights()
 
         grid_texture = Texture(image_path="images/grid.jpg")
 
@@ -70,19 +71,20 @@ class LightTest(Test):
         self.scene.add(self.phong_sphere)
 
 
+
     def update(self):
             super().update()
             self.point_light.set_position([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
-            # self.point_light.color = ([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
+            self.point_light.color = ([cos(self.timer.elapsed_time()), sin(self.timer.elapsed_time()), 1])
 
-            # self.directional_light.set_direction([-1, sin(self.timer.elapsed_time()), -2])
+            self.directional_light.set_direction([-1, sin(self.timer.elapsed_time()), -2])
             
-            # self.lambert_sphere.rotate_y(0.01)
-            # self.lambert_sphere.rotate_x(0.01)
-            # self.phong_sphere.rotate_y(0.01)
-            # self.phong_sphere.rotate_x(0.01)
-            # self.flat_sphere.rotate_y(0.01) 
-            # self.flat_sphere.rotate_x(0.01)  
+            self.lambert_sphere.rotate_y(0.01)
+            self.lambert_sphere.rotate_x(0.01)
+            self.phong_sphere.rotate_y(0.01)
+            self.phong_sphere.rotate_x(0.01)
+            self.flat_sphere.rotate_y(0.01) 
+            self.flat_sphere.rotate_x(0.01)  
 
 if __name__ == "__main__":
     test = LightTest()

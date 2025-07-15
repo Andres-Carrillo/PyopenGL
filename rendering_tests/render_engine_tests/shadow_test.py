@@ -2,30 +2,22 @@ import pathlib
 import sys
 
 # Get the package directory
-package_dir = str(pathlib.Path(__file__).resolve().parents[1])
+package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-
-
-
 from rendering_tests.template import Test
-from geometry.simple3D.sphere import Sphere
 from rendering_tests.template import Test
-from geometry.simple3D import Sphere
-from geometry.simple2D.rectangle import Rectangle
+from core.geometry.simple3D.sphere import Sphere
+from core.geometry.simple2D.rectangle import Rectangle
 from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
-from core.light.point import PointLight
 from material.lighted.phong import PhongMaterial
-from material.lighted.lambert import LambertMaterial
 from tools.directional_light_tool import DirectionalLightTool
-from core.textures.texture import Texture
-from material.basic.texture import TextureMaterial
 from meshes.mesh import Mesh
-from math import sin,cos,pi
+from math import pi
 
 class ShadowTest(Test):
     def __init__(self):
@@ -60,6 +52,9 @@ class ShadowTest(Test):
         floor = Mesh(Rectangle(width=20, height=20), phong_material)
         floor.rotate_x(-pi / 2)
         self.scene.add(floor)
+
+        self.renderer.toggle_lights()
+        self.renderer.enable_shadows(shadow_light=self.directional_light, resolution=[self.window_width, self.window_height])
         
 
         
@@ -75,7 +70,7 @@ class ShadowTest(Test):
        
         # self.sphere_1.rotate_y(0.01337,True)
         super().update()
-        # self.renderer.render(self.scene, shadow_camera)
+        self.renderer.render(self.scene, shadow_camera)
         # self.renderer.shadow_object.render_target.uni
 
 

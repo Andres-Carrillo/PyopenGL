@@ -12,16 +12,16 @@ if package_dir not in sys.path:
 from rendering_tests.template import Test
 from core.textures.texture import Texture
 from material.basic.texture import TextureMaterial
-from geometry.simple2D.rectangle import  Rectangle
-from geometry.simple3D.sphere import Sphere
+from core.geometry.simple2D.rectangle import  Rectangle
+from core.geometry.simple3D.sphere import Sphere
 from meshes.mesh import Mesh  
 
 from tools.post_processor import Postprocessor
-from effects.tint import TintEffect
-from effects.bright_filter import BrightFilterEffect
-from effects.blur_horizontal import HBlurEffect
-from effects.blur_vertical import VBlurEffect
-from effects.additive_blend import AdditiveBlendEffect
+from core.effects.tint import TintEffect
+from core.effects.bright_filter import BrightFilterEffect
+from core.effects.blur_horizontal import HBlurEffect
+from core.effects.blur_vertical import VBlurEffect
+from core.effects.additive_blend import AdditiveBlendEffect
 
 
 class PostProcessingTest(Test):

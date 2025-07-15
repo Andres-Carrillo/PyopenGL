@@ -9,15 +9,9 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from meshes.mesh import Mesh
-<<<<<<<< HEAD:rendering_tests/render_engine_tests/framework_test.py
-from geometry.simple3D.box import BoxGeometry
+from core.geometry.simple3D.box import BoxGeometry
 from material.basic.surface import SurfaceMaterial
-from tests.template import Test
-========
-from geometry.box import BoxGeometry
-from material.surface import SurfaceMaterial
 from rendering_tests.template import Test
->>>>>>>> dear_py_gui_test:rendering_tests/framework_test.py
 
 class FrameworkTest(Test):
 
@@ -26,7 +20,7 @@ class FrameworkTest(Test):
         
         geometry = BoxGeometry()
         material = SurfaceMaterial(
-            {'use_vertex_colors':True,
+           properties= {'use_vertex_colors':True,
              "wire_frame":False,}
         )
 

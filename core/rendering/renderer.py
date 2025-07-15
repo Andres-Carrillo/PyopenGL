@@ -13,7 +13,7 @@ from core.geometry.simple3D.sphere import Sphere
 from meshes.terrain import InfiniteTerrainManager
 
 class Renderer(object):
-    def __init__(self,clear_color:list = [0.0, 0.0, 0.],window_width:int=SCREEN_WIDTH,window_height:int = SCREEN_HEIGHT) -> None:
+    def __init__(self,clear_color:list = [0.0, 0.0, 0.],window_width:int=SCREEN_WIDTH,window_height:int = SCREEN_HEIGHT,use_lights=False) -> None:
         gl.glEnable(gl.GL_DEPTH_TEST)
         # enables anti-aliasing
         gl.glEnable(gl.GL_MULTISAMPLE)
@@ -30,7 +30,11 @@ class Renderer(object):
 
         self.shadows_enabled = False
         self.bound_box_enabled = False
-        self._use_lights = False
+        self._use_lights = use_lights
+
+
+    def toggle_lights(self):
+        self._use_lights = not self._use_lights
 
 
     def render(self,scene:object,camera:object,clear_color:bool = True,clear_depth:bool = True,

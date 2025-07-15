@@ -7,16 +7,10 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from meshes.mesh import Mesh
-
-from core.rendering.camera import Camera
-from core.rendering.renderer import Renderer
-from core.rendering.scene import Scene
-from geometry.simple3D.sphere import Sphere
+from core.geometry.simple3D.sphere import Sphere
 from material.basic.material import Material
-
 from rendering_tests.template import Test
 from core.utils.timer import Timer
-
 
 class SphereTest(Test):
 

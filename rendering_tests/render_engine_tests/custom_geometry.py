@@ -1,6 +1,8 @@
 import pathlib
 import sys
 
+# print the current working directory
+print(pathlib.Path(__file__).resolve().parents[2])
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 
@@ -10,15 +12,9 @@ if package_dir not in sys.path:
 
 
 from meshes.mesh import Mesh
-<<<<<<<< HEAD:rendering_tests/render_engine_tests/custom_geometry.py
-from geometry.simple3D.box import Geometry
+from core.geometry.geometry import Geometry
 from material.basic.surface import SurfaceMaterial
-from tests.template import Test
-========
-from geometry.box import Geometry
-from material.surface import SurfaceMaterial
 from rendering_tests.template import Test
->>>>>>>> dear_py_gui_test:rendering_tests/custom_geometry.py
 
 
 class CustomGeoTest(Test):
@@ -29,7 +25,7 @@ class CustomGeoTest(Test):
         geometry = Geometry()   
         
         material = SurfaceMaterial(
-            {'use_vertex_colors':True,
+            properties={'use_vertex_colors':True,
              "wire_frame":False,}
         )
 

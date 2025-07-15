@@ -10,7 +10,7 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 
-from geometry.simple3D.sphere import Sphere
+from core.geometry.simple3D.sphere import Sphere
 
 from rendering_tests.template import Test
 from core.light.ambient import AmbientLight
@@ -25,11 +25,13 @@ from tools.directional_light_tool import DirectionalLightTool
 from tools.point_light_tool import PointLightTool
 from math import sin,cos,pi
 from material.basic.material import Material
-from geometry.simple2D.rectangle import Rectangle
+from core.geometry.simple2D.rectangle import Rectangle
 
 class LightTest(Test):
     def __init__(self):
         super().__init__(title="Light Test", display_grid=False)
+
+     
         
 
         noise_texture = Texture("images/rgb-noise.jpg")
@@ -103,7 +105,9 @@ class LightTest(Test):
         self.scene.add(self.phong_sphere)
         self.scene.add(floor)
         self.scene.add(self.water_sphere)
+        self.renderer.toggle_lights()
         self.renderer.enable_shadows(self.directional_light)
+       
 
 
     def update(self):
