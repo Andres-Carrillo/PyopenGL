@@ -4,7 +4,7 @@ import sys
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygame")
 # Get the package directory
-package_dir = str(pathlib.Path(__file__).resolve().parents[1])
+package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
@@ -13,7 +13,7 @@ if package_dir not in sys.path:
 # from core.base import ImGuiBase
 
 from meshes.mesh import Mesh
-from geometry.simple3D.box import BoxGeometry
+from core.geometry.simple3D.box import BoxGeometry
 from material.basic.surface import SurfaceMaterial
 # from core.input import Input
 

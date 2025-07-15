@@ -3,7 +3,7 @@ import sys
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygame")
 # Get the package directory
-package_dir = str(pathlib.Path(__file__).resolve().parents[1])
+package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 print("Package directory:", package_dir)
 
 # Add the package directory into sys.path if necessary
