@@ -1,5 +1,5 @@
 from core.object3D import Object3D
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 import numpy as np
 from tools.grid import GridTool
 from core.utils.math import Math

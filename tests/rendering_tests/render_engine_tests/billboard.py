@@ -14,7 +14,7 @@ from rendering_tests.template import Test
 from core.geometry.simple3D.box import BoxGeometry
 from rendering_tests.template import Test
 from core.geometry.simple2D.rectangle import Rectangle
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from core.textures.text import TextTexture
 from core.textures.texture import Texture
 from core.material.basic.texture import TextureMaterial

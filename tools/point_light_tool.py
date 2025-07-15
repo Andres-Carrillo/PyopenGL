@@ -1,6 +1,6 @@
 from core.geometry.simple3D.sphere import Sphere
 from core.material.basic.surface import SurfaceMaterial
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from core.light.point import PointLight
 
 class PointLightTool(Mesh):

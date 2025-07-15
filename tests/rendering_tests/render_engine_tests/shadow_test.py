@@ -16,7 +16,7 @@ from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
 from core.material.lighted.phong import PhongMaterial
 from tools.directional_light_tool import DirectionalLightTool
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from math import pi
 
 class ShadowTest(Test):

@@ -2,7 +2,8 @@ import imgui
 import math
 from core.utils.openGLUtils import GlUtils
 from core.glsl.uniform import UNIFORM_TYPE
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
+from core.meshes.terrain import InfiniteTerrainManager, Terrain_Geometry, Terrain
 
 # Geometry imports
 from core.geometry.geometry import GEOMETRY_TYPE
@@ -470,7 +471,7 @@ class LightSpawner:
         # if the light type is not recognized, return None
         return None
 
-from meshes.terrain import InfiniteTerrainManager, Terrain_Geometry, Terrain
+
 
 class TerrainHandler:
     noise_functions = ["Perlin", "Simplex", "Value"]

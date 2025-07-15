@@ -1,4 +1,4 @@
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from core.geometry.geometry import Geometry
 from core.material.basic.line import LineMaterial
 from core.material.basic.surface import SurfaceMaterial

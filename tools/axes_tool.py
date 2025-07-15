@@ -1,6 +1,6 @@
-from meshes.mesh import Mesh
-from geometry.geometry import Geometry
-from material.basic.line import LineMaterial
+from core.meshes.mesh import Mesh
+from core.geometry.geometry import Geometry
+from core.material.basic.line import LineMaterial
 
 class AxesAid(Mesh):
     def __init__(self,axis_len:int =1,line_width =4,axix_colors=[[1,0,0],[0,1,0],[0,0,1]]):

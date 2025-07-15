@@ -1,4 +1,4 @@
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from core.material.basic.surface import SurfaceMaterial
 from core.geometry.parametric import Parametric
 from math import sin

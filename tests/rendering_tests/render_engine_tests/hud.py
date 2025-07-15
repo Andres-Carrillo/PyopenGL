@@ -9,7 +9,7 @@ if package_dir not in sys.path:
 
 # from core.app_base import Base
 from core.rendering.camera import Camera
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from core.rendering.scene import Scene
 from core.textures.texture import Texture
 from core.geometry.simple3D.box import BoxGeometry

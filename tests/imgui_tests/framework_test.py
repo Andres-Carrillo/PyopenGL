@@ -12,12 +12,12 @@ if package_dir not in sys.path:
 
 # from core.base import ImGuiBase
 
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from core.geometry.simple3D.box import BoxGeometry
 from core.material.basic.surface import SurfaceMaterial
 # from core.input import Input
 
-from meshes.terrain import Terrain
+from core.meshes.terrain import Terrain
 
 # import imgui
 # from material.phong import PhongMaterial

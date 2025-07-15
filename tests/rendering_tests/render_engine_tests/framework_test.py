@@ -8,7 +8,7 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from core.geometry.simple3D.box import BoxGeometry
 from core.material.basic.surface import SurfaceMaterial
 from rendering_tests.template import Test

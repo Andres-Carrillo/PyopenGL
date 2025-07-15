@@ -1,12 +1,15 @@
 import pathlib
 import sys
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygame")
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[2])
+
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from core.geometry.simple3D.sphere import Sphere
 from core.material.basic.material import Material
 from rendering_tests.template import Test

@@ -9,12 +9,12 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from core.utils.openGLUtils import GlUtils
-from core.base import Base
+from rendering_tests.template import Test
 from core.utils.input import Input
 import OpenGL.GL as gl
 import glfw
 
-class DrawPoint(Base):
+class DrawPoint(Test):
     def __init__(self, title: str = "Draw Point", major_version: int = 3, minor_version: int = 3):
         super().__init__(title, major_version, minor_version)
 

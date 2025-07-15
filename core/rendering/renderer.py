@@ -1,5 +1,5 @@
 import OpenGL.GL as gl
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from core.light.light import Light
 from core.rendering.render_target import RenderTarget
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
@@ -10,7 +10,7 @@ from core.material.basic.point import PointMaterial
 from core.material.basic.line import LineMaterial
 from core.geometry.simple3D.box import BoxGeometry
 from core.geometry.simple3D.sphere import Sphere
-from meshes.terrain import InfiniteTerrainManager
+from core.meshes.terrain import InfiniteTerrainManager
 
 class Renderer(object):
     def __init__(self,clear_color:list = [0.0, 0.0, 0.],window_width:int=SCREEN_WIDTH,window_height:int = SCREEN_HEIGHT,use_lights=False) -> None:

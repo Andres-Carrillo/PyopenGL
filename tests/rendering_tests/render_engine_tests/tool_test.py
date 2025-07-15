@@ -4,6 +4,8 @@ import sys
 # Get the package directorya
 package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 
+print(package_dir)
+
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)

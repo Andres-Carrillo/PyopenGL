@@ -20,7 +20,7 @@ from core.material.lighted.phong import PhongMaterial
 from core.material.lighted.lambert import LambertMaterial
 from core.material.lighted.flat import FlatMaterial
 from core.textures.texture import Texture
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from math import sin,cos
 
 class LightTest(Test):

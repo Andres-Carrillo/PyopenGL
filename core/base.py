@@ -25,7 +25,7 @@ from core.material.lighted.phong import PhongMaterial
 from core.material.lighted.lambert import LambertMaterial
 from core.glsl.utils import ShaderType
 from core.glsl.utils import edit_light_list,edit_light_summation
-from meshes.terrain import InfiniteTerrainManager
+from core.meshes.terrain import InfiniteTerrainManager
 from tools.imgui_tools import TerrainHandler
 
 """ 
