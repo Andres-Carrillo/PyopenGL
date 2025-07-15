@@ -436,7 +436,7 @@ class BaseApp(ImGuiBase):
     It uses ImGui for the user interface and GLFW for window management.
 """
 class SceneEditor(BaseApp):
-    def __init__(self, width=800, height=600,display_grid=True, static_camera=True):
+    def __init__(self, width=800, height=600,display_grid=True, static_camera=True,generate_terrain__at_start=False):
         super().__init__(title="SceneEditor", display_grid=display_grid, static_camera=static_camera, width=width, height=height)
         self._is_targetting_object = False
         self.disable_camera_rig = False
@@ -446,12 +446,15 @@ class SceneEditor(BaseApp):
         self.mesh_editor = MeshEditor()
         self.obj_maker = ObjectSpawner()
         self.light_maker = LightSpawner()
-        # self.terrain_manager = InfiniteTerrainManager(chunk_size=100, view_distance=12, u_resolution=5, v_resolution=5)
-        self.terrain_maker = TerrainHandler(chunk_size=100, view_distance=12, u_resolution=5, v_resolution=5)
-        self.terrain_manager = self.terrain_maker.terrain_manager
 
+        if  generate_terrain__at_start:
+            # self.terrain_manager = InfiniteTerrainManager(chunk_size=100, view_distance=12, u_resolution=5, v_resolution=5)
+            self.terrain_maker = TerrainHandler(chunk_size=100, view_distance=12, u_resolution=5, v_resolution=5)
+            self.terrain_manager = self.terrain_maker.terrain_manager
 
-    
+        else:
+            self.terrain_manager = None
+            self.terrain_maker = None
 
     def update(self):
 
