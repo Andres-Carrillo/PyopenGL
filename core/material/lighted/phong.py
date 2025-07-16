@@ -1,7 +1,7 @@
 from core.material.lighted.light import LightMaterial
 from core.textures.texture import Texture
 import OpenGL.GL as gl
-from shaders.shaders import Shader
+from core.shaders.shaders import Shader
 from core.glsl.utils import generate_light_sum,generate_light_uniform_list
 
 class PhongMaterial(LightMaterial):

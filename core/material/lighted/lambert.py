@@ -1,6 +1,6 @@
 from core.material.lighted.light import LightMaterial
 from core.textures.texture import Texture
-from shaders.shaders import Shader
+from core.shaders.shaders import Shader
 from core.glsl.utils import generate_light_uniform_list,generate_light_sum
 import OpenGL.GL as gl
 
