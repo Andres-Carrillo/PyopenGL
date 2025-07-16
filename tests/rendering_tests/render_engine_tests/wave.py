@@ -1,6 +1,7 @@
 import pathlib
 import sys
-
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygame")
 # Get the package directory
 package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 

@@ -15,7 +15,7 @@ from core.light.point import PointLight
 from core.material.lighted.phong import PhongMaterial
 from core.textures.texture import Texture
 from core.meshes.mesh import Mesh
-from tools.point_light_tool import PointLightTool
+from core.tools.point_light_tool import PointLightTool
 from math import sin,cos
 from core.geometry.simple2D.rectangle import Rectangle
 

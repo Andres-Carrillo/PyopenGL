@@ -4,8 +4,8 @@ from core.light.light import Light
 from core.rendering.render_target import RenderTarget
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
 from core.light.shadow import Shadow
-from tools.bbox import BBoxMesh
-from tools.grid import GridTool
+from core.tools.bbox import BBoxMesh
+from core.tools.grid import GridTool
 from core.material.basic.point import PointMaterial
 from core.material.basic.line import LineMaterial
 from core.geometry.simple3D.box import BoxGeometry

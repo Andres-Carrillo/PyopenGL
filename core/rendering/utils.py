@@ -1,8 +1,8 @@
 import numpy as np
 from core.utils.math import Math as RenderMath
 import glfw.GLFW as GLFW_CONSTANTS
-from tools.point_light_tool import PointLightTool
-from tools.directional_light_tool import DirectionalLightTool
+from core.tools.point_light_tool import PointLightTool
+from core.tools.directional_light_tool import DirectionalLightTool
 
 def rodrigues_rotation_matrix(axis, theta):
     """

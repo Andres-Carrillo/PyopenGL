@@ -15,7 +15,7 @@ from core.material.basic.texture import TextureMaterial
 from core.geometry.simple2D.rectangle import  Rectangle
 from core.geometry.simple3D.sphere import Sphere
 from core.meshes.mesh import Mesh  
-from tools.post_processor import Postprocessor
+from core.tools.post_processor import Postprocessor
 from core.effects.blur_horizontal import HBlurEffect
 from core.effects.blur_vertical import VBlurEffect
 from core.effects.additive_blend import AdditiveBlendEffect

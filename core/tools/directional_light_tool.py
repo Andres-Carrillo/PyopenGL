@@ -1,4 +1,4 @@
-from tools.grid import GridTool
+from core.tools.grid import GridTool
 from core.light.directional import DirectionalLight
 
 

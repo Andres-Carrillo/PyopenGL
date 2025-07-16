@@ -1,9 +1,8 @@
 from core.object3D import Object3D
-import OpenGL.GL as gl
-from core.geometry.simple3D.sphere import Sphere
 from core.material.basic.basic import BasicMaterial
 from core.material.lighted.flat import FlatMaterial
 from core.geometry.geometry import Geometry
+import OpenGL.GL as gl
 
 class Mesh(Object3D):
 

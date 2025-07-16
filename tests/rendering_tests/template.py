@@ -12,9 +12,9 @@ from core.base import Base
 from core.rendering.renderer import Renderer
 from core.rendering.scene import Scene
 from core.rendering.camera import Camera
-from tools.grid import GridTool
+from core.tools.grid import GridTool
 from math import pi
-from tools.movement_rig import MovementRig
+from core.tools.movement_rig import MovementRig
 
 class Test(Base):
 

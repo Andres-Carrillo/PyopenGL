@@ -1,6 +1,5 @@
 import glfw
 import glfw.GLFW as GLFW_CONSTANTS
-from imgui.integrations.glfw import GlfwRenderer
 
 class Input(object):
     def __init__(self) -> None:

@@ -40,12 +40,14 @@ from core.light.directional import DirectionalLight
 from core.light.point import PointLight
 from core.light.ambient import AmbientLight
 from core.light.light import LIGHT_TYPE
-from tools.point_light_tool import PointLightTool
-from tools.directional_light_tool import DirectionalLightTool
+
+# tool imports
+from core.tools.point_light_tool import PointLightTool
+from core.tools.directional_light_tool import DirectionalLightTool
 
 # import shadows
 from core.light.shadow import Shadow
-
+from core.tools.bbox import BBoxMesh
 import random
 
 def draw_mesh_uniform_editor(mesh):
@@ -284,7 +286,7 @@ class MeshEditor:
         # return the menu bounding box for the mesh editor and shader editor
         return [self.menu_bbox, self.shader_editor.menu_bbox]   
 
-from tools.bbox import BBoxMesh
+
 
 class ObjectSpawner: 
     def __init__(self) -> None:

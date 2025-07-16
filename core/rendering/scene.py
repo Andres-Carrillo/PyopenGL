@@ -1,9 +1,9 @@
 from core.object3D import Object3D
 from core.meshes.mesh import Mesh
 import numpy as np
-from tools.grid import GridTool
+from core.tools.grid import GridTool
 from core.utils.math import Math
-from tools.directional_light_tool import DirectionalLightTool
+from core.tools.directional_light_tool import DirectionalLightTool
 
 
 class Scene(Object3D):

@@ -10,9 +10,9 @@ print(package_dir)
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from tools.axes_tool import AxesAid
-from tools.grid import GridTool
-from tools.movement_rig import MovementRig
+from core.tools.axes_tool import AxesAid
+from core.tools.grid import GridTool
+from core.tools.movement_rig import MovementRig
 from math import pi
 from rendering_tests.template import Test
 

@@ -10,9 +10,11 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 
-from core.geometry.simple3D.sphere import Sphere
+from core.geometry.simple2D.rectangle import Rectangle
 
-from rendering_tests.template import Test
+from tests.rendering_tests.template import Test
+
+from core.geometry.simple3D.sphere import Sphere
 from core.light.ambient import AmbientLight
 from core.light.directional import DirectionalLight
 from core.light.point import PointLight
@@ -21,11 +23,10 @@ from core.material.lighted.lambert import LambertMaterial
 from core.material.lighted.flat import FlatMaterial
 from core.textures.texture import Texture
 from core.meshes.mesh import Mesh
-from tools.directional_light_tool import DirectionalLightTool
-from tools.point_light_tool import PointLightTool
+from core.tools.directional_light_tool import DirectionalLightTool
+from core.tools.point_light_tool import PointLightTool
 from math import sin,cos,pi
 from core.material.basic.material import Material
-from core.geometry.simple2D.rectangle import Rectangle
 
 class LightTest(Test):
     def __init__(self):

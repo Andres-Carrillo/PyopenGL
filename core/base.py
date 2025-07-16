@@ -1,21 +1,23 @@
 import glfw
+import OpenGL.GL as gl
+import pygame as pg
+import imgui
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
 from core.utils.input import Input
 from core.utils.timer import Timer
 from core.utils.fps import FPS
-import OpenGL.GL as gl
-import pygame as pg
+
 from core.rendering.scene import Scene
 from core.rendering.renderer import Renderer
-from tools.grid import GridTool
+from core.tools.grid import GridTool
 from core.rendering.camera import Camera
-from tools.movement_rig import MovementRig
+from core.tools.movement_rig import MovementRig
 from math import pi
-import imgui
+
 from imgui.integrations.glfw import GlfwRenderer
-from tools.imgui_tools import MeshEditor
-from tools.imgui_tools import ObjectSpawner
-from tools.imgui_tools import LightSpawner
+from core.tools.imgui_tools import MeshEditor
+from core.tools.imgui_tools import ObjectSpawner
+from core.tools.imgui_tools import LightSpawner
 from core.rendering.utils import drag_object
 from core.utils.math import Math
 
@@ -26,7 +28,7 @@ from core.material.lighted.lambert import LambertMaterial
 from core.glsl.utils import ShaderType
 from core.glsl.utils import edit_light_list,edit_light_summation
 from core.meshes.terrain import InfiniteTerrainManager
-from tools.imgui_tools import TerrainHandler
+from core.tools.imgui_tools import TerrainHandler
 
 """ 
         Base class for all glfw only applications.
