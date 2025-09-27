@@ -1,13 +1,5 @@
 from object3D import Object3D
-import enum
-
-class Components(enum.IntFlag):
-    NONE = 0
-    RIGIDBODY = 1 << 0
-    COLLIDER = 1 << 1
-    MESHRENDERER = 1 << 2
-    CAMERA = 1 << 3
-    LIGHT = 1 << 4
+from core.components.types import Components
 
 class Entity:
     def __init__(self,object3d:Object3D=None):
