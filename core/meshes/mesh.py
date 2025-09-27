@@ -10,7 +10,7 @@ class Mesh(Object3D):
         super().__init__()
         self.geometry = geometry
         self.material = material
-        self.visible = True
+        self.visible = True # this is a micro optimization to avoid processing non-light based meshes when using traditional rasterization
         
         self._init_buffers()
 
@@ -23,6 +23,10 @@ class Mesh(Object3D):
             attrib_obj.associate_variable(self.material.program,var_name)
 
         gl.glBindVertexArray(0)
+
+    @property
+    def light_based(self):
+        return False
 
 
 
