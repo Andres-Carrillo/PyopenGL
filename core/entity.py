@@ -18,7 +18,7 @@ class Entity:
         if component in self.comp_data:
             del self.comp_data[component]
     
-    def get_component_data(self,component:Components):
+    def get_component(self,component:Components):
         return self.comp_data.get(component,None)
     
     def has_component(self,component:Components):
@@ -29,6 +29,7 @@ class Entity:
         
     def get_components(self):
         return [comp for comp in Components if comp != Components.NONE and self.has_component(comp)]
+    
     
     def __str__(self):
         return f"Entity(components={[str(comp) for comp in self.get_components()]})"
