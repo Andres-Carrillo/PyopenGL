@@ -14,8 +14,8 @@ class CollisionSystem:
             for j in range(i + 1, len(collidable)):
                 ent_a = collidable[i]
                 ent_b = collidable[j]
-                collider_a = ent_a.get_component_data(Components.COLLIDER) # gets dictionary with collider info
-                collider_b = ent_b.get_component_data(Components.COLLIDER) # gets dictionary with collider info
+                collider_a = ent_a.get_component(Components.COLLIDER) # gets dictionary with collider info
+                collider_b = ent_b.get_component(Components.COLLIDER) # gets dictionary with collider info
 
                 if CollisionSystem.check_collision((ent_a, collider_a), (ent_b, collider_b)):
                     collisions.append((ent_a, ent_b))
@@ -27,8 +27,8 @@ class CollisionSystem:
     def reslove_collisions(collisions:list):
         for ent_a,ent_b in collisions:
             # simple resolution: just stop their movement
-            physics_a = ent_a.get_component_data(Components.RIGIDBODY)
-            physics_b = ent_b.get_component_data(Components.RIGIDBODY)
+            physics_a = ent_a.get_component(Components.PHYSICS)
+            physics_b = ent_b.get_component(Components.PHYSICS)
             if physics_a:
                 physics_a.velocity = [0,0,0]
             if physics_b:
