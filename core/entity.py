@@ -1,9 +1,9 @@
-from object3D import Object3D
+from core.meshes.mesh import Mesh
 from core.components.types import Components
 
 class Entity:
-    def __init__(self,object3d:Object3D=None):
-        self.object3d = object3d if object3d is not None else Object3D()
+    def __init__(self,mesh:Mesh=None):
+        self.mesh = mesh if mesh is not None else Mesh()
         self.components = Components.NONE
         self.comp_data = {}
 
@@ -36,8 +36,8 @@ class Entity:
     
 
 
-def entity_spawner(Object3D:Object3D=None,components:Components=Components.NONE,comp_data:dict=None):
-    entity = Entity(Object3D)
+def entity_spawner(mesh:Mesh=None,components:Components=Components.NONE,comp_data:dict=None):
+    entity = Entity(mesh)
     entity.components = components
 
     if comp_data is not None:
