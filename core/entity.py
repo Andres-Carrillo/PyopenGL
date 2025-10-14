@@ -7,6 +7,10 @@ class Entity:
         self.components = Components.NONE
         self.comp_data = {}
 
+    @property
+    def _children_list(self):
+        return self.mesh._children_list
+
     def add_component(self,component:Components,data=None):
         self.components |= component
         if data is not None:
