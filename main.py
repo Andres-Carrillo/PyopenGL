@@ -1,4 +1,4 @@
-from core.base import SceneEditor
+from apps.base import SceneEditor
         
 # Run the application
 if __name__ == "__main__":

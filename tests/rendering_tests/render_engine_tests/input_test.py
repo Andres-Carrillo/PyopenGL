@@ -8,7 +8,7 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from core.base import Base
+from apps.base import Base
 from core.utils.openGLUtils import GlUtils
 import glfw.GLFW as GLFW_CONSTANTS
 

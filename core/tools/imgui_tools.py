@@ -50,6 +50,8 @@ from core.light.shadow import Shadow
 from core.tools.bbox import BBoxMesh
 import random
 
+from core.entity import Entity
+
 def draw_mesh_uniform_editor(mesh):
     # display the mesh's current uniforms and allow the user to edit them
     imgui.separator()
@@ -287,118 +289,6 @@ class MeshEditor:
         return [self.menu_bbox, self.shader_editor.menu_bbox]   
 
 
-
-class ObjectSpawner: 
-    def __init__(self) -> None:
-        self._range = None 
-        self._location = None
-        self._material_type = MATERIAL_TYPE.SURFACE.value
-        self._geometry_type = GEOMETRY_TYPE.BOX.value
-        self.show_bbox = False
-        self.lights_in_scene = 0
-
-    def set_range(self, range:list = [-2,2]):
-        self._range = range
-
-    def set_location(self, location:list = [0,0,0]):
-        self._location = location
-
-    def get_object(self):
-        return self._obj
-    
-    def get_bbox(self):
-        if self._obj is not None:
-            bbox = BBoxMesh(self._obj)
-            return bbox.get_bbox()
-        else:
-            return None
-
-    def spawn_object(self):
-        return {
-            "object": self._obj,
-            "bbox": self.get_bbox()
-        }
-
-
-    def show(self):
-        imgui.text("Geometry Type:")
-        imgui.same_line()
-        imgui.text(" Material Type:")
-        imgui.set_next_item_width(100)
-        _,self._geometry_type = imgui.combo("##Geometry Type", self._geometry_type, [str(geo_type) for geo_type in GEOMETRY_TYPE])
-        imgui.same_line()
-        imgui.set_next_item_width(100)
-
-        _,self._material_type = imgui.combo("##Material Type", self._material_type, ["Point", "Line", "Surface", "Flat", "Lambert", "Phong"])
-
-        if imgui.button("Generate Mesh"):
-            geo = self.get_geometry(self._geometry_type)
-            surface_material = self.get_material(self._material_type)
-            self._obj = Mesh(geometry=geo, material=surface_material)
-
-            if self._location is not None:
-                self._obj.set_position(self._location)
-            else:
-                x_pos = random.uniform(-2, 2)
-                y_pos = random.uniform(-2, 2)
-                z_pos = random.uniform(-2, 2)
-                self._obj.set_position([x_pos, y_pos, z_pos])
-        else:
-            self._obj = None
-
-        imgui.same_line()
-        _,self.show_bbox = imgui.checkbox("show BBox", self.show_bbox)
-
-
-    def get_geometry(self,geometry_type):
-        if geometry_type == GEOMETRY_TYPE.BOX.value:
-            return BoxGeometry()
-        elif geometry_type == GEOMETRY_TYPE.SPHERE.value:
-            return Sphere()
-        elif geometry_type == GEOMETRY_TYPE.CYLINDER.value:
-            return Cylinder()
-        elif geometry_type == GEOMETRY_TYPE.PLANE.value:
-            return Plane()
-        elif geometry_type == GEOMETRY_TYPE.CIRCLE.value:
-            return Circle()
-        elif geometry_type == GEOMETRY_TYPE.RECTANGLE.value:
-            return Rectangle()
-        elif geometry_type == GEOMETRY_TYPE.TRIANGLE.value:
-            return Triangle()
-        elif geometry_type == GEOMETRY_TYPE.CONE.value:
-            return Cone()
-        elif geometry_type == GEOMETRY_TYPE.PRISM.value:
-            return Prism()
-        elif geometry_type == GEOMETRY_TYPE.PYRAMID.value:
-            return Pyramid()
-        elif geometry_type == GEOMETRY_TYPE.PENTAGON.value:
-            return Pentagon()
-        elif geometry_type == GEOMETRY_TYPE.HEXAGON.value:
-            return Hexagon()
-        elif geometry_type == GEOMETRY_TYPE.OCTAGON.value:
-            return Octagon()
-        elif geometry_type == GEOMETRY_TYPE.HEPTAGON.value:
-            return Heptagon()
-        elif geometry_type == GEOMETRY_TYPE.QUAD.value:
-            return Quad()
-        elif geometry_type == GEOMETRY_TYPE.TRIANGLE.value:
-            return Triangle()
-        
-    def get_material(self,material_type):
-        if material_type == 0:
-            return PointMaterial()
-        elif material_type == 1:
-            return LineMaterial()
-        elif material_type == 2:
-            return SurfaceMaterial()
-        elif material_type == 3:
-            return FlatMaterial(number_of_lights=self.lights_in_scene)
-        elif material_type == 4:
-            return LambertMaterial(number_of_lights=self.lights_in_scene)
-        elif material_type == 5:
-            return PhongMaterial(number_of_lights=self.lights_in_scene)
-        else:
-            raise ValueError(f"Unknown material type: {material_type}")
         
 class LightSpawner:
     def __init__(self):

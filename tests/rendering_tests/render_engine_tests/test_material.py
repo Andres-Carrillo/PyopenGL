@@ -9,7 +9,7 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 
-from core.base import Base
+from apps.base import Base
 from core.material.basic.surface import SurfaceMaterial
 from core.geometry.simple3D.box import BoxGeometry
 from core.meshes.mesh import Mesh

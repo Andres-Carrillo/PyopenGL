@@ -16,10 +16,10 @@ from core.meshes.mesh import Mesh
 from core.geometry.simple3D.box import BoxGeometry
 from core.material.basic.surface import SurfaceMaterial
 # from core.input import Input
-from core.base import SceneEditor
+from apps.base import SceneEditor
 from core.meshes.terrain import Terrain, InfiniteTerrainManager
 
-from core.base import BaseApp
+from apps.base import BaseApp
 
 # Run the application
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ from core.meshes.terrain import Terrain
 
 # import imgui
 # from material.phong import PhongMaterial
-from core.base import BaseApp
+from apps.base import BaseApp
 
 # Run the application
 if __name__ == "__main__":

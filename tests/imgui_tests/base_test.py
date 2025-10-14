@@ -14,7 +14,7 @@ import glfw
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 import OpenGL.GL as gl
-from core.base import ImGuiBase
+from apps.base import ImGuiBase
 import numpy as np
 
 from core.utils.openGLUtils import GlUtils
