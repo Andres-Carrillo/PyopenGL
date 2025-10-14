@@ -80,12 +80,10 @@ class LightSpawnerView:
         _,self._location = imgui.input_float3("##Location", *self._location)
 
 
-
-
 class LightSpawnerController:
-    def __init__(self, light_factory:LightFactory):
+    def __init__(self, light_factory:LightFactory,light_view:LightSpawnerView):
         self._factory = light_factory
-        self._view = LightSpawnerView(light_factory)
+        self._view = light_view
         self._lights = []
         self.use_lights = True
 
@@ -111,3 +109,13 @@ class LightSpawnerController:
         self._lights.append(light_entity)
         
         return light_entity
+    
+
+    def update(self):
+        self._view.render()
+
+        if imgui.button("Add Light"):
+            return self.spawn_light()
+
+
+        return None
