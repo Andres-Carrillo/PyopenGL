@@ -4,6 +4,8 @@ import numpy as np
 from core.tools.grid import GridTool
 from core.utils.math import Math
 from core.tools.directional_light_tool import DirectionalLightTool
+from core.entity import Entity
+from core.components.types import Components
 
 
 class Scene(Object3D):
@@ -20,7 +22,10 @@ class Scene(Object3D):
 
         mesh_list = self.get_visible_objects()
         for mesh in mesh_list:
-            
+            if isinstance(mesh,Entity):
+                if not mesh.has_component(Components.MESH):
+                    continue
+                mesh = mesh.get_component(Components.MESH).mesh
             if not mesh.visible or isinstance(mesh,GridTool):
                 # directional tool is a discendant of grid tool so this check is needed
                 if not isinstance(mesh,DirectionalLightTool) :
@@ -37,8 +42,9 @@ class Scene(Object3D):
         :return: List of visible objects.
         """
         obj_list = self.descendant_list
-        viewable_filter = lambda x: isinstance(x,Mesh) and x.visible
+        viewable_filter = lambda x: isinstance(x,Mesh) and x.visible or (isinstance(x,Entity) and x.has_component(Components.MESH) and x.get_component(Components.MESH).mesh.visible)
         viewable_meshes = list(filter(viewable_filter,obj_list))
+
 
         return viewable_meshes
 
