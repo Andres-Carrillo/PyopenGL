@@ -1,15 +1,12 @@
 from core.meshes.mesh import Mesh
 from core.components.types import Components
+from core. object3D import Object3D
 
-class Entity:
-    def __init__(self,mesh:Mesh=None):
-        self.mesh = mesh if mesh is not None else Mesh()
+class Entity(Object3D):
+    def __init__(self):
+        super().__init__()
         self.components = Components.NONE
         self.comp_data = {}
-
-    @property
-    def _children_list(self):
-        return self.mesh._children_list
 
     def add_component(self,component:Components,data=None):
         self.components |= component
