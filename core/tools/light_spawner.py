@@ -46,6 +46,8 @@ class LightSpawnerView:
         self._type = LIGHT_TYPE.POINT.value
         self._color = [1.0, 1.0, 1.0]
         self._location = [0.0, 5.0, 0.0]
+        self._show_helper = True
+        self._use_lights = True
 
 
     def render(self):
@@ -56,7 +58,7 @@ class LightSpawnerView:
         imgui.set_next_item_width(100) # Set width for the combo box
 
         # Combo box for light type selection populated from LIGHT_TYPE enum
-        _,self._type = imgui.combo("##Light Type", self._light_type, 
+        _,self._type = imgui.combo("##Light Type", self._type, 
                                         [str(light_type) for light_type in LIGHT_TYPE])
         
 
@@ -71,7 +73,7 @@ class LightSpawnerView:
         imgui.same_line()
         _,self._show_helper = imgui.checkbox("Show Helper", self._show_helper)
         imgui.same_line()
-        _,self.use_lights = imgui.checkbox("Use Lights", self.use_lights)
+        _,self.use_lights = imgui.checkbox("Use Lights", self._use_lights)
 
         #options for  light location
         imgui.text("Location:")
@@ -94,14 +96,26 @@ class LightSpawnerController:
     @property
     def lights(self):
         return self._lights
+    
+    @property
+    def count(self):
+        return len(self._lights)
+    
+    @property
+    def use_lights(self):
+        return self._use_lights
+    
+    @use_lights.setter
+    def use_lights(self, value:bool):
+        self._use_lights = value
 
     def spawn_light(self):
         light_entity = self._factory.create(
-            light_type=self._view.type,
-            location=self._view.location,
-            color=self._view.color,
+            light_type=self._view._type,
+            location=self._view._location,
+            color=self._view._color,
             intensity=1.0,
-            show_helper=self._view.show_helper,
+            show_helper=self._view._show_helper,
             attenuation=[1.0, 0.0, 0.1],
             direction=[-1.0, -1.0, -1.0]
         )
@@ -111,7 +125,7 @@ class LightSpawnerController:
         return light_entity
     
 
-    def update(self):
+    def run(self):
         self._view.render()
 
         if imgui.button("Add Light"):
