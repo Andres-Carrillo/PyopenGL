@@ -11,6 +11,9 @@ from core.material.basic.line import LineMaterial
 from core.geometry.simple3D.box import BoxGeometry
 from core.geometry.simple3D.sphere import Sphere
 from core.meshes.terrain import InfiniteTerrainManager
+from core.rendering.scene import Scene
+from core.entity import Entity
+from core.components.types import Components
 
 class Renderer(object):
     def __init__(self,clear_color:list = [0.0, 0.0, 0.],window_width:int=SCREEN_WIDTH,window_height:int = SCREEN_HEIGHT,use_lights=False) -> None:
@@ -37,9 +40,12 @@ class Renderer(object):
         self._use_lights = not self._use_lights
 
 
-    def render(self,scene:object,camera:object,clear_color:bool = True,clear_depth:bool = True,
+    def render(self,scene:Scene,camera:object,clear_color:bool = True,clear_depth:bool = True,
                render_target:RenderTarget=None,terrain_manager:InfiniteTerrainManager=None) -> None:
-        
+
+
+        if not isinstance(scene,scene.__class__):
+            raise TypeError("scene must be an instance of Scene class")
         # filter out only the visible meshes in the scene
         obj_list = scene.descendant_list
 
@@ -164,6 +170,9 @@ class Renderer(object):
         camera.update_view_matrix()
 
         for mesh in viewable_meshes:
+            if isinstance(mesh,Entity):
+                mesh = mesh.get_component(Components.MESH).mesh
+
             self._render_mesh(mesh,camera,light_list)
 
 
