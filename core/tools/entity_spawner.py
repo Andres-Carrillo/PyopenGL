@@ -132,8 +132,6 @@ class ObjectFactory:
         entity = Entity()
         entity.add_component(Components.MESH, MeshComponent(mesh=mesh))
 
-        print("Created object at location:", mesh.global_position)
-
         return entity
 
     def create_geometry(self,geometry_type:int):
