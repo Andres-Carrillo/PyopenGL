@@ -33,7 +33,8 @@ from core.material.basic.texture import TextureMaterial
 
 import random
 from core.entity import Entity
-
+from core.components.mesh import MeshComponent
+from core.components.types import Components
 
 MATERIAL_TYPE_MAP = {
         MATERIAL_TYPE.POINT.value: PointMaterial,
@@ -99,7 +100,7 @@ class ObjectSpawnerView:
         
         imgui.same_line()
         imgui.set_next_item_width(100)
-        _,self._material_type = imgui.combo("##Material Type", self._material_type, ["Point", "Line", "Surface", "Flat", "Lambert", "Phong"])
+        _,self._material_type = imgui.combo("##Material Type", self._material_type, [str(mat_type) for mat_type in MATERIAL_TYPE])
 
         imgui.text("Location:")
         imgui.same_line()
@@ -120,6 +121,7 @@ class ObjectFactory:
         geometry = self.create_geometry(geometry_type)
         material = self.create_material(material_type)
         mesh = Mesh(geometry=geometry, material=material)
+        mesh.visible = True
 
         if  location[0] == 0.0 and location[1] == 0.0 and location[2] == 0.0:
             random_location = [random.uniform(self._range[0],self._range[1]) for _ in range(3)]
@@ -127,8 +129,12 @@ class ObjectFactory:
         else:
             mesh.set_position(location)
 
-        return Entity(mesh=mesh)
-    
+        entity = Entity()
+        entity.add_component(Components.MESH, MeshComponent(mesh=mesh))
+
+        print("Created object at location:", mesh.global_position)
+
+        return entity
 
     def create_geometry(self,geometry_type:int):
         try:
@@ -145,7 +151,9 @@ class ObjectFactory:
         except KeyError:
             raise KeyError("Invalid material type")
 
-        return MATERIAL_TYPE_MAP[material_type]()
+        material = MATERIAL_TYPE_MAP[material_type]()
+
+        return material
 
 
 # Controller For Object Spawner
