@@ -14,9 +14,12 @@ from core.meshes.terrain import InfiniteTerrainManager
 from core.tools.imgui_tools import TerrainHandler
 
 from core.tools.entity_spawner import SpawnController, ObjectFactory, ObjectSpawnerView
+from core.tools.light_spawner import  LightFactory, LightSpawnerController,LightSpawnerView
 from apps.base import BaseApp
 import imgui
 import glfw
+from core.components.types import Components
+from core.entity import Entity
 
 """
     SceneEditor class for creating and editing 3D objects in a scene.
@@ -35,7 +38,7 @@ class SceneEditor(BaseApp):
         self.menu_deadzones = []
         self.mesh_editor = MeshEditor()
         self.obj_maker = SpawnController(ObjectFactory(), ObjectSpawnerView())
-        self.light_maker = LightSpawner()
+        self.light_maker = LightSpawnerController(LightFactory(), LightSpawnerView(light_factory=LightFactory()))
 
         if  generate_terrain__at_start:
             # self.terrain_manager = InfiniteTerrainManager(chunk_size=100, view_distance=12, u_resolution=5, v_resolution=5)
@@ -60,7 +63,7 @@ class SceneEditor(BaseApp):
                 obj = self.obj_maker.run()
                 # if the user has created an object, add it to the scene
                 if obj is not None:
-                    self.scene.add(obj.mesh)
+                    self.scene.add(obj)
                 
                 # handle mesh editing
                 if self._is_targetting_object and self.selected_mesh is not None:
@@ -78,11 +81,11 @@ class SceneEditor(BaseApp):
 
             ################### Lights tab ###################
             if imgui.begin_tab_item("Lights").selected:
-                self.light_maker.show()
+                light_entity = self.light_maker.run()
 
                 # if a new light is created, add it to the scene    
-                if self.light_maker.light is not None:
-                    self.scene.add(self.light_maker.light)
+                if light_entity is not None:
+                    self.scene.add(light_entity)
                     #update the light count in the scene
                     self.obj_maker.lights_in_scene = self.light_maker.count
                     self._update_lighted_meshes()
@@ -111,7 +114,7 @@ class SceneEditor(BaseApp):
             imgui.end_tab_bar()
 
         # update the renderer so it knows whether to use the lights in the scene or not
-        if self.light_maker.use_lights_in_scene:
+        if self.light_maker.use_lights:
             self.renderer.enable_lights = True
         else:
             self.renderer.enable_lights = False
@@ -150,6 +153,8 @@ class SceneEditor(BaseApp):
         visible_meshes = self.scene.get_visible_objects()
 
         for mesh in visible_meshes:
+            if isinstance(mesh,Entity):
+                mesh = mesh.get_component(Components.MESH).mesh
             if isinstance(mesh.material, FlatMaterial):
                edit_light_list(mesh.material, self.light_maker.count,ShaderType.VERTEX)
                edit_light_summation(mesh.material, self.light_maker.count,ShaderType.VERTEX)
