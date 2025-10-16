@@ -2,6 +2,7 @@ from core.object3D import Object3D
 from core.meshes.mesh import Mesh
 import numpy as np
 from core.tools.grid import GridTool
+from core.tools.point_light_tool import PointLightTool
 from core.utils.math import Math
 from core.tools.directional_light_tool import DirectionalLightTool
 from core.entity import Entity
@@ -22,10 +23,18 @@ class Scene(Object3D):
 
         mesh_list = self.get_visible_objects()
         for mesh in mesh_list:
+            if isinstance(mesh,PointLightTool):
+                if mesh.geometry.intersection_test(normalized_ray,camera.global_position,mesh.global_matrix):
+                    return mesh
+            
             if isinstance(mesh,Entity):
+                
+
                 if not mesh.has_component(Components.MESH):
                     continue
                 mesh = mesh.get_component(Components.MESH).mesh
+
+                # avoid picking invisible objects or helper objects
             if not mesh.visible or isinstance(mesh,GridTool):
                 # directional tool is a discendant of grid tool so this check is needed
                 if not isinstance(mesh,DirectionalLightTool) :
