@@ -115,6 +115,17 @@ class ObjectFactory:
         self._location = [0.0, 0.0, 0.0]
         self._material_type = MATERIAL_TYPE.SURFACE.value
         self._geometry_type = GEOMETRY_TYPE.BOX.value
+        self._light_count = 0
+
+    @property
+    def light_count(self):
+        return self._light_count
+    
+    @light_count.setter
+    def light_count(self, value:int):
+        if value < 0:
+            raise ValueError("Light count must be non-negative")
+        self._light_count = value
     
 
     def create_object(self,geometry_type:int,material_type:int,location:list[float] = None):
@@ -149,7 +160,13 @@ class ObjectFactory:
         except KeyError:
             raise KeyError("Invalid material type")
 
-        material = MATERIAL_TYPE_MAP[material_type]()
+        material = MATERIAL_TYPE_MAP[material_type]
+
+        if material_type == MATERIAL_TYPE.FLAT.value or material_type == MATERIAL_TYPE.LAMBERT.value or material_type == MATERIAL_TYPE.PHONG.value:
+            material = material(number_of_lights=self._light_count)
+            print("Creating lighted material with", self._light_count, "lights")
+        else:
+            material = material()
 
         return material
 
