@@ -41,6 +41,9 @@ def edit_light_list(material:object,number_of_lights:int,shader:ShaderType = Sha
         else:
             material.fragment_shader = code
 
+
+        print("Updated shader code:\n", code)  
+
         # if the shader code is valid, return True
         return True
 
