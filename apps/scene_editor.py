@@ -70,13 +70,6 @@ class SceneEditor(BaseApp):
                     self.mesh_editor.show()
                     self.disable_camera_rig = True
 
-                # # check if the use wants to display bounding boxes
-                # if self.obj_maker.show_bbox:
-                #     self.draw_bbox = True
-                #     self.renderer.enable_bound_box()
-                # else:
-                #     self.draw_bbox = False
-                #     self.renderer.disable_bound_box()
                 imgui.end_tab_item()
 
             ################### Lights tab ###################
@@ -85,9 +78,10 @@ class SceneEditor(BaseApp):
 
                 # if a new light is created, add it to the scene    
                 if light_entity is not None:
+                    self.scene.add(light_entity.get_component(Components.LIGHT).light_object.children_list[0]) # add the light helper to the scene
                     self.scene.add(light_entity)
                     #update the light count in the scene
-                    self.obj_maker.lights_in_scene = self.light_maker.count
+                    self.obj_maker.model.light_count = self.light_maker.count
                     self._update_lighted_meshes()
 
                 imgui.end_tab_item()
