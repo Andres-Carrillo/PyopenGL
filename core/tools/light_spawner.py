@@ -27,9 +27,14 @@ class LightFactory:
         match light_type:
             case LIGHT_TYPE.POINT.value:
                 light = PointLight(color=color, position=location, attenuation=attenuation, max_distance=325)
+                light_tool = PointLightTool(light)
+                light.add(light_tool)
 
             case LIGHT_TYPE.DIRECTIONAL.value:
                 light = DirectionalLight(color=color, direction=direction)
+                light_tool = DirectionalLightTool(light)
+                light.add(light_tool)
+                
 
             case LIGHT_TYPE.AMBIENT.value:
                 light = AmbientLight(color=color, attenuation=attenuation)
@@ -59,7 +64,7 @@ class LightSpawnerView:
 
         # Combo box for light type selection populated from LIGHT_TYPE enum
         _,self._type = imgui.combo("##Light Type", self._type, 
-                                        [str(light_type) for light_type in LIGHT_TYPE])
+                                        [str(light_type.name) for light_type in LIGHT_TYPE])
         
 
         # Color picker for light color
