@@ -77,9 +77,11 @@ def drag_object(mouse_position, mesh, camera,width,height,input_handler):
         plane_normal = np.array([0, 0, 1])
     
     new_pos = ray_plane_intersection(ray_origin, ray_direction, plane_point, plane_normal)
+
     
     if new_pos is not None:
             if isinstance(mesh,PointLightTool) or isinstance(mesh,DirectionalLightTool):
                 mesh.light_reference.set_position(new_pos)
-            else:
-                mesh.set_position(new_pos)
+        
+            
+            mesh.set_position(new_pos)
