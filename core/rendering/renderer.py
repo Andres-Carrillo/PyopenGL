@@ -49,12 +49,14 @@ class Renderer(object):
         # filter out only the visible meshes in the scene
         obj_list = scene.descendant_list
 
+        
+
         viewable_meshes = scene.get_visible_objects()
 
         # filter out only the lights in the scene
-        light_filter = lambda x: isinstance(x,Light)
+        light_filter = lambda x: isinstance(x,Entity) and x.has_component(Components.LIGHT)
         light_list = list(filter(light_filter,obj_list))
-
+       
         self._update_viewport(render_target,clear_color,clear_depth)
 
         # handle shadows
@@ -156,6 +158,7 @@ class Renderer(object):
     def _render_meshes(self,camera,viewable_meshes,light_list,terrain_manager:InfiniteTerrainManager=None):
         # print("terrain manager:", terrain_manager)
         # if terrain manager is provided, update the terrain chunks
+        # print("light list in render meshes:", light_list)
         if terrain_manager is not None:
             terrain_manager.update(camera.global_position)
 
@@ -178,6 +181,7 @@ class Renderer(object):
 
 
     def _render_mesh(self,mesh:Mesh,camera,light_list):
+            # print("light list in render mesh:", light_list)
             # install the program for the mesh
             gl.glUseProgram(mesh.material.program)
             # bind vertex array object for the mesh
@@ -193,6 +197,7 @@ class Renderer(object):
             # update the projection matrix to match the camera
             mesh.material.uniforms["projection_matrix"].data = camera.projection_matrix
 
+            # print("self._use_lights:", self._use_lights)
             # =========== Handle lights if any exist ==============
             if self._use_lights:
                 # if the current mesh has a light material, update the light uniforms
@@ -206,6 +211,8 @@ class Renderer(object):
                         light_inst = light_list[light_n] # get the light instance from the list
                 
                         #update the light uniforms in the material incase the light has changed
+                        # print("light data:",mesh.material.uniforms[light_name].data)
+                        # print("updating light:", light_name, "with data:", light_inst)
                         mesh.material.uniforms[light_name].data = light_inst
 
             # check if the mesh uses specular lighting
