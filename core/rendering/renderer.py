@@ -197,23 +197,11 @@ class Renderer(object):
             # update the projection matrix to match the camera
             mesh.material.uniforms["projection_matrix"].data = camera.projection_matrix
 
-            # print("self._use_lights:", self._use_lights)
             # =========== Handle lights if any exist ==============
             if self._use_lights:
                 # if the current mesh has a light material, update the light uniforms
-                if "light_0" in mesh.material.uniforms.keys():
-                
-                    number_of_lights = len(light_list) # number of lights in the scene
-                  
-                    for light_n in range(number_of_lights):
-                        # check if the light exists in the material
-                        light_name = "light_" + str(light_n) # figure out the name of the light
-                        light_inst = light_list[light_n] # get the light instance from the list
-                
-                        #update the light uniforms in the material incase the light has changed
-                        # print("light data:",mesh.material.uniforms[light_name].data)
-                        # print("updating light:", light_name, "with data:", light_inst)
-                        mesh.material.uniforms[light_name].data = light_inst
+                if "light_0" in mesh.material.uniforms.keys():                   
+                    self._update_light_uniforms(mesh,light_list)
 
             # check if the mesh uses specular lighting
             if "view_position" in mesh.material.uniforms.keys():
@@ -225,10 +213,9 @@ class Renderer(object):
                 mesh.material.uniforms["shadow_obj"].data = self.shadow_object  
 
             # ================== update the uniforms for the mesh stored in the material ==================
-            for var_name,uniform_obj in mesh.material.uniforms.items():
+            for _,uniform_obj in mesh.material.uniforms.items():
                 if uniform_obj.data is not None:
                     uniform_obj.upload_data()
-
 
             #update the render settings for the material
             mesh.material.update_render_settings()
@@ -240,6 +227,21 @@ class Renderer(object):
             gl.glBindVertexArray(0)
             # unbind the program
             gl.glUseProgram(0)
+
+
+    def _update_light_uniforms(self,mesh:Mesh,light_list):
+        number_of_lights = len(light_list) # number of lights in the scene
+                  
+        for light_n in range(number_of_lights):
+            
+            light_name = "light_" + str(light_n) # figure out the name of the light
+            
+            # get light instance from the light list
+            light_inst = light_list[light_n].get_component(Components.LIGHT).light_object
+
+            # update the light uniforms in the material incase the light has changed
+            mesh.material.uniforms[light_name].data = light_inst
+
 
     def _update_viewport(self,render_target:RenderTarget,clear_color:bool = True,clear_depth:bool = True):
         # set the viewport to the size of the window
