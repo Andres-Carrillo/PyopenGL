@@ -9,7 +9,6 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from apps.base import MVCApp
 from apps.scene_editor import SceneEditorMVCApp
 
 app = SceneEditorMVCApp()
