@@ -67,55 +67,16 @@ GEOMETRY_TYPE_MAP = {
     }
 
 
-# View For Object Spawner
-class ObjectSpawnerView:
-    def __init__(self):
-        self._geometry_type = GEOMETRY_TYPE.BOX.value
-        self._material_type = MATERIAL_TYPE.SURFACE.value
-        self._location = [0.0, 0.0, 0.0]
-    
-    @property
-    def geometry_type(self):
-        return self._geometry_type
-
-    @property
-    def material_type(self):
-        return self._material_type
-    
-    @property
-    def location(self):
-        return self._location
-    
-
-    def render(self):
-        #   Title:
-        imgui.text("Geometry Type:")
-        imgui.same_line()
-        imgui.text(" Material Type:")
-
-        # Combos
-        imgui.set_next_item_width(100)
-        _,self._geometry_type = imgui.combo("##Geometry Type", self._geometry_type, 
-                                            [str(geo_type) for geo_type in GEOMETRY_TYPE])
-        
-        imgui.same_line()
-        imgui.set_next_item_width(100)
-        _,self._material_type = imgui.combo("##Material Type", self._material_type, [str(mat_type) for mat_type in MATERIAL_TYPE])
-
-        imgui.text("Location:")
-        imgui.same_line()
-        imgui.set_next_item_width(150)
-        _,self._location = imgui.input_float3("##Location", *self._location)
-
 
 # Model For Object Spawner
-class ObjectFactory:
+class ObjectSpawnerModel:
     def __init__(self) -> None:
         self._range = [-2,2]
-        self._location = [0.0, 0.0, 0.0]
-        self._material_type = MATERIAL_TYPE.SURFACE.value
-        self._geometry_type = GEOMETRY_TYPE.BOX.value
+        self.location = [0.0, 0.0, 0.0]
         self._light_count = 0
+        self.create_new_object = False
+        self.geometry_type = GEOMETRY_TYPE.BOX.value
+        self.material_type = MATERIAL_TYPE.SURFACE.value
 
     @property
     def light_count(self):
@@ -126,26 +87,70 @@ class ObjectFactory:
         if value < 0:
             raise ValueError("Light count must be non-negative")
         self._light_count = value
+
+# Controller For Object Spawner
+
+# View For Object Spawner
+class ObjectSpawnerView:
+    def __init__(self,model:ObjectSpawnerModel) -> None:
+        self.model = model
     
 
-    def create_object(self,geometry_type:int,material_type:int,location:list[float] = None):
-        geometry = self.create_geometry(geometry_type)
-        material = self.create_material(material_type)
-        mesh = Mesh(geometry=geometry, material=material)
-        mesh.visible = True
+    def render(self):
+        #   Title:
+        imgui.text("Geometry Type:")
+        imgui.same_line()
+        imgui.text(" Material Type:")
 
-        if  location[0] == 0.0 and location[1] == 0.0 and location[2] == 0.0:
-            random_location = [random.uniform(self._range[0],self._range[1]) for _ in range(3)]
-            mesh.set_position(random_location)
-        else:
-            mesh.set_position(location)
+        # Combos
+        imgui.set_next_item_width(100)
+        _,self.model.geometry_type = imgui.combo("##Geometry Type", self.model.geometry_type, 
+                                            [str(geo_type) for geo_type in GEOMETRY_TYPE])
 
-        entity = Entity()
-        entity.add_component(Components.MESH, MeshComponent(mesh=mesh))
+        imgui.same_line()
+        imgui.set_next_item_width(100)
+        _,self.model.material_type = imgui.combo("##Material Type", self.model.material_type, [str(mat_type) for mat_type in MATERIAL_TYPE])
 
-        return entity
+        imgui.text("Location:")
+        imgui.same_line()
+        imgui.set_next_item_width(150)
+        _,self.model.location = imgui.input_float3("##Location", *self.model.location)
 
-    def create_geometry(self,geometry_type:int):
+
+
+class SpawnController:
+    def __init__(self, view:ObjectSpawnerView) -> None:
+        self.model = view.model
+        self.view = view
+    
+    def run(self):
+        if self.model.create_new_object:
+            geometry = self._create_geometry(self.model.geometry_type)
+            material = self._create_material(self.model.material_type)
+            mesh = Mesh(geometry=geometry, material=material)
+            mesh.visible = True
+
+            if  self.model.location[0] == 0.0 and self.model.location[1] == 0.0 and self.model.location[2] == 0.0:
+                random_location = [random.uniform(self.model._range[0],self.model._range[1]) for _ in range(3)]
+                mesh.set_position(random_location)
+            else:
+                mesh.set_position(self.model.location)
+
+            entity = Entity()
+            entity.add_component(Components.MESH, MeshComponent(mesh=mesh))
+
+            self.model.create_new_object = False
+            
+            return entity            
+        
+        return None
+    
+    def render(self):
+        self.view.render()  
+        if imgui.button("Generate Mesh"):
+            self.model.create_new_object = True
+    
+    def _create_geometry(self,geometry_type:int):
         try:
             GEOMETRY_TYPE(geometry_type)
         except KeyError:
@@ -154,7 +159,7 @@ class ObjectFactory:
         return GEOMETRY_TYPE_MAP[geometry_type]()
     
 
-    def create_material(self,material_type:int):
+    def _create_material(self,material_type:int):
         try:
             MATERIAL_TYPE(material_type)
         except KeyError:
@@ -163,33 +168,8 @@ class ObjectFactory:
         material = MATERIAL_TYPE_MAP[material_type]
 
         if material_type == MATERIAL_TYPE.FLAT.value or material_type == MATERIAL_TYPE.LAMBERT.value or material_type == MATERIAL_TYPE.PHONG.value:
-            material = material(number_of_lights=self._light_count)
-            print("Creating lighted material with", self._light_count, "lights")
+            material = material(number_of_lights=self.model.light_count)
         else:
             material = material()
 
         return material
-
-
-# Controller For Object Spawner
-class SpawnController:
-    def __init__(self,model:ObjectFactory,view:ObjectSpawnerView) -> None:
-        self.model = model
-        self.view = view
-
-    def spawn_object(self):
-        obj = self.model.create_object(
-            geometry_type=self.view.geometry_type,
-            material_type=self.view.material_type,
-            location=self.view.location
-        )
-        return obj
-    
-
-    def run(self):
-        self.view.render()
-        if imgui.button("Generate Mesh"):
-            obj = self.spawn_object()
-            return obj
-        
-        return None
