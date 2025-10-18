@@ -19,10 +19,20 @@ import imgui
 
 
 class LightFactory:
+    def __init__(self):
+        self._range = [-2,2]
+        self.location = [0.0, 0.0, 0.0]
+        self._light_count = 0
+        self.create_new_object = False
+        self.type = LIGHT_TYPE.POINT.value
+        self.color = [1.0, 1.0, 1.0]
+        self.show_helper = True
+        self.use_lights = True
 
     def create(self,light_type:int,location:list[float]=None,color:list[float]=None,intensity:float=None,show_helper:bool=None, attenuation:list[float]=None,direction:list[float]=None):
         light = None
         light_entity = Entity()
+
 
         match light_type:
             case LIGHT_TYPE.POINT.value:
@@ -46,14 +56,8 @@ class LightFactory:
 
 
 class LightSpawnerView:
-    def __init__(self, light_factory:LightFactory):
-        self._factory = light_factory
-        self._type = LIGHT_TYPE.POINT.value
-        self._color = [1.0, 1.0, 1.0]
-        self._location = [0.0, 5.0, 0.0]
-        self._show_helper = True
-        self._use_lights = True
-
+    def __init__(self, model:LightFactory):
+        self.model = model
 
     def render(self):
         # The GUI for the light spawner
@@ -63,33 +67,33 @@ class LightSpawnerView:
         imgui.set_next_item_width(100) # Set width for the combo box
 
         # Combo box for light type selection populated from LIGHT_TYPE enum
-        _,self._type = imgui.combo("##Light Type", self._type, 
+        _,self.model.type = imgui.combo("##Light Type", self.model.type, 
                                         [str(light_type.name) for light_type in LIGHT_TYPE])
         
-
         # Color picker for light color
         imgui.text("Color:")
         imgui.same_line()
-
-        _,self._color = imgui.color_edit3("##Color", *self._color)
-
+        imgui.set_next_item_width(150)
+        _,self.model.color = imgui.color_edit3("##Color", *self.model.color)
 
         # checkbox for showing helper
+        _,self.model.show_helper = imgui.checkbox("Show Helper", self.model.show_helper)
         imgui.same_line()
-        _,self._show_helper = imgui.checkbox("Show Helper", self._show_helper)
-        imgui.same_line()
-        _,self.use_lights = imgui.checkbox("Use Lights", self._use_lights)
+        _,self.model.use_lights = imgui.checkbox("Use Lights", self.model.use_lights)
 
         #options for  light location
         imgui.text("Location:")
         imgui.same_line()
         imgui.set_next_item_width(150)
-        _,self._location = imgui.input_float3("##Location", *self._location)
+        _,self.model.location = imgui.input_float3("##Location", *self.model.location)
+
+        if imgui.button("Add Light"):
+            self.model.create_new_object = True
 
 
 class LightSpawnerController:
-    def __init__(self, light_factory:LightFactory,light_view:LightSpawnerView):
-        self._factory = light_factory
+    def __init__(self,light_view:LightSpawnerView):
+        self.model = light_view.model
         self._view = light_view
         self._lights = []
         self.use_lights = True
@@ -115,12 +119,12 @@ class LightSpawnerController:
         self._use_lights = value
 
     def spawn_light(self):
-        light_entity = self._factory.create(
-            light_type=self._view._type,
-            location=self._view._location,
-            color=self._view._color,
+        light_entity = self.view.model.create(
+            light_type=self.view.model.type,
+            location=self.view.model.location,
+            color=self.view.model.color,
             intensity=1.0,
-            show_helper=self._view._show_helper,
+            show_helper=self.view.model.show_helper,
             attenuation=[1.0, 0.0, 0.1],
             direction=[-1.0, -1.0, -1.0]
         )
@@ -131,10 +135,14 @@ class LightSpawnerController:
     
 
     def run(self):
-        self._view.render()
 
-        if imgui.button("Add Light"):
+        if self.model.create_new_object:
+            self.model.create_new_object = False
             return self.spawn_light()
 
 
         return None
+    
+
+    def render(self):
+        self.view.render()
