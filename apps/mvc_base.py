@@ -8,6 +8,7 @@ from core.rendering.camera import Camera
 from core.tools.movement_rig import MovementRig
 from math import pi
 from apps.base import ImGuiBase
+import OpenGL.GL as gl
 
 class AppModel:
     def __init__(self,width= 800,height=600,static_camera=True,display_grid=True):
