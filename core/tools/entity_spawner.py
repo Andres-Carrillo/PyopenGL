@@ -19,6 +19,8 @@ from core.geometry.simple2D.quad import Quad
 from core.geometry.simple3D.cone import Cone
 from core.geometry.simple3D.prism import Prism
 from core.geometry.simple3D.pyramid import Pyramid
+from core.geometry.simple2D.point import PointGeometry
+from core.geometry.simple2D.line_segment import LineSegment
 
 # Material imports
 from core.material.basic.material import MATERIAL_TYPE
@@ -63,7 +65,9 @@ GEOMETRY_TYPE_MAP = {
         GEOMETRY_TYPE.QUAD.value: Quad,
         GEOMETRY_TYPE.CONE.value: Cone,
         GEOMETRY_TYPE.PRISM.value: Prism,
-        GEOMETRY_TYPE.PYRAMID.value: Pyramid
+        GEOMETRY_TYPE.PYRAMID.value: Pyramid,
+        GEOMETRY_TYPE.SINGLE_POINT.value: PointGeometry,
+        GEOMETRY_TYPE.LINE_SEGMENT.value: LineSegment
     }
 
 
@@ -115,7 +119,6 @@ class ObjectSpawnerView:
         imgui.same_line()
         imgui.set_next_item_width(150)
         _,self.model.location = imgui.input_float3("##Location", *self.model.location)
-
 
 
 class SpawnController:
