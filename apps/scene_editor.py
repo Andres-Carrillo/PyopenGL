@@ -13,6 +13,8 @@ from core.tools.imgui_tools import TerrainHandler
 
 from core.tools.entity_spawner import SpawnController, ObjectSpawnerModel, ObjectSpawnerView
 from core.tools.light_spawner import  LightFactory, LightSpawnerController,LightSpawnerView
+from core.tools.mesh_editor import MeshEditorModel, MeshEditorController, MeshEditorView
+from core.tools.shader_editor import ShaderEditorModel, ShaderEditorView, ShaderEditorController
 from apps.mvc_base import AppModel, AppView
 import imgui
 from core.components.types import Components
@@ -27,14 +29,15 @@ class SceneEditorModel(AppModel):
         super().__init__(width=width,height=height,display_grid=display_grid,static_camera=static_camera)
 
         self.selected_mesh = None
-        self.is_targetting_object = False
+        self.is_targeting_object = False
         self.disable_camera_rig = False
         self.draw_bbox = False
         self.update_light_count = False
-        
-        self.mesh_editor = MeshEditor()
+
+        self.mesh_editor = MeshEditorController(MeshEditorView(MeshEditorModel()))
         self.obj_maker = SpawnController(ObjectSpawnerView(model=ObjectSpawnerModel()))
         self.light_maker = LightSpawnerController(LightSpawnerView(model=LightFactory()))
+        self.shader_editor = ShaderEditorController(ShaderEditorView(ShaderEditorModel()))
 
         if  generate_terrain_at_start:
             # self.terrain_manager = InfiniteTerrainManager(chunk_size=100, view_distance=12, u_resolution=5, v_resolution=5)
@@ -61,13 +64,23 @@ class SceneEditorView(AppView):
                 self.model.obj_maker.render()
 
                 # handle mesh editing display
-                if self.model.is_targetting_object and self.model.selected_mesh is not None:
-                    self.model.mesh_editor.show()
+                if self.model.mesh_editor.model.mesh is not None:
+                    self.model.mesh_editor.render()
                 imgui.end_tab_item()
 
             ################### Lights tab ###################
             if imgui.begin_tab_item("Lights").selected:
                 self.model.light_maker.render()
+
+                imgui.end_tab_item()
+
+            
+            ################### Shaders tab ###################
+            if imgui.begin_tab_item("Shaders").selected:
+                if self.model.mesh_editor.model.mesh is not None:
+                    self.model.shader_editor.model.mesh = self.model.mesh_editor.model.mesh
+
+                self.model.shader_editor.render()
 
                 imgui.end_tab_item()
 
@@ -163,13 +176,14 @@ class SceneEditorController:
          if self.input_handler.left_click() or self.input_handler.right_click():
 
             mesh_picked = self.model.scene.pick_object(self.input_handler.mouse_position, self.model.camera,width=self.model.window_width, height=self.model.window_height)
-
             if mesh_picked:
                 self.selected_mesh = mesh_picked
-                self._is_targetting_object = True
+                self.model.is_targeting_object = True
+                self.model.mesh_editor.change_mesh(self.selected_mesh)
+
                 
                 # if the mesh is already selected
-                if self.model.mesh_editor.mesh:
+                if self.model.mesh_editor.model.mesh:
                     # if the user is holding shift, change the mesh
                     if self.input_handler.is_key_pressed(glfw.KEY_LEFT_SHIFT):
                         self.model.mesh_editor.change_mesh(self.selected_mesh)
@@ -177,7 +191,7 @@ class SceneEditorController:
                         self.model.mesh_editor.change_mesh(self.selected_mesh)
 
             if not mesh_picked and self.input_handler.right_click():
-                self._is_targetting_object = False
+                self.model.is_targetting_object = False
                 self.selected_mesh = None
                 self.model.mesh_editor.change_mesh(None)
                 self.disable_camera_rig = False
