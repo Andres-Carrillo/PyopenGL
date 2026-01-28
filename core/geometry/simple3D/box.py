@@ -22,7 +22,7 @@ def generate_box_vertices(width=1, height=1, depth=1):
         return position_data
 
 class BoxGeometry(Geometry):
-    def __init__(self, width=2, height=2, depth=1):
+    def __init__(self, width=1, height=1, depth=1):
         super().__init__()
         self.width = width
         self.height = height

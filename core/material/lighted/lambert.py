@@ -160,6 +160,7 @@ class LambertMaterial(LightMaterial):
         texture_counter = 1
 
         self.add_uniform("base_color", [1.0, 1.0, 1.0], "vec3")
+
         if texture is None:
             self.add_uniform("use_texture", False, "bool")
         else:

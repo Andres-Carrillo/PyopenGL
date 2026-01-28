@@ -18,7 +18,7 @@ from core.tools.mesh_editor import MeshEditorModel, MeshEditorController, MeshEd
 from core.tools.shader_editor import ShaderEditorModel, ShaderEditorView, ShaderEditorController
 from apps.mvc_base import AppModel, AppView
 import imgui
-from core.components.types import Components
+from core.components.types import COMPTYPE
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
 from core.utils.input import Input
 from core.utils.timer import Timer
@@ -62,7 +62,7 @@ class SceneEditorView(AppView):
         open_tab_bar = imgui.begin_tab_bar("MainTabBar")
         if open_tab_bar:
             ################### Main tab ###################
-            if imgui.begin_tab_item("Meshes").selected:
+            if imgui.begin_tab_item("Entities").selected:
                 # # call object maker to allow the user to create objects
                 self.model.obj_maker.render()
 
@@ -97,7 +97,7 @@ class SceneEditorView(AppView):
                 # check if the user has set a terrain manager
                 if self.model.terrain_manager is not None:
                     self.model.terrain_maker.show()
-                    print("terrain manager settings:", self.model.terrain_manager.chunk_size, self.model.terrain_manager.view_distance, self.model.terrain_manager.u_resolution, self.model.terrain_manager.v_resolution)
+                    
                     if self.model.terrain_maker.update_terrain:
                     # if the user has updated the terrain manager, set it in the scene
                         self.model.terrain_manager = self.model.terrain_maker.terrain_manager
@@ -153,7 +153,7 @@ class SceneEditorController:
 
             # if a new light is created, add it to the scene    
             if light_entity is not None:
-                self.model.scene.add(light_entity.get_component(Components.LIGHT).light_object.children_list[0])  # add the light helper to the scene
+                self.model.scene.add(light_entity.get_component(COMPTYPE.LIGHT).light_object.children_list[0])  # add the light helper to the scene
                 self.model.scene.add(light_entity)
                 
                 #update the light count in the scene

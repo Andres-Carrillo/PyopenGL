@@ -6,7 +6,7 @@ from core.tools.point_light_tool import PointLightTool
 from core.utils.math import Math
 from core.tools.directional_light_tool import DirectionalLightTool
 from core.entity import Entity
-from core.components.types import Components
+from core.components.types import COMPTYPE
 
 
 class Scene(Object3D):
@@ -18,8 +18,6 @@ class Scene(Object3D):
     def pick_object(self, mouse_position, camera, width, height):
 
         normalized_ray = Math.ray_cast(mouse_position, camera, width, height)    
-        # Now we have a ray in world coordinates
-        # print(f"Ray in world coordinates: {normalized_ray}")
 
         mesh_list = self.get_visible_objects()
         for mesh in mesh_list:
@@ -30,9 +28,9 @@ class Scene(Object3D):
             if isinstance(mesh,Entity):
                 
 
-                if not mesh.has_component(Components.MESH):
+                if not mesh.has_component(COMPTYPE.MESH):
                     continue
-                mesh = mesh.get_component(Components.MESH).mesh
+                mesh = mesh.get_component(COMPTYPE.MESH).mesh
 
                 # avoid picking invisible objects or helper objects
             if not mesh.visible or isinstance(mesh,GridTool):
@@ -51,7 +49,7 @@ class Scene(Object3D):
         :return: List of visible objects.
         """
         obj_list = self.descendant_list
-        viewable_filter = lambda x: isinstance(x,Mesh) and x.visible or (isinstance(x,Entity) and x.has_component(Components.MESH) and x.get_component(Components.MESH).mesh.visible)
+        viewable_filter = lambda x: isinstance(x,Mesh) and x.visible or (isinstance(x,Entity) and x.has_component(COMPTYPE.MESH) and x.get_component(COMPTYPE.MESH).mesh.visible)
         viewable_meshes = list(filter(viewable_filter,obj_list))
 
 

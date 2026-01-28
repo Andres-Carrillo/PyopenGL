@@ -13,7 +13,7 @@ from core.geometry.simple3D.sphere import Sphere
 from core.meshes.terrain import InfiniteTerrainManager
 from core.rendering.scene import Scene
 from core.entity import Entity
-from core.components.types import Components
+from core.components.types import COMPTYPE
 
 class Renderer(object):
     def __init__(self,clear_color:list = [0.0, 0.0, 0.],window_width:int=SCREEN_WIDTH,window_height:int = SCREEN_HEIGHT,use_lights=False) -> None:
@@ -54,7 +54,7 @@ class Renderer(object):
         viewable_meshes = scene.get_visible_objects()
 
         # filter out only the lights in the scene
-        light_filter = lambda x: isinstance(x,Entity) and x.has_component(Components.LIGHT)
+        light_filter = lambda x: isinstance(x,Entity) and x.has_component(COMPTYPE.LIGHT)
         light_list = list(filter(light_filter,obj_list))
        
         self._update_viewport(render_target,clear_color,clear_depth)
@@ -156,9 +156,7 @@ class Renderer(object):
 
 
     def _render_meshes(self,camera,viewable_meshes,light_list,terrain_manager:InfiniteTerrainManager=None):
-        # print("terrain manager:", terrain_manager)
         # if terrain manager is provided, update the terrain chunks
-        # print("light list in render meshes:", light_list)
         if terrain_manager is not None:
             terrain_manager.update(camera.global_position)
 
@@ -174,14 +172,13 @@ class Renderer(object):
 
         for mesh in viewable_meshes:
             if isinstance(mesh,Entity):
-                mesh = mesh.get_component(Components.MESH).mesh
+                mesh = mesh.get_component(COMPTYPE.MESH).mesh
 
             self._render_mesh(mesh,camera,light_list)
 
 
 
     def _render_mesh(self,mesh:Mesh,camera,light_list):
-            # print("light list in render mesh:", light_list)
             # install the program for the mesh
             gl.glUseProgram(mesh.material.program)
             # bind vertex array object for the mesh
@@ -237,7 +234,7 @@ class Renderer(object):
             light_name = "light_" + str(light_n) # figure out the name of the light
             
             # get light instance from the light list
-            light_inst = light_list[light_n].get_component(Components.LIGHT).light_object
+            light_inst = light_list[light_n].get_component(COMPTYPE.LIGHT).light_object
 
             # update the light uniforms in the material incase the light has changed
             mesh.material.uniforms[light_name].data = light_inst

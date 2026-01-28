@@ -18,38 +18,45 @@ class GEOMETRY_TYPE(Enum):
     CONE = 12
     PRISM = 13
     PYRAMID = 14
+    SINGLE_POINT = 15
+    LINE_SEGMENT = 16
 
     def __str__(self):
-        if self == GEOMETRY_TYPE.CIRCLE:
-            return "circle"
-        elif self == GEOMETRY_TYPE.RECTANGLE:
-            return "rectangle"
-        elif self == GEOMETRY_TYPE.TRIANGLE:
-            return "triangle"
-        elif self == GEOMETRY_TYPE.QUAD:
-            return "quad"
-        elif self == GEOMETRY_TYPE.PENTAGON:
-            return "pentagon"
-        elif self == GEOMETRY_TYPE.HEXAGON:
-            return "hexagon"
-        elif self == GEOMETRY_TYPE.HEPTAGON:
-            return "heptagon"
-        elif self == GEOMETRY_TYPE.OCTAGON:
-            return "octagon"
-        elif self == GEOMETRY_TYPE.BOX:
-            return "box"
-        elif self == GEOMETRY_TYPE.PLANE:
-            return "plane"
-        elif self == GEOMETRY_TYPE.SPHERE:
-            return "sphere"
-        elif self == GEOMETRY_TYPE.CYLINDER:
-            return "cylinder"
-        elif self == GEOMETRY_TYPE.CONE:
-            return "cone"
-        elif self == GEOMETRY_TYPE.PRISM:
-            return "prism"
-        elif self == GEOMETRY_TYPE.PYRAMID:
-            return "pyramid"
+        match self:
+            case GEOMETRY_TYPE.CIRCLE:
+                return "circle"
+            case GEOMETRY_TYPE.RECTANGLE:
+                return "rectangle"
+            case GEOMETRY_TYPE.TRIANGLE:
+                return "triangle"
+            case GEOMETRY_TYPE.QUAD:
+                return "quad"
+            case GEOMETRY_TYPE.PENTAGON:
+                return "pentagon"
+            case GEOMETRY_TYPE.HEXAGON:
+                return "hexagon"
+            case GEOMETRY_TYPE.HEPTAGON:
+                return "heptagon"
+            case GEOMETRY_TYPE.OCTAGON:
+                return "octagon"
+            case GEOMETRY_TYPE.BOX:
+                return "box"
+            case GEOMETRY_TYPE.PLANE:
+                return "plane"
+            case GEOMETRY_TYPE.SPHERE:
+                return "sphere"
+            case GEOMETRY_TYPE.CYLINDER:
+                return "cylinder"
+            case GEOMETRY_TYPE.CONE:
+                return "cone"
+            case GEOMETRY_TYPE.PRISM:
+                return "prism"
+            case GEOMETRY_TYPE.PYRAMID:
+                return "pyramid"
+            case GEOMETRY_TYPE.SINGLE_POINT:
+                return "single point"
+            case GEOMETRY_TYPE.LINE_SEGMENT:
+                return "line segment"
 
 
 class Geometry(object):

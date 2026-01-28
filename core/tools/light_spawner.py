@@ -1,5 +1,5 @@
 # Light imports
-from core.components.types import Components
+from core.components.types import COMPTYPE
 from core.light.directional import DirectionalLight
 from core.light.point import PointLight
 from core.light.ambient import AmbientLight
@@ -14,7 +14,7 @@ from core.light.shadow import Shadow
 from core.tools.bbox import BBoxMesh
 
 from core.entity import Entity  
-from core.components.light import LightComponent
+from core.components.components import LightComponent
 import imgui
 
 
@@ -50,7 +50,7 @@ class LightFactory:
                 light = AmbientLight(color=color, attenuation=attenuation)
 
 
-        light_entity.add_component(Components.LIGHT, LightComponent(light_object=light))
+        light_entity.add_component(COMPTYPE.LIGHT, LightComponent(light_object=light))
 
         return light_entity
 

@@ -62,34 +62,18 @@ class InfiniteTerrainManager:
 
         needed_chunks = set()
 
-        # print(f"Current chunk: ({current_chunk_x}, {current_chunk_z})")
-
-        # print("dx ranges from -view_distance to view_distance:", self.view_distance)
-        # print("dz ranges from -view_distance to view_distance:", self.view_distance)
-
         for dx in range(-self.view_distance,self.view_distance + 1):
-            # print(f"Checking chunk: ({current_chunk_x + dx}, {current_chunk_z})")
+
             for dz in range(-self.view_distance,self.view_distance + 1):
-                # print(f"Checking chunk: ({current_chunk_x + dx}, {current_chunk_z + dz})")
                 needed_chunks.add((current_chunk_x + dx, current_chunk_z + dz))
 
-        # print(f"Needed chunks: {len(needed_chunks)}")
         # Unload chunks that are no longer needed
         for chunk_key in list(self.chunks.keys()):
             if chunk_key not in needed_chunks:
-                # print(f"Unloading chunk: {chunk_key}")
                 self.unload_chunk(chunk_key)
 
-        # Load any new chunks that are needed
-        # print(f"Loading chunks: {len(needed_chunks)}")
-
-        # print(f"view_distance: {self.view_distance}")
-        # print(f"current_chunk: ({current_chunk_x}, {current_chunk_z})")
-        # print(f"needed_chunks: {needed_chunks}")
-        # print(f"currently loaded chunks: {list(self.chunks.keys())}")
         for chunk_key in needed_chunks:
             if chunk_key not in self.chunks:
-                # print(f"Loading chunk: {chunk_key}")
                 self.load_chunk(chunk_key)
 
 

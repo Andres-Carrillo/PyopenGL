@@ -11,11 +11,11 @@ def str_to_matrix(data:str,size:int=4) -> np.ndarray:
     """
     #remove the brackets
     data = data.replace("[","").replace("]","").replace(" ","")
-    print("normalized data: ",data)
+
     #split the string by commas
     # and convert it to a list of floats
     data = data.split(",")
-    print("split data: ",data)
+
     matrix = []
     for i in range(size):
         row = []
@@ -31,8 +31,6 @@ class GlUtils(object):
     
     @staticmethod
     def InitializeShader(code:str, shader_type:int) -> int:
-
-        print("code: ", code)
         # add header to shader code
         shader_code = '#version 420 core' + code
 
@@ -71,7 +69,6 @@ class GlUtils(object):
        
         # handle the case where the shader is a QOpenGLShader
         if GlUtils.IS_QT:
-            print("Using QOpenGLShader")
             vertex_shader_ref = GlUtils.InitializeShader(vertex_shader_code, QOpenGLShader.Vertex)
             fragment_shader_ref = GlUtils.InitializeShader(fragment_shader_code, QOpenGLShader.Fragment)
             # create program
@@ -157,7 +154,6 @@ class GlUtils(object):
         status = gl.glGetProgramiv(program_ref, gl.GL_LINK_STATUS)
         if status != gl.GL_TRUE:
             info_log = gl.glGetProgramInfoLog(program_ref)
-            print("log: ",info_log)
             raise RuntimeError(f"Program linking failed: {info_log}")
         
     @staticmethod
@@ -165,9 +161,6 @@ class GlUtils(object):
         """
         This function takes data_type and data both strings and converts the data to the appropriate type
         """
-
-        print(f"data_type: {data_type}, data: {data}")
-
         if data_type == UNIFORM_TYPE.INT:
             return int(data)
         elif data_type == UNIFORM_TYPE.BOOL:

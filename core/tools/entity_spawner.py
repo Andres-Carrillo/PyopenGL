@@ -35,8 +35,9 @@ from core.material.basic.texture import TextureMaterial
 
 import random
 from core.entity import Entity
-from core.components.mesh import MeshComponent
-from core.components.types import Components
+from core.components.components import MeshComponent, PhysicsBody, CollisionComponent
+from core.components.types import COMPTYPE
+from core.components.collision import CollisionType
 
 MATERIAL_TYPE_MAP = {
         MATERIAL_TYPE.POINT.value: PointMaterial,
@@ -70,7 +71,10 @@ GEOMETRY_TYPE_MAP = {
         GEOMETRY_TYPE.LINE_SEGMENT.value: LineSegment
     }
 
-
+COMPONENT_FLAGS  ={
+    "Physics Component": False,
+    "Collider Component": False,
+}
 
 # Model For Object Spawner
 class ObjectSpawnerModel:
@@ -81,6 +85,19 @@ class ObjectSpawnerModel:
         self.create_new_object = False
         self.geometry_type = GEOMETRY_TYPE.BOX.value
         self.material_type = MATERIAL_TYPE.SURFACE.value
+        
+        # Component flags - which components to add
+        self.component_flags = COMPTYPE.NONE
+        self.add_collider = False
+        
+        # Physics component settings
+        self.physics_mass = 1.0
+        self.physics_restitution = 0.5
+        self.physics_use_gravity = True
+        
+        # Collider component settings
+        self.collider_shape = CollisionType.SPHERE
+        self.collider_radius = 1.0
 
     @property
     def light_count(self):
@@ -91,6 +108,17 @@ class ObjectSpawnerModel:
         if value < 0:
             raise ValueError("Light count must be non-negative")
         self._light_count = value
+    
+    def has_component(self, component: COMPTYPE) -> bool:
+        """Check if a component flag is set."""
+        return (self.component_flags & component) == component
+    
+    def toggle_component(self, component: COMPTYPE, enabled: bool):
+        """Set or clear a component flag."""
+        if enabled:
+            self.component_flags |= component  # Set flag
+        else:
+            self.component_flags &= ~component  # Clear flag
 
 # Controller For Object Spawner
 
@@ -105,6 +133,7 @@ class ObjectSpawnerView:
         imgui.text("Geometry Type:")
         imgui.same_line()
         imgui.text(" Material Type:")
+        
 
         # Combos
         imgui.set_next_item_width(100)
@@ -115,10 +144,41 @@ class ObjectSpawnerView:
         imgui.set_next_item_width(100)
         _,self.model.material_type = imgui.combo("##Material Type", self.model.material_type, [str(mat_type) for mat_type in MATERIAL_TYPE])
 
+
+        imgui.separator()
+        imgui.text("Components:")
+        
+        # Physics Component checkbox
+        has_physics = self.model.has_component(COMPTYPE.PHYSICS)
+        _, has_physics = imgui.checkbox("Physics", has_physics)
+        self.model.toggle_component(COMPTYPE.PHYSICS, has_physics)
+        
+        if has_physics:
+            imgui.indent()
+            imgui.set_next_item_width(120)
+            _, self.model.physics_mass = imgui.slider_float("Mass", self.model.physics_mass, 0.1, 100.0)
+            imgui.set_next_item_width(120)
+            _, self.model.physics_restitution = imgui.slider_float("Bounciness", self.model.physics_restitution, 0.0, 1.0)
+            _, self.model.physics_use_gravity = imgui.checkbox("Use Gravity", self.model.physics_use_gravity)
+            imgui.unindent()
+        
+        # Collider Component checkbox
+        has_collider = self.model.has_component(COMPTYPE.COLLIDER)
+        _, has_collider = imgui.checkbox("Collider", has_collider)
+        self.model.toggle_component(COMPTYPE.COLLIDER, has_collider)
+        
+        if has_collider:
+            imgui.indent()
+            imgui.set_next_item_width(120)
+            _, self.model.collider_radius = imgui.slider_float("Radius", self.model.collider_radius, 0.1, 10.0)
+            imgui.unindent()
+        
+        imgui.separator()
         imgui.text("Location:")
-        imgui.same_line()
         imgui.set_next_item_width(150)
         _,self.model.location = imgui.input_float3("##Location", *self.model.location)
+        
+
 
 
 class SpawnController:
@@ -139,8 +199,26 @@ class SpawnController:
             else:
                 mesh.set_position(self.model.location)
 
+            # Create entity with mesh component (always added)
             entity = Entity()
-            entity.add_component(Components.MESH, MeshComponent(mesh=mesh))
+            entity.add_component(COMPTYPE.MESH, MeshComponent(mesh=mesh))
+            
+            # Add physics component if flag is set
+            if self.model.has_component(COMPTYPE.PHYSICS):
+                physics = PhysicsBody(
+                    mass=self.model.physics_mass,
+                    restitution=self.model.physics_restitution,
+                    use_gravity=self.model.physics_use_gravity
+                )
+                entity.add_component(COMPTYPE.PHYSICS, physics)
+            
+            # Add collider component if flag is set
+            if self.model.has_component(COMPTYPE.COLLIDER):
+                collider = CollisionComponent(
+                    shape=self.model.collider_shape,
+                    radius=self.model.collider_radius
+                )
+                entity.add_component(COMPTYPE.COLLIDER, collider)
 
             self.model.create_new_object = False
             
@@ -150,7 +228,7 @@ class SpawnController:
     
     def render(self):
         self.view.render()  
-        if imgui.button("Generate Mesh"):
+        if imgui.button("Spawn Entity"):
             self.model.create_new_object = True
     
     def _create_geometry(self,geometry_type:int):
