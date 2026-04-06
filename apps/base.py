@@ -336,8 +336,7 @@ class ImGuiBase:
         """
         Cleans up resources and terminates GLFW and ImGui.
         """
-        self.impl.shutdown()
-        imgui.destroy_context()
+        self.impl.shutdown()  # shutdown() already destroys the imgui context internally
         glfw.destroy_window(self.window)
         glfw.terminate()
 

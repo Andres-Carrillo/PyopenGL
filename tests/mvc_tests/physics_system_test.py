@@ -1,63 +1,100 @@
+"""
+Physics Demo — Collision Detection & Response
+
+Two spheres:
+    - Sphere A: falls under gravity from y=5
+    - Sphere B: static at the origin, acts as a floor
+
+Controls:
+    R — reset sphere A to starting position
+    ESC — quit
+
+Run with:
+    python3 tests/mvc_tests/physics_demo.py
+"""
+
 import pathlib
 import sys
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygame")
-# Get the package directory
-package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 
-# Add the package directory into sys.path if necessary
+package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from apps.scene_editor import SceneEditorMVCApp
-from core.systems.collision import CollisionSystem
-# from core.systems.physics import PhysicsSystem
-from core.systems.movement import move
-from core.components.types import COMPTYPE
-from core.entity import Entity
-from core.components.components import VeclocityComponent,CollisionComponent,CollisionType,PhysicsBody
-import random
 import numpy as np
+import glfw
 
-class MoveSystemTestApp(SceneEditorMVCApp):
+from apps.scene_editor import SceneEditorMVCApp
+from core.entity import Entity,make_physics_sphere
+from core.material.lighted.flat import FlatMaterial
+from core.components.types import COMPTYPE
+from core.components.components import PhysicsBody, CollisionComponent
+from core.components.collision import CollisionType
+from core.physics.engine import PhysicsEngine
+from core.systems.collision import CollisionSystem
 
-    def __init__(self, width=800, height=600,title="PhysicsSystemTestApp"):
+
+# Starting position for the falling sphere — reset on R
+SPHERE_A_START = [0.0, 5.0, 0.0]
+SPHERE_RADIUS  = 1.0
+
+
+
+class PhysicsDemo(SceneEditorMVCApp):
+
+    def __init__(self, width=800, height=600, title="Physics Demo — Collision"):
         super().__init__(title=title, width=width, height=height)
+
+        # Position camera to see the action
+        self.model.camera.set_position([0, 3, 12])
+
+        # Physics engine — gravity pulls down
+        self._physics = PhysicsEngine(gravity=[0, -9.81, 0])
+
+        # Collision system
         self._collision_sys = CollisionSystem()
 
+        # --- Sphere A: dynamic, falls under gravity ---
+
+        self._entity_a = make_physics_sphere(SPHERE_A_START, SPHERE_RADIUS, mass=1.0, color=[0.2, 0.6, 1.0])
+
+        # --- Sphere B: static, sits at origin ---
+        self._entity_b = make_physics_sphere([0.0, -1.0, 0.0], SPHERE_RADIUS, mass=0.0,color=[1.0, 0.4, 0.2])
+
+        # Add meshes to the scene so they get rendered
+        self.model.scene.add(self._entity_a)
+        self.model.scene.add(self._entity_b)
+
+        # Only the dynamic sphere needs physics integration
+        self._physics.add_object(self._entity_a)
 
     def update(self):
         super().update()
-        entities_in_scene = self.model.scene.descendant_list
-        collidables = []
-        phys_entities = []
+        dt = self.controller._time_delta
 
-        # print(f"all entites currently in scene: {entities_in_scene}")
+        # 1. Integrate physics (applies gravity, updates velocity + position)
+        self._physics.update(dt)
 
-        for child in entities_in_scene:
-            # if entity.has_component(Components.MOVEABLE):
-            if type(child) is Entity:
-                # print(f"entity components: {child.get_components()}")
-                if child.has_component(COMPTYPE.COLLIDER):
-                    # print(f"enitit {child } has a collider {child.get_component(COMPTYPE.COLLIDER)}")
-                    collidables.append(child)
+        # 2. Detect and resolve collisions
+        self._collision_sys.run([self._entity_a, self._entity_b])
 
-                if child.has_component(COMPTYPE.PHYSICS):
-                    random_force = np.array([random.randint(-1,1),random.randint(-1,1),random.randint(-1,1)])
-                    phys_body = child.get_component(COMPTYPE.PHYSICS)
-    
-                    phys_body.add_force(random_force)
-                    phys_entities.append(child)
-    
+        # # 3. Sync mesh positions to entity positions
+        # self._mesh_a.set_position(self._entity_a.local_position)
+        # self._mesh_b.set_position(self._entity_b.local_position)
 
-        self._collision_sys.run(collidables)
-        move(phys_entities, self.controller._time_delta)
+        # R key — reset the falling sphere
+        if self.input_handler.is_key_pressed(glfw.KEY_R):
+            self._reset()
 
-
-    def render(self):
-        self.controller.render()
+    def _reset(self):
+        """Reset sphere A to its starting position with zero velocity."""
+        self._entity_a.set_position(SPHERE_A_START)
+        phys = self._entity_a.get_component(COMPTYPE.PHYSICS)
+        phys.velocity          = np.zeros(3, dtype=np.float64)
+        phys.force_accumulator = np.zeros(3, dtype=np.float64)
 
 
 if __name__ == '__main__':
-    app = MoveSystemTestApp()
+    app = PhysicsDemo()
     app.run()

@@ -66,9 +66,9 @@ class Object3D:
     @property
     def global_position(self):
         """ Return the global or world position of the object """
-        return [self.global_matrix.item((0, 3)),
+        return np.array([self.global_matrix.item((0, 3)),
                 self.global_matrix.item((1, 3)),
-                self.global_matrix.item((2, 3))]
+                self.global_matrix.item((2, 3))])
 
     @property
     def local_matrix(self):
@@ -97,9 +97,9 @@ class Object3D:
         """
         # The position of an object can be determined from entries in the
         # last column of the transform matrix
-        return [self._matrix.item((0, 3)),
+        return np.array([self._matrix.item((0, 3)),
                 self._matrix.item((1, 3)),
-                self._matrix.item((2, 3))]
+                self._matrix.item((2, 3))])
 
     @property
     def parent(self):

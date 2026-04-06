@@ -1,6 +1,10 @@
 from core.meshes.mesh import Mesh
+from core.meshes.sphere import SphereMesh
 from core.components.types import COMPTYPE
+from core.components.components import PhysicsBody,CollisionComponent,CollisionType
 from core.object3D import Object3D
+from core.geometry.simple3D.sphere import Sphere
+from core.material.lighted.flat import FlatMaterial
 from dataclasses import dataclass
 
 class Entity(Object3D):
@@ -111,3 +115,34 @@ def entity_spawner(components: COMPTYPE = COMPTYPE.NONE, comp_data: dict = None)
 #     entity.add_component(Components.COLLIDER,data={'collision_type':collision_type,'data':data})
 
 
+def make_physics_sphere(position: list, radius:float, mass:float,color:list) -> Entity:
+    """
+        Returns an entity with physics, collision, and mesh entities
+    """
+
+    entity = Entity()
+    entity.set_position(position)
+
+    entity.add_component(COMPTYPE.PHYSICS,PhysicsBody(
+        mass=mass,
+        restitution=0.7,
+        damping=0.001,
+        use_gravity=(mass > 0),
+    ))
+
+    entity.add_component(COMPTYPE.COLLIDER,CollisionComponent(
+        shape=CollisionType.SPHERE,
+        radius=radius
+    ))
+
+    mesh = SphereMesh(
+        geometry=Sphere(radius=radius),
+        material=FlatMaterial(
+            properties={"base_color":color},
+            number_of_lights=0
+        )
+    )
+
+    entity.add(mesh)
+
+    return entity

@@ -1,4 +1,4 @@
-from meshes.mesh import Mesh
+from core.meshes.mesh import Mesh
 from core.geometry.simple3D.sphere import Sphere
 from core.material.basic.basic import BasicMaterial
 from core.material.lighted.flat import FlatMaterial

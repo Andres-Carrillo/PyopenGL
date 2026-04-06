@@ -95,14 +95,13 @@ class PhysicsBody:
     inertia:  float = 0.0
     damping:  float = 0.0
 
-    velocity: list = field(default_factory= lambda: np.array([0.0,0.0,0.0]))
-    acceleration:    list = field(default_factory= lambda:np.array([0.0,0.0,0.0]))
+    velocity: np.ndarray = field(default_factory=lambda: np.array([0.0, 0.0, 0.0], dtype=np.float64))
+    acceleration:    np.ndarray = field(default_factory= lambda:np.array([0.0,0.0,0.0]))
+        # holds forces to act on object
+    force_accumulator: np.ndarray = field(default_factory= lambda: np.array([0.0,0.0,0.0]))
 
     # the coefficent of restitution
     restitution: float = 0.5
-
-    # holds forces to act on object
-    force_accumulator: list = field(default_factory= lambda: np.array([0.0,0.0,0.0]))
 
     use_gravity: bool = True
 
@@ -119,7 +118,9 @@ class PhysicsBody:
         if self.mass == 0.0:
             return
 
-        self.velocity += impulse*self.inverse_mass()
+        #scaling by inverse mass here rather than in impulse:
+        #       makes logic cleaner in the long run
+        self.velocity += impulse*self.inverse_mass() 
 
     def clear_forces(self):
         self.force_accumulator = np.zeros_like(self.force_accumulator)
