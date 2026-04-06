@@ -10,11 +10,11 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from rendering_tests.template import Test
-from core.geometry.simple3D.box import BoxGeometry
+from engine.geometry.simple3D.box import BoxGeometry
 from rendering_tests.template import Test
-from core.meshes.mesh import Mesh
-from core.textures.text import TextTexture
-from core.material.basic.texture import TextureMaterial
+from engine.rendering.meshes.mesh import Mesh
+from engine.rendering.textures.text import TextTexture
+from engine.material.basic.texture import TextureMaterial
 
 class TextureTest(Test):
     def __init__(self):

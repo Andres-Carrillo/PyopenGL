@@ -11,9 +11,9 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 
-from core.meshes.mesh import Mesh
-from core.geometry.geometry import Geometry
-from core.material.basic.surface import SurfaceMaterial
+from engine.rendering.meshes.mesh import Mesh
+from engine.geometry.geometry import Geometry
+from engine.material.basic.surface import SurfaceMaterial
 from rendering_tests.template import Test
 
 

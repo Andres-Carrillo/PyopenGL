@@ -10,11 +10,11 @@ if package_dir not in sys.path:
 
 
 from apps.base import Base
-from core.utils.openGLUtils import GlUtils
-from core.glsl.attribute import Attribute
-from core.glsl.uniform import Uniform
+from engine.utils.openGLUtils import GlUtils
+from engine.glsl.attribute import Attribute
+from engine.glsl.uniform import Uniform
 import OpenGL.GL as gl
-from core.utils.timer import Timer
+from engine.utils.timer import Timer
 import math
 
 class TestUniform(Base):

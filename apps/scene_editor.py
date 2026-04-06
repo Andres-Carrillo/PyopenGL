@@ -1,31 +1,31 @@
 import glfw
-from core.tools.imgui_tools import MeshEditor
-from core.rendering.utils import drag_object
-from core.utils.math import Math
+from engine.tools.imgui_tools import MeshEditor
+from engine.rendering.utils import drag_object
+from engine.utils.math import Math
 
-from core.material.lighted.flat import FlatMaterial
-from core.material.lighted.phong import PhongMaterial
-from core.material.lighted.lambert import LambertMaterial
-from core.material.basic.point import PointMaterial
-from core.glsl.utils import ShaderType
-from core.glsl.utils import edit_light_list,edit_light_summation
-from core.meshes.terrain import InfiniteTerrainManager
-from core.tools.imgui_tools import TerrainHandler
+from engine.material.lighted.flat import FlatMaterial
+from engine.material.lighted.phong import PhongMaterial
+from engine.material.lighted.lambert import LambertMaterial
+from engine.material.basic.point import PointMaterial
+from engine.glsl.utils import ShaderType
+from engine.glsl.utils import edit_light_list,edit_light_summation
+from engine.rendering.meshes.terrain import InfiniteTerrainManager
+from engine.tools.imgui_tools import TerrainHandler
 
-from core.tools.entity_spawner import SpawnController, ObjectSpawnerModel, ObjectSpawnerView
-from core.tools.light_spawner import  LightFactory, LightSpawnerController,LightSpawnerView
-from core.tools.mesh_editor import MeshEditorModel, MeshEditorController, MeshEditorView
-from core.tools.shader_editor import ShaderEditorModel, ShaderEditorView, ShaderEditorController
+from engine.tools.entity_spawner import SpawnController, ObjectSpawnerModel, ObjectSpawnerView
+from engine.tools.light_spawner import  LightFactory, LightSpawnerController,LightSpawnerView
+from engine.tools.mesh_editor import MeshEditorModel, MeshEditorController, MeshEditorView
+from engine.tools.shader_editor import ShaderEditorModel, ShaderEditorView, ShaderEditorController
 from apps.mvc_base import AppModel, AppView
 import imgui
-from core.components.types import COMPTYPE
+from engine.ecs.components.types import COMPTYPE
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
-from core.utils.input import Input
-from core.utils.timer import Timer
+from engine.utils.input import Input
+from engine.utils.timer import Timer
 import OpenGL.GL as gl
 from apps.base import ImGuiBase
-from core.meshes.mesh import Mesh
-from core.geometry.simple2D.point import PointGeometry
+from engine.rendering.meshes.mesh import Mesh
+from engine.geometry.simple2D.point import PointGeometry
 
 class SceneEditorModel(AppModel):
     def __init__(self,width=SCREEN_WIDTH,height=SCREEN_HEIGHT,display_grid=True,static_camera=False,generate_terrain_at_start=False):

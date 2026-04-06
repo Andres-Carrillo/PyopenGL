@@ -10,15 +10,15 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from rendering_tests.template import Test
-from core.textures.texture import Texture
-from core.material.basic.texture import TextureMaterial
-from core.geometry.simple2D.rectangle import  Rectangle
-from core.geometry.simple3D.sphere import Sphere
-from core.meshes.mesh import Mesh  
-from core.rendering.render_target import RenderTarget
-from core.geometry.simple3D.box import BoxGeometry
-from core.material.basic.surface import SurfaceMaterial
-from core.rendering.camera import Camera
+from engine.rendering.textures.texture import Texture
+from engine.material.basic.texture import TextureMaterial
+from engine.geometry.simple2D.rectangle import  Rectangle
+from engine.geometry.simple3D.sphere import Sphere
+from engine.rendering.meshes.mesh import Mesh  
+from engine.rendering.render_target import RenderTarget
+from engine.geometry.simple3D.box import BoxGeometry
+from engine.material.basic.surface import SurfaceMaterial
+from engine.rendering.camera import Camera
 
 class SkyboxTest(Test):
     def __init__(self):

@@ -11,14 +11,14 @@ if package_dir not in sys.path:
 
 
 from rendering_tests.template import Test
-from core.geometry.simple3D.box import BoxGeometry
+from engine.geometry.simple3D.box import BoxGeometry
 from rendering_tests.template import Test
-from core.geometry.simple2D.rectangle import Rectangle
-from core.meshes.mesh import Mesh
-from core.textures.text import TextTexture
-from core.textures.texture import Texture
-from core.material.basic.texture import TextureMaterial
-from core.utils.matrix import Matrix
+from engine.geometry.simple2D.rectangle import Rectangle
+from engine.rendering.meshes.mesh import Mesh
+from engine.rendering.textures.text import TextTexture
+from engine.rendering.textures.texture import Texture
+from engine.material.basic.texture import TextureMaterial
+from engine.utils.matrix import Matrix
 
 
 class BillboardTest(Test):

@@ -10,10 +10,10 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from rendering_tests.template import Test
-from core.textures.texture import Texture
-from core.geometry.simple2D.rectangle import  Rectangle
-from core.meshes.mesh import Mesh
-from core.material.basic.material import Material
+from engine.rendering.textures.texture import Texture
+from engine.geometry.simple2D.rectangle import  Rectangle
+from engine.rendering.meshes.mesh import Mesh
+from engine.material.basic.material import Material
 
 
 class AnimatedTextureTest(Test):

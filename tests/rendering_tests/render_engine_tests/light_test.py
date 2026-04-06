@@ -10,17 +10,17 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from rendering_tests.template import Test
-from core.geometry.simple3D.sphere import Sphere
+from engine.geometry.simple3D.sphere import Sphere
 from rendering_tests.template import Test
 
-from core.light.ambient import AmbientLight
-from core.light.directional import DirectionalLight
-from core.light.point import PointLight
-from core.material.lighted.phong import PhongMaterial
-from core.material.lighted.lambert import LambertMaterial
-from core.material.lighted.flat import FlatMaterial
-from core.textures.texture import Texture
-from core.meshes.mesh import Mesh
+from engine.rendering.light.ambient import AmbientLight
+from engine.rendering.light.directional import DirectionalLight
+from engine.rendering.light.point import PointLight
+from engine.material.lighted.phong import PhongMaterial
+from engine.material.lighted.lambert import LambertMaterial
+from engine.material.lighted.flat import FlatMaterial
+from engine.rendering.textures.texture import Texture
+from engine.rendering.meshes.mesh import Mesh
 from math import sin,cos
 
 class LightTest(Test):

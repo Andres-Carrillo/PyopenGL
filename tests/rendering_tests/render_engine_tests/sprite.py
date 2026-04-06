@@ -10,10 +10,10 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from rendering_tests.template import Test
-from core.geometry.simple2D.rectangle import Rectangle
-from core.meshes.mesh import Mesh
-from core.textures.texture import Texture
-from core.material.basic.sprite import Sprite
+from engine.geometry.simple2D.rectangle import Rectangle
+from engine.rendering.meshes.mesh import Mesh
+from engine.rendering.textures.texture import Texture
+from engine.material.basic.sprite import Sprite
 from math import floor
 
 

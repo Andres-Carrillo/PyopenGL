@@ -9,7 +9,7 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from apps.base import Base
-from core.utils.openGLUtils import GlUtils
+from engine.utils.openGLUtils import GlUtils
 import glfw.GLFW as GLFW_CONSTANTS
 
 class InputTest(Base):

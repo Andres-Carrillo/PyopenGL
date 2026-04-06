@@ -10,13 +10,13 @@ if package_dir not in sys.path:
 
 from rendering_tests.template import Test
 from rendering_tests.template import Test
-from core.geometry.simple3D.sphere import Sphere
-from core.geometry.simple2D.rectangle import Rectangle
-from core.light.ambient import AmbientLight
-from core.light.directional import DirectionalLight
-from core.material.lighted.phong import PhongMaterial
+from engine.geometry.simple3D.sphere import Sphere
+from engine.geometry.simple2D.rectangle import Rectangle
+from engine.rendering.light.ambient import AmbientLight
+from engine.rendering.light.directional import DirectionalLight
+from engine.material.lighted.phong import PhongMaterial
 from tools.directional_light_tool import DirectionalLightTool
-from core.meshes.mesh import Mesh
+from engine.rendering.meshes.mesh import Mesh
 from math import pi
 
 class ShadowTest(Test):

@@ -10,14 +10,14 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from rendering_tests.template import Test
-from core.textures.texture import Texture
-from core.material.basic.texture import TextureMaterial
-from core.geometry.simple2D.rectangle import  Rectangle
-from core.geometry.simple3D.sphere import Sphere
-from core.meshes.mesh import Mesh  
+from engine.rendering.textures.texture import Texture
+from engine.material.basic.texture import TextureMaterial
+from engine.geometry.simple2D.rectangle import  Rectangle
+from engine.geometry.simple3D.sphere import Sphere
+from engine.rendering.meshes.mesh import Mesh  
 
-from core.tools.post_processor import Postprocessor
-from core.effects.vingette import VignetteEffect
+from engine.tools.post_processor import Postprocessor
+from engine.rendering.effects.vingette import VignetteEffect
 
 
 class VignetteTest(Test):

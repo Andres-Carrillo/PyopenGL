@@ -10,10 +10,10 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 
-from core.meshes.mesh import Mesh
-from core.geometry.geometry import Geometry
-from core.material.basic.point import PointMaterial
-from core.material.basic.line import LineMaterial
+from engine.rendering.meshes.mesh import Mesh
+from engine.geometry.geometry import Geometry
+from engine.material.basic.point import PointMaterial
+from engine.material.basic.line import LineMaterial
 from math import sin
 from numpy import arange
 from rendering_tests.template import Test

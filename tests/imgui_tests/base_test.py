@@ -17,11 +17,11 @@ import OpenGL.GL as gl
 from apps.base import ImGuiBase
 import numpy as np
 
-from core.utils.openGLUtils import GlUtils
-from core.glsl.attribute import Attribute
-from core.glsl.uniform import Uniform
+from engine.utils.openGLUtils import GlUtils
+from engine.glsl.attribute import Attribute
+from engine.glsl.uniform import Uniform
 import math
-from core.material.lighted.phong import PhongMaterial
+from engine.material.lighted.phong import PhongMaterial
 
 class MyApp(ImGuiBase):
 

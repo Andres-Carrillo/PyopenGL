@@ -3,14 +3,14 @@ import OpenGL.GL as gl
 import pygame as pg
 import imgui
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
-from core.utils.input import Input
-from core.utils.timer import Timer
-from core.utils.fps import FPS
-from core.rendering.scene import Scene
-from core.rendering.renderer import Renderer
-from core.tools.grid import GridTool
-from core.rendering.camera import Camera
-from core.tools.movement_rig import MovementRig
+from engine.utils.input import Input
+from engine.utils.timer import Timer
+from engine.utils.fps import FPS
+from engine.rendering.scene import Scene
+from engine.rendering.renderer import Renderer
+from engine.tools.grid import GridTool
+from engine.rendering.camera import Camera
+from engine.tools.movement_rig import MovementRig
 from math import pi
 from imgui.integrations.glfw import GlfwRenderer
 

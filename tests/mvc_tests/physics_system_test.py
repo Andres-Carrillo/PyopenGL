@@ -24,21 +24,15 @@ if package_dir not in sys.path:
 
 import numpy as np
 import glfw
-
 from apps.scene_editor import SceneEditorMVCApp
-from core.entity import Entity,make_physics_sphere
-from core.material.lighted.flat import FlatMaterial
-from core.components.types import COMPTYPE
-from core.components.components import PhysicsBody, CollisionComponent
-from core.components.collision import CollisionType
-from core.physics.engine import PhysicsEngine
-from core.systems.collision import CollisionSystem
-
+from engine.ecs.entity import make_physics_sphere
+from engine.ecs.components.types import COMPTYPE
+from engine.ecs.systems.physics import PhysicsSystem
+from engine.ecs.systems.collision import CollisionSystem
 
 # Starting position for the falling sphere — reset on R
 SPHERE_A_START = [0.0, 5.0, 0.0]
 SPHERE_RADIUS  = 1.0
-
 
 
 class PhysicsDemo(SceneEditorMVCApp):
@@ -50,7 +44,7 @@ class PhysicsDemo(SceneEditorMVCApp):
         self.model.camera.set_position([0, 3, 12])
 
         # Physics engine — gravity pulls down
-        self._physics = PhysicsEngine(gravity=[0, -9.81, 0])
+        self._physics = PhysicsSystem(gravity=[0, -9.81, 0])
 
         # Collision system
         self._collision_sys = CollisionSystem()
@@ -66,22 +60,16 @@ class PhysicsDemo(SceneEditorMVCApp):
         self.model.scene.add(self._entity_a)
         self.model.scene.add(self._entity_b)
 
-        # Only the dynamic sphere needs physics integration
-        self._physics.add_object(self._entity_a)
 
     def update(self):
         super().update()
         dt = self.controller._time_delta
 
         # 1. Integrate physics (applies gravity, updates velocity + position)
-        self._physics.update(dt)
+        self._physics.update([self._entity_a,self._entity_b],dt)
 
         # 2. Detect and resolve collisions
         self._collision_sys.run([self._entity_a, self._entity_b])
-
-        # # 3. Sync mesh positions to entity positions
-        # self._mesh_a.set_position(self._entity_a.local_position)
-        # self._mesh_b.set_position(self._entity_b.local_position)
 
         # R key — reset the falling sphere
         if self.input_handler.is_key_pressed(glfw.KEY_R):

@@ -21,11 +21,11 @@ if package_dir not in sys.path:
 import numpy as np
 import pytest
 
-from core.entity import Entity
-from core.components.types import COMPTYPE
-from core.components.collision import CollisionType
-from core.components.components import CollisionComponent, PhysicsBody
-from core.systems.collision import (
+from engine.ecs.entity import Entity
+from engine.ecs.components.types import COMPTYPE
+from engine.ecs.components.collision import CollisionType
+from engine.ecs.components.components import CollisionComponent, PhysicsBody
+from engine.ecs.systems.collision import (
     sphere_vs_sphere,
     aabb_vs_aabb,
     sphere_vs_aabb,

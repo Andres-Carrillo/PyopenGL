@@ -11,10 +11,10 @@ if package_dir not in sys.path:
 
 from rendering_tests.template import Test
 
-from core.geometry.simple3D.sphere import Sphere
-from core.material.basic.material import Material
-from core.meshes.mesh import Mesh
-from core.utils.timer import Timer
+from engine.geometry.simple3D.sphere import Sphere
+from engine.material.basic.material import Material
+from engine.rendering.meshes.mesh import Mesh
+from engine.utils.timer import Timer
 
 
 

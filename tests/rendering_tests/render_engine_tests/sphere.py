@@ -9,11 +9,11 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[2])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-from core.meshes.mesh import Mesh
-from core.geometry.simple3D.sphere import Sphere
-from core.material.basic.material import Material
+from engine.rendering.meshes.mesh import Mesh
+from engine.geometry.simple3D.sphere import Sphere
+from engine.material.basic.material import Material
 from rendering_tests.template import Test
-from core.utils.timer import Timer
+from engine.utils.timer import Timer
 
 class SphereTest(Test):
 
