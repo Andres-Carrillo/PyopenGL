@@ -1,0 +1,64 @@
+from engine.rendering.object3D import Object3D
+from engine.rendering.meshes.mesh import Mesh
+import numpy as np
+from engine.tools.grid import GridTool
+from engine.tools.point_light_tool import PointLightTool
+from engine.utils.math import Math
+from engine.tools.directional_light_tool import DirectionalLightTool
+from engine.ecs.entity import Entity
+from engine.ecs.components.types import COMPTYPE
+
+
+class Scene(Object3D):
+    """"Scene class meant to be the root of the scene graph"""
+    def __init__(self):
+        super().__init__()
+
+
+    def pick_object(self, mouse_position, camera, width, height):
+
+        normalized_ray = Math.ray_cast(mouse_position, camera, width, height)    
+
+        mesh_list = self.get_visible_objects()
+        for mesh in mesh_list:
+            if isinstance(mesh,PointLightTool):
+                if mesh.geometry.intersection_test(normalized_ray,camera.global_position,mesh.global_matrix):
+                    return mesh
+            
+            if isinstance(mesh,Entity):
+                
+
+                if not mesh.has_component(COMPTYPE.MESH):
+                    continue
+                mesh = mesh.get_component(COMPTYPE.MESH).mesh
+
+                # avoid picking invisible objects or helper objects
+            if not mesh.visible or isinstance(mesh,GridTool):
+                # directional tool is a discendant of grid tool so this check is needed
+                if not isinstance(mesh,DirectionalLightTool) :
+                    continue
+                
+            if mesh.geometry.intersection_test(normalized_ray,camera.global_position,mesh.global_matrix):
+                return mesh
+            
+        return None
+    
+    def get_visible_objects(self):
+        """
+        Get all visible objects in the scene.
+        :return: List of visible objects.
+        """
+        obj_list = self.descendant_list
+        viewable_filter = lambda x: isinstance(x,Mesh) and x.visible or (isinstance(x,Entity) and x.has_component(COMPTYPE.MESH) and x.get_component(COMPTYPE.MESH).mesh.visible)
+        viewable_meshes = list(filter(viewable_filter,obj_list))
+
+
+        return viewable_meshes
+
+           
+            
+         
+
+            
+
+        

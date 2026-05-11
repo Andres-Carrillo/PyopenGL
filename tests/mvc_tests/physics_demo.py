@@ -90,15 +90,15 @@ class PhysicsDemo(SceneEditorMVCApp):
 
         # --- Sphere A: dynamic, falls under gravity ---
         self._entity_a = make_sphere_entity(SPHERE_A_START, SPHERE_RADIUS, mass=1.0)
-        self._mesh_a   = make_sphere_mesh(SPHERE_A_START, SPHERE_RADIUS, color=[0.2, 0.6, 1.0])
+        # self._mesh_a   = make_sphere_mesh(SPHERE_A_START, SPHERE_RADIUS, color=[0.2, 0.6, 1.0])
 
         # --- Sphere B: static, sits at origin ---
         self._entity_b = make_sphere_entity([0.0, -1.0, 0.0], SPHERE_RADIUS, mass=0.0)
-        self._mesh_b   = make_sphere_mesh([0.0, -1.0, 0.0], SPHERE_RADIUS, color=[1.0, 0.4, 0.2])
+        # self._mesh_b   = make_sphere_mesh([0.0, -1.0, 0.0], SPHERE_RADIUS, color=[1.0, 0.4, 0.2])
 
         # Add meshes to the scene so they get rendered
-        self.model.scene.add(self._mesh_a)
-        self.model.scene.add(self._mesh_b)
+        self.model.scene.add(self._entity_a)
+        self.model.scene.add(self._entity_b)
 
         # Only the dynamic sphere needs physics integration
         self._physics.add_object(self._entity_a)

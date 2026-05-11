@@ -25,6 +25,7 @@ from engine.utils.timer import Timer
 import OpenGL.GL as gl
 from apps.base import ImGuiBase
 from engine.rendering.meshes.mesh import Mesh
+from engine.ecs.entity import Entity
 from engine.geometry.simple2D.point import PointGeometry
 
 class SceneEditorModel(AppModel):
@@ -32,6 +33,7 @@ class SceneEditorModel(AppModel):
         super().__init__(width=width,height=height,display_grid=display_grid,static_camera=static_camera)
 
         self.selected_mesh = None
+        self.drag_target = None
         self.is_targeting_object = False
         self.disable_camera_rig = False
         self.draw_bbox = False
@@ -134,6 +136,8 @@ class SceneEditorController:
         self.input_handler = input_handler
         self.timer = timer
         self._time_delta = 0.0
+        self.selected_mesh = None
+        self.drag_target = None
 
     def update(self):
         self._tick()
@@ -180,27 +184,30 @@ class SceneEditorController:
 
             mesh_picked = self.model.scene.pick_object(self.input_handler.mouse_position, self.model.camera,width=self.model.window_width, height=self.model.window_height)
             if mesh_picked:
+                # if the picked mesh is owned by an Entity, drag the entity so
+                # the collider and mesh child move together as a single unit
+                drag_target = mesh_picked.parent if isinstance(mesh_picked.parent, Entity) else mesh_picked
+
                 self.selected_mesh = mesh_picked
+                self.drag_target = drag_target
                 self.model.is_targeting_object = True
                 self.model.mesh_editor.change_mesh(self.selected_mesh)
 
-                
-                # if the mesh is already selected
                 if self.model.mesh_editor.model.mesh:
-                    # if the user is holding shift, change the mesh
                     if self.input_handler.is_key_pressed(glfw.KEY_LEFT_SHIFT):
                         self.model.mesh_editor.change_mesh(self.selected_mesh)
-                else: # if no mesh is selected, select the new one
-                        self.model.mesh_editor.change_mesh(self.selected_mesh)
+                else:
+                    self.model.mesh_editor.change_mesh(self.selected_mesh)
 
             if not mesh_picked and self.input_handler.right_click():
                 self.model.is_targetting_object = False
                 self.selected_mesh = None
+                self.drag_target = None
                 self.model.mesh_editor.change_mesh(None)
                 self.disable_camera_rig = False
-                
+
             if self.input_handler.left_click() and self.input_handler.mouse_held and mesh_picked:
-                drag_object(mouse_position=self.input_handler.mouse_position, mesh=self.selected_mesh, camera=self.model.camera, 
+                drag_object(mouse_position=self.input_handler.mouse_position, mesh=self.drag_target, camera=self.model.camera,
                             width=self.model.window_width, height=self.model.window_height, input_handler=self.input_handler)
 
 class SceneEditorMVCApp(ImGuiBase):

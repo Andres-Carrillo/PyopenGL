@@ -9,8 +9,12 @@ from engine.utils.fps import FPS
 from engine.rendering.scene import Scene
 from engine.rendering.renderer import Renderer
 from engine.tools.grid import GridTool
-from engine.rendering.camera import Camera
-from engine.tools.movement_rig import MovementRig
+from engine.ecs.entity import Entity
+from engine.ecs.components.types import COMPTYPE
+from engine.ecs.components.components import CameraComponent, ControllerComponent
+from engine.ecs.systems.camera import CameraSystem
+from engine.ecs.systems.controller import ControllerSystem
+from engine.utils.action_map import ActionMap
 from math import pi
 from imgui.integrations.glfw import GlfwRenderer
 
@@ -354,59 +358,86 @@ class ImGuiBase:
     It uses ImGui for the user interface and GLFW for window management.
     The camera can be static or dynamic, and the grid can be displayed or hidden.
 """
+class _ECSCameraAdapter:
+    """Bridges CameraComponent + Entity to the Renderer's expected interface."""
+    def __init__(self, entity: Entity, component: CameraComponent):
+        self._entity    = entity
+        self._component = component
+
+    @property
+    def view_matrix(self):       return self._component.view_matrix
+    @property
+    def projection_matrix(self): return self._component.projection_matrix
+    @property
+    def global_position(self):   return self._entity.global_position
+    @property
+    def far(self):               return self._component.far
+
+    def update_view_matrix(self):
+        pass  # CameraSystem already updated the matrix before render
+
+
 class BaseApp(ImGuiBase):
-    def __init__(self, title="Test Framework", width=800, height=600,static_camera=True,display_grid=True):
+    def __init__(self, title="Test Framework", width=800, height=600,
+                 static_camera=True, display_grid=True):
         super().__init__(title, width, height)
 
-        self.scene = Scene()
+        self.scene    = Scene()
         self.renderer = Renderer()
-        self.camera = Camera(aspect_ratio=width / height)
 
-        if  static_camera:
-             self.camera_rig = None
-             self.camera.set_position([0, 1, 1])
+        # --- ECS camera entity ---
+        self._cam_entity = Entity()
+        self._cam_comp   = CameraComponent(aspect_ratio=width / height)
+        self._cam_entity.add_component(COMPTYPE.CAMERA, self._cam_comp)
+
+        if static_camera:
+            self._cam_entity.set_position([0, 1, 1])
         else:
-            self.camera_rig = MovementRig()
-            self.camera_rig.add(self.camera)
-            self.add_to_scene(self.camera_rig)
-            self.camera_rig.set_position([0.5, 1, 5])
+            self._cam_entity.set_position([0.5, 1, 5])
+            self._cam_entity.add_component(COMPTYPE.CONTROLLER, ControllerComponent())
+
+        # public adapter so subclasses can pass it to renderer directly
+        self.camera = _ECSCameraAdapter(self._cam_entity, self._cam_comp)
+
+        # --- systems ---
+        self._cam_system        = CameraSystem(window_width=width, window_height=height)
+        self._controller_system = ControllerSystem()
+        self._action_map        = ActionMap.default(self.input_handler)
+        self._time_delta        = 0.0
 
         if display_grid:
-            self.grid_tool = GridTool(size = self.camera.far,division=int(self.camera.far*2),grid_color=[1,1,1],center_color=[1,1,0])
-            self.grid_tool.rotate_x(-pi/2)
+            self.grid_tool = GridTool(
+                size=self._cam_comp.far,
+                division=int(self._cam_comp.far * 2),
+                grid_color=[1, 1, 1],
+                center_color=[1, 1, 0],
+            )
+            self.grid_tool.rotate_x(-pi / 2)
             self.scene.add(self.grid_tool)
         else:
             self.grid_tool = None
 
+    def _on_resize(self, window, width, height) -> None:
+        super()._on_resize(window, width, height)
+        self._cam_system.on_resize(width, height)
 
     def update(self):
-        # Example: Add ImGui UI elements
-        imgui.begin("Example Window")
-        imgui.text("Hello, ImGui!")
-        if imgui.button("Click Me!"):
-            print("Button clicked!")
-        imgui.end()
+        pass
 
-    # for more complex applications, you can use the update method to handle input and update the scene
     def render(self):
-        # clock delta time so all objects can be updated with the same delta time
         self._tick()
-        # Update the input handler
         self._handle_input()
-         # set the window size in case the window was resized
         self.renderer.update_window_size(self.window_width, self.window_height)
-        
-        # update the camera aspect ratio to avoid distortion
-        self.camera.update_aspect_ratio(self.window_width / self.window_height)
-        #render the scene
+        self._cam_system.update([self._cam_entity], self._time_delta)
         self.renderer.render(self.scene, self.camera)
 
     def _tick(self):
         self._time_delta = self.timer.delta_time()
 
     def _handle_input(self):
-        if self.camera_rig is not None:
-            self.camera_rig.update(self.input_handler, self._time_delta)
+        self._controller_system.update(
+            [self._cam_entity], self._time_delta, self._action_map
+        )
 
-    def add_to_scene(self,mesh):
+    def add_to_scene(self, mesh):
         self.scene.add(mesh)
